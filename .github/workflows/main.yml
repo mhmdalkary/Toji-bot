@@ -8,10 +8,13 @@ on:
     branches:
       - main
   workflow_dispatch:
+  schedule:
+    - cron: '0 */2 * * *'  # كل ساعتين
 
 jobs:
   run-bot:
     runs-on: ubuntu-latest
+    timeout-minutes: 360  # يوقف بعد 6 ساعات كحد أقصى (حد GitHub)
 
     steps:
       - name: Checkout code
@@ -26,4 +29,4 @@ jobs:
         run: npm install
 
       - name: Run the bot
-        run: npm start
+        run: node index.js  # أو npm start حسب ما عندك
