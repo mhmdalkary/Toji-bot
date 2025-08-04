@@ -138,7 +138,7 @@ module.exports.run = async function ({ api, event, args }) {
         text
       });
 
-      const audioURL = response.data.audio_url;
+const audioURL = response.data.audio_url;
 const audioPath = path.join(__dirname, `temp_${Date.now()}.mp3`);
 const writer = fs.createWriteStream(audioPath);
 const audioStream = await axios.get(audioURL, { responseType: "stream" });
@@ -146,14 +146,12 @@ audioStream.data.pipe(writer);
 
 writer.on("finish", () => {
   api.sendMessage(
-    { body: `🗣️ صوت: ${selectedVoice.name}`, attachment: fs.createReadStream(audioPath) },
+    {
+      body: `🗣️ صوت: ${selectedVoice.name}`,
+      attachment: fs.createReadStream(audioPath)
+    },
     event.threadID,
     () => fs.unlinkSync(audioPath),
-    event.messageID
+    event.messageID // إذا مكتبتك تدعمه هنا، أو تقدر تشيله لو ما يحتاج
   );
 });
-} catch (error) {
-  console.error(error);
-  api.sendMessage("❌ حدث خطأ أثناء تحويل النص إلى صوت.", event.threadID, event.messageID);
-}
-};
