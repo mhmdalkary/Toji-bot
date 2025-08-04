@@ -1,8 +1,8 @@
 const axios = require('axios');
 
 const Prefixes = [
-  'نيرو',
-  '.chi',
+  'توجي',
+  'بوت',
   '¶sammy',
   'ذكاء-اصطناعي',
   '.الين',
