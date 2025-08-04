@@ -157,7 +157,7 @@ module.exports.run = async function ({ api, event, args }) {
       api.sendMessage("❌ حدث خطأ أثناء تحويل النص إلى صوت.", event.threadID, event.messageID);
     }
   });
-};        );
+};        
       });
     } catch (error) {
       console.error(error);
