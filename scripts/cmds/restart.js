@@ -2,7 +2,7 @@ const fs = require("fs-extra");
 
 module.exports = {
 	config: {
-		name: "restart",
+		name: "ريستارت",
 		aliases: ["ريلوود"],
 		version: "1.1",
 		author: "sifo anter",
