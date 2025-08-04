@@ -1,12 +1,12 @@
 module.exports = {
 	config: {
-		name: "count",
+		name: "رصيدي",
 		aliases: ["حسااب", "حساب"],
 		version: "1.3",
 		author: "sifo anter",
 		countDown: 5,
 		role: 0,
-		description: {
+		longdescription: {
 			vi: "Xem số lượng tin nhắn của tất cả thành viên hoặc bản thân (tính từ lúc bot vào nhóm)",
 			en: "View the number of messages of all members or yourself (since the bot joined the group)",
 			ar: "حساب رسائل العضو"
