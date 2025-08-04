@@ -93,7 +93,8 @@ async function makeRankCard(userID, usersData, threadsData, threadID, deltaNext)
 	const currentExp = expNextLevel - (levelToExp(levelUser + 1, deltaNext) - exp);
 
 	const allUser = usersData.getAll();
-	allUser.sort((a, b) => b.exp - a.exp);
+	const allUsersArray = Array.isArray(allUser) ? allUser : Object.values(allUser);
+allUsersArray.sort((a, b) => b.exp - a.exp);
 	const rank = allUser.findIndex(user => user.userID == userID) + 1;
 
 	const customRankCard = await threadsData.get(threadID, "data.customRankCard") || {};
