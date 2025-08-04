@@ -2,7 +2,7 @@ const { getPrefix } = global.utils;
 
 module.exports = {
 	config: {
-		name: "rules",
+		name: "قواعد",
     aliases: ["قواعد", "شروط", "قوانين"],
 		version: "1.4",
 		author: "NTKhang",
