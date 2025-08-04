@@ -2,7 +2,7 @@ const { getTime } = global.utils;
 
 module.exports = {
 	config: {
-		name: "user",
+		name: "مستخدم",
 		aliases: ["مس", "مستخدم"],
 		version: "1.4",
 		author: "sifo anter",
