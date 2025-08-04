@@ -3,7 +3,7 @@ const { utils } = global;
 
 module.exports = {
 	config: {
-		name: "prefix",
+		name: "البادئة",
 		aliases: ["px", "رمز"],
 		version: "1.4",
 		author: "sifo anter",
