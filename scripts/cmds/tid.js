@@ -1,6 +1,6 @@
 module.exports = {
 	config: {
-		name: "tid",
+		name: "تيد",
 		aliases: ["تيد", "ثيد"],
 		version: "1.2",
 		author: "sifo anter",
