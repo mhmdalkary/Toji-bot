@@ -89,20 +89,19 @@ handlerCheckData.cantCreateThread=Groups with id '%1' cannot be written to the d
 handlerCheckData.cantCreateUser=Users with id '%1' cannot be written to the database!
 
 # bot/handler/handlerEvents.js
-handlerEvents.userBanned=❌ تم حظرك من استخدام البوت\n» السبب: %1\n» الوقت: %2\n» معرف المستخدم: %3
-handlerEvents.threadBanned=❌ تم حظر هذه المجموعة من استخدام البوت\n» السبب: %1\n» الوقت: %2\n» معرف المجموعة: %3
-handlerEvents.onlyAdminBox=❌ هذا البوت مفعل بحيث يمكن للمشرفين فقط استخدامه داخل هذه المجموعة
-handlerEvents.onlyAdminBot=❌ هذا الأمر مخصص فقط لمشرفي البوت
-handlerEvents.commandNotFound=❌ الأمر "%1" غير موجود، اكتب 
- اوامر لعرض جميع الأوامر المتاحة
-handlerEvents.commandNotFound2=❌ الأمر الذي كتبته غير موجود، اكتب %1help لعرض الأوامر المتاحة
-handlerEvents.commandSyntaxError=❌ صيغة الأمر غير صحيحة، اكتب %1help %2 لمعرفة كيفية استخدامه
-handlerEvents.onlyAdmin=❌ فقط مشرفو المجموعة يمكنهم استخدام الأمر "%1"
-handlerEvents.onlyAdminToUseOnReply=❌ فقط مشرفو المجموعة يمكنهم الرد على هذا الأمر "%1"
-handlerEvents.onlyAdminToUseOnReaction=❌ فقط مشرفو المجموعة يمكنهم التفاعل مع هذا الأمر "%1"
-handlerEvents.onlyAdminBot2=❌ فقط مشرفو البوت يمكنهم استخدام الأمر "%1"
-handlerEvents.onlyAdminBot2ToUseOnReply=❌ فقط مشرفو البوت يمكنهم الرد على هذا الأمر "%1"
-handlerEvents.onlyAdminBot2ToUseOnReaction=❌ فقط مشرفو البوت يمكنهم التفاعل مع هذا الأمر "%1"
+handlerEvents.userBanned=
+handlerEvents.threadBanned=
+handlerEvents.onlyAdminBox=
+handlerEvents.onlyAdminBot=
+handlerEvents.commandNotFound=
+handlerEvents.commandNotFound2=
+handlerEvents.commandSyntaxError=❌ صيغة الأمر غير صحيحة، اكتب .شرح %2 لمعرفة كيفية استخدامه
+handlerEvents.onlyAdmin=
+handlerEvents.onlyAdminToUseOnReply=
+handlerEvents.onlyAdminToUseOnReaction=
+handlerEvents.onlyAdminBot2=
+handlerEvents.onlyAdminBot2ToUseOnReply=
+handlerEvents.onlyAdminBot2ToUseOnReaction=
 handlerEvents.waitingForCommand=⏱ يجب الانتظار قبل استخدام هذا الأمر مجددًا، الرجاء المحاولة بعد %1 ثانية
 handlerEvents.errorOccurred=❌ [ %1 ]\nحدث خطأ أثناء تنفيذ الأمر "%2"\n\n%3
 handlerEvents.errorOccurred2=❌ [ %1 ]\nحدث خطأ أثناء تنفيذ onChat في الأمر "%2"\n\n%3
@@ -147,9 +146,3 @@ utils.errorOccurred=❌ An error occurred:\n\n%1
 command.restartedBot=Bot has been restarted
 
 # dashboard/app.js
-app.googleApiRefreshTokenExpired=Google API refresh token has expired or been revoked, please get a new token at https://developers.google.com/oauthplayground/
-app.tooManyRequests=Too many requests in the last minute. Please try again later.
-app.notPermissionChangeFbstate=You do not have permission to change fbstate!
-app.notFoundFbstate=Please enter fbstate!
-app.changedFbstateSuccess=Successfully changed fbstate!
-app.serverError=Server an error, please try again later!
