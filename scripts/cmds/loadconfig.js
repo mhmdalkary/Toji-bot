@@ -2,7 +2,7 @@ const fs = require("fs-extra");
 
 module.exports = {
 	config: {
-		name: "loadconfig",
+		name: "تحميل-الكونفيغ",
 		aliases: ["تحميل الكونفيغ", "loadcf"],
 		version: "1.4",
 		author: "sifo anter",
