@@ -1,6 +1,6 @@
 module.exports = {
 	config: {
-		name: "refresh",
+		name: "تحديث",
 		aliases: ["ريفريش", "تحديث"],
 		version: "1.2",
 		author: "sifo anter",
