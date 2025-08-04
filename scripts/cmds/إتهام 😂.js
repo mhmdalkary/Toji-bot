@@ -24,7 +24,7 @@ module.exports = {
         if (mention.length == 0) return message.reply("منشن 🌝");
         else if (mention.length == 1) {
             const one = event.senderID, two = mention[0];
-            bal(one, two).then(ptth => { message.reply({ body: "إنها زوجت عبد المالك 🕸️", attachment: fs.createReadStream(ptth) }) })
+            bal(one, two).then(ptth => { message.reply({ body: "إنها زوجة توجي 🕸️", attachment: fs.createReadStream(ptth) }) })
         } else {
             const one = mention[1], two = mention[0];
             bal(one, two).then(ptth => { message.reply({ body: "هو مش انا🕸️", attachment: fs.createReadStream(ptth) }) })
