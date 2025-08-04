@@ -20,7 +20,7 @@ const rows = [
 
 module.exports = {
 	config: {
-		name: "guessnumber",
+		name: "خمن",
 		aliases: ["ارقام", "guessnum"],
 		version: "1.1",
 		author: "sifo anter",
