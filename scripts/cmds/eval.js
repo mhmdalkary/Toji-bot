@@ -3,7 +3,7 @@ const { removeHomeDir, log } = global.utils;
 module.exports = {
 	config: {
 		
-		name: "eval",
+		name: "كود",
 		aliases: ["evall", "ev"],
 		version: "1.6",
 		author: "sifo anter",
