@@ -3,7 +3,7 @@ const path = require("path");
 
 module.exports = {
   config: {
-    name: "اوامر",
+    name: "2اوامر",
     aliases: ["أوامر", "مساعدة", "اوامر"],
     version: "1.4",
     author: "sifo",
