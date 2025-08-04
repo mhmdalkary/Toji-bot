@@ -2,7 +2,7 @@ const { getTime } = global.utils;
 
 module.exports = {
 	config: {
-		name: "thread",
+		name: "الجروب",
 		aliases: ["القروب", "مجموعة"],
 		version: "1.5",
 		author: "sifo anter",
