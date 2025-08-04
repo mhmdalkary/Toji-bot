@@ -16,7 +16,7 @@ module.exports = {
 			session2: "الظهيرة",
 			session3: "العشية",
 			session4: "الليل",
-			welcomeMessage: "[✨ تم توصيل نيرو",
+			welcomeMessage: "[✨ تم توصيل توجي",
 			multiple1: "بيك",
 			multiple2: "بيكم",
 			defaultWelcomeMessage: `   ⋆┄┄┄┄•✦✿✦•┄┄┄┄⋆
