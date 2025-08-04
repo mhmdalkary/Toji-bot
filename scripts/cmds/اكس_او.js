@@ -1,35 +1,33 @@
 module.exports = {
 	config: {
-		name: "إكس_او",
-    aliases: ["تحدي"],
+		name: "إكس_أو",
+    aliases: ['x.o'],
 		version: "1.1",
-		author: "لوفي",
+		author: "HUSSEIN",
 		countDown: 5,
 		role: 0,
 		shortDescription: {
 			vi: "",
-			en: "لعبة إكس أو"
+			en: ""
 		},
 		longDescription: {
 			vi: "",
-			en: "إلعب إكس أو مع صديقك"
+			en: ""
 		},
-		category: "ألعاب",
-		guide: {
-			vi: "reply tin nhắn muốn gỡ của bot và gọi lệnh {pn}",
-			en: "تاغ لشخص"
-    }
+		category: "لعبة",
+		guide: "",
+		
 	},
 
 onStart: async function ({ event, message, api, usersData, args}) {
   const mention = Object.keys(event.mentions);
 
-  if(args[0] == "إنهاء") {
-if(!global.game.hasOwnProperty(event.threadID) || global.game[event.threadID].on == false ){ message.reply("مافي ألعاب حاليا في المجموعة 😐❤️")
+  if(args[0] == "إغلاق") {
+if(!global.game.hasOwnProperty(event.threadID) || global.game[event.threadID].on == false ){ message.reply("لا توجد مباراة قيد التشغيل في هذه المجموعة")
   } else {
 if(event.senderID == global.game[event.threadID].player1.id || event.senderID == global.game[event.threadID].player2.id ){
   if(event.senderID == global.game[event.threadID].player1.id){
-    message.reply({body:`ياله من طفل يبكي 😐. ${global.game[event.threadID].player1.name} هرب🌝.\nفاز${global.game[event.threadID].player2.name}.`, mentions: [{
+    message.reply({body:`يا له من طفل بكاء 🙂. ${global.game[event.threadID].player1.name} لقد ترك اللعبة.\n وبذالك يكون الفائز هو ${global.game[event.threadID].player2.name}.`, mentions: [{
                         tag: global.game[event.threadID].player1.name,
                         id: global.game[event.threadID].player1.id,
         
@@ -42,7 +40,7 @@ if(event.senderID == global.game[event.threadID].player1.id || event.senderID ==
         
                     })
   } else {
-    message.reply({body:`هرب الفاشل🌝 ${global.game[event.threadID].player2.name}\nإذا الفائز هو ${global.game[event.threadID].player1.name}🌟`, mentions: [{
+    message.reply({body:`يا له من  طفل بكاء 🙂. ${global.game[event.threadID].player2.name} لقد ترك اللعبة.\nوبذالك يكون الرابح هو ${global.game[event.threadID].player1.name}.`, mentions: [{
                         tag: global.game[event.threadID].player1.name,
                         id: global.game[event.threadID].player1.id,
         
@@ -57,7 +55,7 @@ if(event.senderID == global.game[event.threadID].player1.id || event.senderID ==
   }
   global.game[event.threadID].on = false
 } else{
- message.reply("مافي لعبة في الكروب 😐❤️")
+ message.reply("ليس لديك أي لعبة قيد التشغيل في هذه المجموعة")
 }
 
 
@@ -69,40 +67,44 @@ if(event.senderID == global.game[event.threadID].player1.id || event.senderID ==
   } else{
     
   
-      if(mention.length == 0) return message.reply("لتلعب إكس أو ضد شخص ضع تاغ له ♻️\nلإنهاء الجولة أكتب تحدي إنهاء✅");
-  if(!global.game.hasOwnProperty(event.threadID) || global.game[event.threadID].on == false ){
-    global.game[event.threadID] = {
-      on:true,
-  board:"🔲🔲🔲\n🔲🔲🔲\n🔲🔲🔲", 
-      bid:"",
-      board2:"123456789",
-      avcell: ["1", "2","3","4","5","6","7","8","9"],
-      turn: mention[0],
-      player1: {id:mention[0],name:await usersData.getName(mention[0])},
-      player2: {id:event.senderID, name: await usersData.getName(event.senderID)},
-      bidd:"❌",
-      bid:"",
-      ttrns: [],
-      counting:0
-    }
+      if(mention.length == 0) return message.reply("يرجى عمل منشن  لشخص ما أو قول إغلاق اللعبة لإغلاق أي لعبة موجودة");
+  if (!global.game || !global.game.hasOwnProperty(event.threadID) || !global.game[event.threadID] || global.game[event.threadID].on === false) {
+    if (!global.game) {
+  global.game = {};
+}
+
+global.game[event.threadID] = {
+  on: true,
+  board: "🔲🔲🔲\n🔲🔲🔲\n🔲🔲🔲",
+  bid: "",
+  board2: "123456789",
+  avcell: ["1", "2", "3", "4", "5", "6", "7", "8", "9"],
+  turn: mention[0],
+  player1: { id: mention[0], name: await usersData.getName(mention[0]) },
+  player2: { id: event.senderID, name: await usersData.getName(event.senderID) },
+  bidd: "❌",
+  bid: "",
+  ttrns: [],
+  counting: 0
+};
     message.send(global.game[event.threadID].board, (err, info) =>{global.game[event.threadID].bid = info.messageID;
             global.fff.push(info.messageID)                                                      })
-    }else{message.reply(" هناك لعبة في المجموعة حاليا 😐🪓")}
+    }else{message.reply(" هناك لعبة موجودة بالفعل في هذه المجموعة")}
     
                           }
 
 },
   onChat: async function ({ event, message, api, args}){
 
-if(event.type =="message" && event.body.includes("._.")){
-  message.reply({body:"دعهم يركزون 🌝 أنجب فاك يو 😠",attachment:await global.utils.getStreamFromURL("https://scontent.xx.fbcdn.net/v/t1.15752-9/316181740_667600474745895_5536856546858630902_n.jpg?_nc_cat=105&ccb=1-7&_nc_sid=ae9488&_nc_ohc=bR-GcvE6RHMAX_YE5bu&_nc_ad=z-m&_nc_cid=0&_nc_ht=scontent.xx&oh=03_AdQk45VA6QO5_X5vTQJYdXF4nH45UeESYppxrFbZdRlJMw&oe=63A3009D")})
+if(event.type =="message" && event.body.includes("-,-")){
+  message.reply({body:" هي هي هي تبا لك",attachment:await global.utils.getStreamFromURL("https://scontent.xx.fbcdn.net/v/t1.15752-9/316181740_667600474745895_5536856546858630902_n.jpg?_nc_cat=105&ccb=1-7&_nc_sid=ae9488&_nc_ohc=bR-GcvE6RHMAX_YE5bu&_nc_ad=z-m&_nc_cid=0&_nc_ht=scontent.xx&oh=03_AdQk45VA6QO5_X5vTQJYdXF4nH45UeESYppxrFbZdRlJMw&oe=63A3009D")})
 }
 
 
     
 if(event.type == "message_reply" && global.game[event.threadID] && global.game[event.threadID].on == true){
 
-if(event.messageReply.messageID === global.game[event.threadID].bid){
+if(event.messageReply.messageID === global.game[event.threadID].bid){8
   console.log("bal")
 if(global.game[event.threadID].turn === event.senderID){
   console.log("sal")
@@ -216,7 +218,7 @@ message.send(global.game[event.threadID].board)
 
    
     if(global.game[event.threadID].turn === global.game[event.threadID].player1.id){
-      setTimeout(function(){message.send({body:`${global.game[event.threadID].player1.name} الفائز 🌟🌝\nعمگ 🔰`, mentions: [{
+      setTimeout(function(){message.send({body:`تهانينا 🥳 ${global.game[event.threadID].player1.name} , أنت الفائز في هذه المباراة..`, mentions: [{
                         tag: global.game[event.threadID].player1.name,
                         id: global.game[event.threadID].player1.id,
         
@@ -224,7 +226,7 @@ message.send(global.game[event.threadID].board)
         
         
                     })
-    }, 1000)} else {setTimeout(function(){message.send({body:`${global.game[event.threadID].player2.name} هذا فاز بالحظ فقط 🐸🚬`, mentions: [{
+    }, 1000)} else {setTimeout(function(){message.send({body:`تهانينا 🥳 ${global.game[event.threadID].player2.name} , أنت الفائز في هذه المباراة..`, mentions: [{
                         tag: global.game[event.threadID].player2.name,
                         id: global.game[event.threadID].player2.id,
         
@@ -234,7 +236,7 @@ message.send(global.game[event.threadID].board)
                     })}, 1000)}
    global.game[event.threadID].on = false
 }else if(global.game[event.threadID].counting === 8){
-  setTimeout(function (){message.send("أحم أحم تعادل 😂 مافي مستوى الكل ينقلع الآن 😐")}, 1000)
+  setTimeout(function (){message.send("إنتهت المباراة بالتعادل.....")}, 1000)
   global.game[event.threadID].on = false
 } else{
   global.game[event.threadID].counting +=1
@@ -253,10 +255,10 @@ message.send(global.game[event.threadID].board)
 
 
   
-} else{message.reply("هل أنت أعمى 🌝")}
+} else{message.reply("تم حظر هذا بالفعل")}
 
-} else{message.reply("رد برقم فقط 🐸\nلا داعي لأرقام من عالم أحلام العصر🌝\nولا داعي للتعويذات 🐸")}
-} else{message.reply("مش دورك 🌝🪓") }
+} else{message.reply("قم بالرد من 1 -9")}
+} else{message.reply("ليس دورك يا غبي") }
 
 
 }
@@ -267,4 +269,9 @@ message.send(global.game[event.threadID].board)
   }
 };
 
-  String.prototype.replaceAt = function (search, replace, from) { if (this.length > from) { return this.slice(0, from) + this.slice(from).replace(search, replace); } return this; }
+  String.prototype.replaceAt = function (search, replace, from) {
+  if (this.length > from) {
+    return this.slice(0, from) + this.slice(from).replace(search, replace);
+  }
+  return this;
+};
