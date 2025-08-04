@@ -19,7 +19,7 @@ module.exports = {
 		category: "المالك",
 		guide: {
 			vi: "   {pn} <tin nhắn>",
-			en: "   {pn} <رسالة>"
+			ar: "   {pn} <رسالة>"
 		}
 	},
 
@@ -37,7 +37,7 @@ module.exports = {
 			replyUserSuccess: "Đã gửi phản hồi của bạn về người dùng thành công!",
 			noAdmin: "Hiện tại bot chưa có admin nào"
 		},
-		en: {
+		ar: {
 			missingMessage: "الرجاء إدخال الرسالة التي تريد إرسالها إلى المشرف",
 			sendByGroup: "\n- تم الإرسال من المجموعة: %1\n- آيدي المجموعة: %2",
 			sendByUser: "\n- تم الإرسال من المستخدم",
