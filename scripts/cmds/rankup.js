@@ -4,7 +4,7 @@ const { drive } = global.utils;
 
 module.exports = {
 	config: {
-		name: "rankup",
+		name: "رانكاب",
 aliases: ["رانكاب", "مستوى_اشعار"],
 		version: "1.4",
 		author: "sifo anter",
