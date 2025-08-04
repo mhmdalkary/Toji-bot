@@ -2,13 +2,13 @@ const moment = require("moment-timezone");
 
 module.exports = {
 	config: {
-		name: "daily",
+		name: هدية",
 		aliases: ["هديه", "هدية"],
 		version: "1.2",
 		author: "sifo anter",
 		countDown: 5,
 		role: 0,
-		description: {
+		longdescription: {
 			vi: "Nhận quà hàng ngày",
 			en: "Receive daily gift",
 			ar: "الحصول على الهدية اليومية"
