@@ -38,13 +38,19 @@ module.exports = {
       const command = commands.get(commandName) || commands.get(aliases.get(commandName));
       if (!command) {
         return message.reply(`❌ | الأمر "${commandName}" غير موجود.`);
-      }
+}
 
-      const configCommand = command.config;
-      const roleText = roleTextToString(configCommand.role);
-      const author = configCommand.author || "غير معروف";
-      const longDescription = configCommand.longDescription?.ar || "لا يوجد وصف.";
-      const usage = configCommand.guide?.ar?.replace(/{p}/g, prefix).replace(/{n}/g, configCommand.name) || "لا يوجد دليل.";
+const configCommand = command.config;
+const roleText = roleTextToString(configCommand.role);
+const author = configCommand.author || "غير معروف";
+const longDescription = configCommand.longDescription?.ar || "لا يوجد وصف.";
+
+let usage = "لا يوجد دليل.";
+if (typeof configCommand.guide?.ar === "string") {
+  usage = configCommand.guide.ar
+    .replace(/{p}/g, prefix)
+    .replace(/{n}/g, configCommand.name);
+}
 
       const response = `╭── ⭓ الإسم
 │ ${configCommand.name}
