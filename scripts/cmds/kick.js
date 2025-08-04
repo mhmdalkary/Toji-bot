@@ -1,6 +1,6 @@
 module.exports = {
 	config: {
-		name: "kick",
+		name: "نفخ",
 		aliases: ["اطرد","خرجو"],
 		version: "1.3",
 		author: "sifo anter",
