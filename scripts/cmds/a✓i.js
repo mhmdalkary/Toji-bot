@@ -27,7 +27,7 @@ const Prefixes = [
 
 module.exports = {
   config: {
-    name: 'نيرو',
+    name: 'توجي',
     aliases: ['ذكاء-اصطناعي'],
     version: '2.5',
     author: 'الين',
