@@ -4,11 +4,11 @@ const { getPrefix } = global.utils;
 module.exports = {
   config: {
     name: "اوامر",
-    version: "1.1",
+    version: "1.2",
     hasPermission: 0,
     credits: "محمد ✨",
     description: "عرض أقسام الأوامر أو أوامر قسم معين.",
-    commandCategory: "نظام",
+    commandCategory: "النظام",
     usages: "[رقم القسم]",
     cooldowns: 5
   },
@@ -16,37 +16,43 @@ module.exports = {
   onStart: async function ({ args, message, event }) {
     const prefix = getPrefix(event.threadID);
 
-    // نجمع الأوامر حسب الأقسام
+    // جمع الأوامر حسب القسم
     const commandsByCategory = {};
     for (const cmd of commands.values()) {
-      const cat = cmd.config.commandCategory || "غير مصنف";
-      if (!commandsByCategory[cat]) commandsByCategory[cat] = [];
-      commandsByCategory[cat].push(cmd.config.name);
+      const category = cmd.config.commandCategory || "غير مصنف";
+      if (!commandsByCategory[category]) {
+        commandsByCategory[category] = [];
+      }
+      commandsByCategory[category].push(cmd.config.name);
     }
 
     const categories = Object.keys(commandsByCategory);
 
-    // عرض قائمة الأقسام
+    // 👈 عرض الأقسام
     if (!args[0]) {
-      let text = "🗂️ | قائمة الأقسام:\n\n";
-      categories.forEach((cat, index) => {
-        text += `${index + 1}. ${cat} (${commandsByCategory[cat].length} أمر)\n`;
+      let text = `🌟 *دليل الأوامر المفصّل*\n\n🗂️ | الأقسام المتوفرة:\n\n`;
+      categories.forEach((cat, i) => {
+        text += `${i + 1}. ${cat} (${commandsByCategory[cat].length} أمر)\n`;
       });
-      text += `\nاكتب: ${prefix}اوامر رقم_القسم\nمثال: ${prefix}اوامر 1`;
+      text += `\n📌 لعرض أوامر قسم معين، أرسل:\n» ${prefix}اوامر [رقم القسم]\nمثال: ${prefix}اوامر 1`;
       return message.reply(text);
     }
 
-    // التحقق من الرقم المُدخل
+    // 👈 التحقق من الرقم
     const sectionNumber = parseInt(args[0]);
     if (isNaN(sectionNumber) || sectionNumber < 1 || sectionNumber > categories.length) {
-      return message.reply("⚠️ | رقم القسم غير صالح، تأكد من إدخاله بشكل صحيح.");
+      return message.reply("⚠️ | رقم القسم غير صحيح، تأكد من إدخال رقم من القائمة.");
     }
 
-    // عرض أوامر القسم
+    // 👈 عرض أوامر القسم المختار
     const selectedCategory = categories[sectionNumber - 1];
     const commandsInSection = commandsByCategory[selectedCategory];
 
-    const text = `📚 | الأوامر في قسم: ${selectedCategory} \n\n🔹 ${commandsInSection.join('\n🔹 ')}`;
-    return message.reply(text);
+    let replyText = `📂 | الأوامر في قسم: *${selectedCategory}*\n\n`;
+    replyText += commandsInSection.map(cmd => `🔹 ${prefix}${cmd}`).join('\n');
+
+    replyText += `\n\n✍️ لعرض الأقسام مرة أخرى:\n» ${prefix}اوامر`;
+
+    return message.reply(replyText);
   }
 };
