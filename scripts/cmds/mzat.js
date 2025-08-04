@@ -1,100 +1,48 @@
+const axios = require("axios");
+
 module.exports = {
   config: {
     name: "مزه",
-    aliases: ["girl"],
+    aliases: ["انمي", "بنت", "جميله"],
     version: "1.0",
-    author: "HUSSEIN",
-    countDown: 5,
+    description: "يرسل صورة بنت عشوائية (أنمي أو واقعية)",
+    category: "ترفيه",
+    usage: "[انمي | واقعي]",
     role: 0,
-    shortDescription: "يقوم بإرسال لك صور ل فتياة  ",
-    longDescription: "",
-    category: "متعة",
-    guide: "{pn}فتياة"
+    author: "ChatGPT"
   },
 
-  onStart: async function ({ api, event }) {
-    var link = [
-"https://i.imgur.com/MMcBfhQ.jpg",
-"https://i.imgur.com/bFDiwev.jpg",
-"https://i.imgur.com/SAOdnoK.jpg",
-"https://i.imgur.com/TZ1RHnm.jpg",
-"https://i.imgur.com/Ar8wDeL.jpg",
-"https://i.imgur.com/edI973K.jpg",
-"https://i.imgur.com/KeC6WlN.jpg",
-"https://i.imgur.com/pZ1RYOa.jpg",
-"https://i.imgur.com/Izft7RA.jpg",
-"https://i.imgur.com/jM1Xpga.jpg",
-"https://i.imgur.com/NTXJLbO.jpg",
-"https://i.imgur.com/txJ9OsI.jpg",
-"https://i.imgur.com/xBDRQj7.jpg",
-"https://i.imgur.com/rfP4uLF.jpg",
-"https://i.imgur.com/Srwy9OH.jpg",
-"https://i.imgur.com/FjfTktc.jpg",
-"https://i.imgur.com/54ZTqat.jpg",
-"https://i.imgur.com/giWZT5C.jpg",
-"https://i.imgur.com/9rvJ3NM.jpg",
-"https://i.imgur.com/tCAVuec.jpg",
-"https://i.imgur.com/6wd5DHO.jpg",
-"https://i.imgur.com/7gK5Tf4.jpg",
-"https://i.imgur.com/KvZrcw8.jpg",
-"https://i.imgur.com/0B2akj2.jpg",
-"https://i.imgur.com/MsPM3qs.jpg",
-"https://i.imgur.com/cANGlUv.jpg",
-"https://i.imgur.com/I0RUsfD.jpg",
-"https://i.imgur.com/MF6y3P1.jpg",
-"https://i.imgur.com/aeyKs27.jpg",
-"https://i.imgur.com/W4II2pG.jpg",
-"https://i.imgur.com/txL8OWM.jpg",
-"https://i.imgur.com/MIJ9FWu.jpg",
-"https://i.imgur.com/BXgOzif.jpg",
-"https://i.imgur.com/UOsW7qy.jpg",
-"https://i.imgur.com/oyhAzRg.jpg",
-"https://i.imgur.com/CykGuoX.jpg",
-"https://i.imgur.com/aVIuJ4x.jpg",
-"https://i.imgur.com/l4mWqE2.jpg",
-"https://i.imgur.com/39HVTF3.jpg",
-"https://i.imgur.com/R3T4Rq7.jpg",
-"https://i.imgur.com/bxId8wI.jpg",
-"https://i.imgur.com/scxppXG.jpg",
-"https://i.imgur.com/lDnPGOH.jpg",
-"https://i.imgur.com/NRWxB4I.jpg",
-"https://i.imgur.com/TdOhT1B.jpg",
-"https://i.imgur.com/4ZXtlji.jpg","https://i.imgur.com/PVuck6C.jpg","https://i.imgur.com/bi4vIgT.jpg",
-"https://i.imgur.com/YlvS0yC.jpg",
-"https://i.imgur.com/vwvyycc.jpg",
-"https://i.imgur.com/iaFdACD.jpg",
-"https://i.imgur.com/Xi9A1Kc.jpg",
-"https://i.imgur.com/s4tEFp5.jpg",
-"https://i.imgur.com/IGdwCm5.jpg",
-"https://i.imgur.com/bnrERmL.jpg",
-"https://i.imgur.com/6wZi5p1.jpg",
-"https://i.imgur.com/31243Iu.jpg",
-"https://i.imgur.com/lldLuEo.jpg","https://i.imgur.com/rLDxmci.jpg",
-"https://i.imgur.com/EMkuKr6.jpg",
-"https://i.imgur.com/poT1mha.jpg",
-"https://i.imgur.com/kVa4VtA.jpg",
-"https://i.imgur.com/5260ldS.jpg",
-"https://i.imgur.com/U4khYvr.jpg",
-"https://i.imgur.com/XPVc2Tz.jpg",
-"https://i.imgur.com/kTwkGnP.jpg",
-"https://i.imgur.com/pOajpZR.jpg",
-"https://i.imgur.com/NVZ9D2B.jpg",
-"https://i.imgur.com/ZqYw8so.jpg",
-"https://i.imgur.com/Hbb0fS6.jpg",
-"https://i.imgur.com/qSzy0xO.jpg",
-"https://i.imgur.com/nbEkSij.jpg",
-"https://i.imgur.com/Hvc2SDq.jpg",
-"https://i.imgur.com/y6ClRNa.jpg"
-    ];
+  onStart: async function ({ api, event, args }) {
+    let type = args[0]?.toLowerCase();
 
-    let img = link[Math.floor(Math.random() * link.length)];
+    // الافتراضي: نوع عشوائي إذا ما تم تحديد
+    if (!type || (type !== "انمي" && type !== "واقعي")) {
+      type = Math.random() > 0.5 ? "انمي" : "واقعي";
+    }
 
-    // React to the message with a check mark
-    api.setMessageReaction("😘", event.messageID, (err) => {}, true);
+    let imageUrl;
+    try {
+      if (type === "انمي") {
+        const res = await axios.get("https://nekos.best/api/v2/neko");
+        imageUrl = res.data.results[0].url;
+      } else if (type === "واقعي") {
+        const res = await axios.get("https://api.waifu.pics/sfw/waifu"); // صور واقعية نمط أنمي
+        imageUrl = res.data.url;
+      }
 
-    api.sendMessage({
-      body: '「 😍 |إليك صورة فتيات   جميلات 」',
-      attachment: await global.utils.getStreamFromURL(img)
-    }, event.threadID);
+      if (!imageUrl) {
+        return api.sendMessage("❌ لم أتمكن من جلب الصورة، حاول لاحقًا.", event.threadID);
+      }
+
+      const img = (await axios.get(imageUrl, { responseType: "stream" })).data;
+
+      api.sendMessage({
+        body: `🌸 هذه ${type === "انمي" ? "مزّة أنمي" : "مزّة واقعية"} عشوائية لك!`,
+        attachment: img
+      }, event.threadID, event.messageID);
+    } catch (err) {
+      console.error("Error fetching image:", err);
+      api.sendMessage("❌ حدث خطأ أثناء جلب الصورة، ربما تم حظرنا مؤقتًا. حاول لاحقًا.", event.threadID);
+    }
   }
 };
