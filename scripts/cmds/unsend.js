@@ -1,12 +1,12 @@
 module.exports = {
 	config: {
-		name: "unsend",
+		name: "ح",
 		aliases: ["حذف", "مسح"],
 		version: "1.2",
 		author: "sifo anter",
 		countDown: 5,
 		role: 0,
-		description: {
+		longdescription: {
 			vi: "Gỡ tin nhắn của bot",
 			en: "Unsend bot's message",
 			ar: "مسح رسائل البوت"
