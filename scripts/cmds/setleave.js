@@ -2,7 +2,7 @@ const { drive, getStreamFromURL, getExtFromUrl, getTime } = global.utils;
 
 module.exports = {
 	config: {
-		name: "setleave",
+		name: "وداع",
 		aliases: ["توديع", "setl"],
 		version: "1.7",
 		author: "sifo anter",
