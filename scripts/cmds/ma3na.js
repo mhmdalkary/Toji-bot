@@ -2,46 +2,50 @@ const axios = require("axios");
 const cheerio = require("cheerio");
 const Canvas = require("canvas");
 const fs = require("fs-extra");
-const langsSupported = ['sq', 'ar', 'az', 'bn', 'bs', 'bg', 'my', 'zh-hans', 'zh-hant', 'hr', 'cs', 'da', 'nl', 'en', 'et', 'fil', 'fi', 'fr', 'ka', 'de', 'el', 'he', 'hi', 'hu', 'id', 'it', 'ja', 'kk', 'ko', 'lv', 'lt', 'ms', 'nb', 'fa', 'pl', 'pt', 'ro', 'ru', 'sr', 'sk', 'sl', 'es', 'sv', 'th', 'tr', 'uk', 'vi'];
+const langsSupported = [
+	'sq', 'ar', 'az', 'bn', 'bs', 'bg', 'my', 'zh-hans',
+	'zh-hant', 'hr', 'cs', 'da', 'nl', 'en', 'et', 'fil',
+	'fi', 'fr', 'ka', 'de', 'el', 'he', 'hi', 'hu', 'id',
+	'it', 'ja', 'kk', 'ko', 'lv', 'lt', 'ms', 'nb', 'fa',
+	'pl', 'pt', 'ro', 'ru', 'sr', 'sk', 'sl', 'es', 'sv',
+	'th', 'tr', 'uk', 'vi'
+];
 
 module.exports = {
 	config: {
-		name: "معنى",
-		version: "1.2",
+		name: "معنى_إيموجي",
+		alias: ["em", "emojimeaning", "emojimean"],
+		version: "1.4",
 		author: "NTKhang",
 		countDown: 5,
 		role: 0,
-		shortDescription: {
+		description: {
 			vi: "Tìm nghĩa của emoji",
-			ar: "رؤية معنى الايموجي 🙂"
+			en: "قم بإيجاد المعنى لإيموجي معين"
 		},
-		longDescription: {
-			vi: "Tìm nghĩa của emoji",
-			ar: "رؤية معاني الإيموجي"
-		},
-		category: "البحث",
+		category: "خدمات",
 		guide: {
 			vi: "   {pn} <emoji>: Tìm nghĩa của emoji",
-			ar: "   معنى <إيموجي>: رؤية معناه"
+			en: "   {pn} <معنى_إيموجي>: قم بإيجاد المعنى من إيموجي ما"
 		}
 	},
 
 	langs: {
 		vi: {
 			missingEmoji: "⚠️ Bạn chưa nhập emoji",
-			meaningOfEmoji: "📌 Nghĩa của emoji %1:\n\n📄 Nghĩa đầu tiên: %2\n\n📑 Nghĩa khác: %3%4\n\n📄 Shortcode: %5\n\n©️ Nguồn: %6\n\n📺 Dưới đây là hình ảnh hiện thị của emoji trên một số nền tảng:",
+			meaningOfEmoji: "📌 Ý nghĩa của emoji %1:\n\n📄 Nghĩa đầu tiên: %2\n\n📑 Nghĩa khác: %3%4\n\n📄 Shortcode: %5\n\n©️ Nguồn: %6\n\n📺 Dưới đây là hình ảnh hiện thị của emoji trên một số nền tảng:",
 			meaningOfWikipedia: "\n\n📝 Reaction tin nhắn này để xem nghĩa \"%1\" từ Wikipedia",
 			meanOfWikipedia: "📑 Nghĩa của \"%1\" trên Wikipedia:\n%2",
 			manyRequest: "⚠️ Hiện tại bot đã gửi quá nhiều yêu cầu, vui lòng thử lại sau",
 			notHave: "Không có"
 		},
 		en: {
-			missingEmoji: "⚠️ أدخل إيموجي 😐❤️",
-			meaningOfEmoji: "📌 معنى %1:\n\n📄 أول معنى: %2\n\n📑 المزيد من المعاني: %3%4\n\n📄 كود بسيط: %5\n\n©️ المصدر: %6\n\nلوفي صانعي عمك 😂 🌝:",
-			meaningOfWikipedia: "\n\n📝 رياكشن أجلب لك المعنى من ويكيبيديا  \"%1\" ❤️",
-			meanOfWikipedia: "📑 معنى \"%1\" في ويكيبيديا:\n%2",
-			manyRequest: "⚠️البوت أرسل الكثير من الطلبات حاول لاحقا ❤️",
-			notHave: "ما عنده معنى 😐❤️"
+			missingEmoji: "⚠️ | أنت لم تقم بإدخال الإيموجي بعد",
+			meaningOfEmoji: "📌 معنى الإيموجي  %1:\n\n📄 المعنى من الإيموحي : %2\n\n📑 مزيد من الشرحان : %3%4\n\n📄 الرمز القصير : %5\n\n©️ المصدر : %6\n\n📺 فيما يلي صور للرموز التعبيرية المعروضة على بعض المنصات :",
+			meaningOfWikipedia: "\n\n📝 | قم بالتفاعل مع هذه الرسالة  من أجل المزيد من التفاصيل حول معنى الإيموجي \"%1\" من ويكيبيديا",
+			meanOfWikipedia: "📑 معنى  \"%1\" على ويكيبيديا :\n%2",
+			manyRequest: "⚠️ | قد أرسل البوت الكثير من الطلبات يرحل العودة لاحقا ",
+			notHave: "آسف لا أملك 🥺"
 		}
 	},
 
@@ -73,7 +77,7 @@ module.exports = {
 					return message.reply(getLang("manyRequest"));
 			}
 		}
-		
+
 		const {
 			meaning,
 			moreMeaning,
@@ -118,12 +122,28 @@ module.exports = {
 		ctx.fillRect(0, 0, witdhTable, heightTable);
 
 		images = await Promise.all(images.map(async (el) => {
-			const imageLoaded = await Canvas.loadImage(`https://www.emojiall.com/${el.url}`);
+			let imageLoaded;
+			const url = `https://www.emojiall.com/${el.url}`;
+			try {
+				imageLoaded = await Canvas.loadImage(url);
+				// https://www.emojiall.com/en/svg-to-png/openmoji-black/640/1F97A.png
+				// https://www.emojiall.com/images/svg/openmoji-black/1F97A.svg
+			}
+			catch (e) {
+				try {
+					const splitUrl = url.split("/");
+					imageLoaded = await Canvas.loadImage(`https://www.emojiall.com/images/svg/${splitUrl[splitUrl.length - 2]}/${splitUrl[splitUrl.length - 1].replace(".png", ".svg")}`);
+				}
+				catch (e) {
+					imageLoaded = null;
+				}
+			}
 			return {
 				...el,
 				imageLoaded
 			};
 		}));
+		images = images.filter(item => item.imageLoaded);
 
 		let xStart = paddingOfTable + marginImage;
 		let yStart = paddingOfTable + marginImage;
@@ -202,27 +222,19 @@ async function getEmojiMeaning(emoji, lang) {
 	const meaningOfWikipedia = getEl2.text().trim();
 
 	const getEl3 = $("table.table.table-hover.top_no_border").eq(0);
-	const getEl4 = getEl3.find("ar").has(`sup > a[href='/ar/help-shortcode']`);
+	const getEl4 = getEl3.find("tr").has(`sup > a[href='/${lang}/help-shortcode']`);
 	const shortcode = getEl4.text().match(/(:.*:)/)?.[1];
 
-	const getEl5 = $(".emoji_card_list.pages > .emoji_card_content.px-4.py-3 > ul.emoji_imgs.row.row-cols-2.row-cols-lg-4.mb-0");
-	const getEl6 = getEl5.find("li").slice(1, -1);
-
+	const $images = cheerio.load(dataImages);
+	const getEl5 = $images(".emoji_card_content").find('img[loading="lazy"]');
 	const arr = [];
-	getEl6.each((i, el) => {
-		const $el = $(el);
-		const p = $el.find("figure > p[class='capitalize'] > span[class='emoji_font line'] + a[class='text_blue']");
-		const div = $el.find("div > a");
-		let href = div.attr("href") || $el.find("figure > img").attr("data-src");
-		href = href.split("/").slice(3).join("/");
-		const splitHref = href.split("/");
-		href = href.includes(".gif") && splitHref[1].match(/(60|64)(px)?/g) ?
-			dataImages.match(new RegExp(`src="(/images/.*${href.split("/")[0]}/.*${href.split("/")[2]})"`))?.[1] :
-			dataImages.match(new RegExp(`href="(/images/.*${href})"`))?.[1];
-		const platform = p.text().trim();
+
+	getEl5.each((i, el) => {
+		const content = $images(el).parent().find("p[class='capitalize'] > a[class='text_blue']").eq(1).text().trim();
+		const href = $images(el).attr("data-src") || $images(el).attr("src");
 		arr.push({
 			url: href,
-			platform: platform.toLowerCase() == "táo" ? "Apple" : platform
+			platform: content
 		});
 	});
 
