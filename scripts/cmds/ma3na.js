@@ -3,11 +3,11 @@ const axios = require('axios');
 module.exports = {
   config: {
     name: "معنى_إيموجي",
-    version: "1.0",
+    version: "1.1",
     author: "Mohamed Hassan",
     role: 0,
-    shortDescription: { ar: "يُظهر معنى الإيموجي من API" },
-    longDescription: { ar: "يعرض وصف الإيموجي المطلوب باستخدام API خارجي" },
+    shortDescription: { ar: "يعرض معنى الإيموجي" },
+    longDescription: { ar: "يعرض وصف ومعنى أي إيموجي ترسله من خلال API خارجي" },
     category: "ترفيه",
     guide: { ar: "{p}معنى_إيموجي 😂" }
   },
@@ -20,7 +20,10 @@ module.exports = {
       const res = await axios.get(`https://emojihub.yurace.pro/api/all`);
       const allEmojis = res.data;
 
-      const found = allEmojis.find(e => e.htmlCode && e.htmlCode.includes(emoji));
+      const found = allEmojis.find(e => {
+        if (!e.unicode) return false;
+        return e.unicode.includes(emoji.codePointAt(0).toString(16));
+      });
 
       if (!found) return message.reply("❌ | لم أتمكن من إيجاد معنى هذا الإيموجي.");
 
