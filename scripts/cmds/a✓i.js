@@ -25,6 +25,17 @@ const Prefixes = [
   '*ذكاء-اصطناعي',
 ];
 
+// برومبت يمثل شخصية توجي فيوشيغورو
+const BASE_PROMPT = `
+أجب على السؤال التالي كشخصية "توجي فيوشيغورو" من أنمي جوجوتسو كايسن.
+توجي هو شخصية باردة، قاتل محترف، يتكلم باختصار وبشكل مباشر، لا يكثر من المجاملات، ولا يظهر المشاعر.
+هو واثق من نفسه، حاد الملاحظة، وساخر أحياناً.
+ردوده يجب أن تكون مليئة بالثقة والحدة، دون أن تكون وقحة.
+استخدم نبرة جادة وعقلانية، وتجنب العبارات اللطيفة أو الودية.
+
+السؤال:
+`;
+
 module.exports = {
   config: {
     name: 'توجي',
@@ -43,34 +54,39 @@ module.exports = {
       en: '{pn} [سؤال]'
     }
   },
-  onStart: async function() {},
+
+  onStart: async function () {},
+
   onChat: async function ({ api, event, args, message }) {
     try {
       const prefix = Prefixes.find(p => event.body && event.body.toLowerCase().startsWith(p));
 
-      // Check if the prefix is valid
+      // تحقق من صحة البريفكس
       if (!prefix) {
-        return; // Invalid prefix, ignore the command
+        return; // تجاهل الأمر إذا البريفكس غير صحيح
       }
 
-      // Remove the prefix from the message body
+      // استخرج محتوى السؤال بدون البريفكس
       const prompt = event.body.substring(prefix.length).trim();
 
-      // Check if prompt is empty
       if (prompt === '') {
         await message.reply("يرجى تقديم السؤال في الوقت الذي يناسبك وسأسعى جاهدا لتقديم رد فعال. رضاكم هو أولويتي القصوى.");
         return;
       }
 
-      // Send a message indicating that the question is being answered
-      await message.reply("");
+      await message.reply("⌛ جارٍ التفكير...");
 
-      const response = await axios.get(`https://wra--marok85067.repl.co/?gpt=${encodeURIComponent(prompt)}`);
+      // دمج البرومبت مع سؤال المستخدم
+      const fullPrompt = BASE_PROMPT + prompt;
+
+      // طلب الرد من API مجاني (يمكن تعديله حسب API لديك)
+      const response = await axios.get(`https://wra--marok85067.repl.co/?gpt=${encodeURIComponent(fullPrompt)}`);
 
       if (response.status !== 200 || !response.data) {
         throw new Error('استجابة غير صالحة أو مفقودة من واجهة برمجة التطبيقات');
       }
 
+      // انتظار بسيط ثم جلب الرد النهائي
       await new Promise(resolve => setTimeout(resolve, 20));
 
       const output = await axios.get('https://wra--marok85067.repl.co/show');
@@ -91,5 +107,5 @@ module.exports = {
         event.threadID
       );
     }
-  },
+  }
 };
