@@ -1,4 +1,4 @@
-const fs = require("fs-extra");
+/*const fs = require("fs-extra");
 
 module.exports = {
 	config: {
@@ -46,4 +46,4 @@ module.exports = {
 		await message.reply(getLang("restartting"));
 		process.exit(2);
 	}
-};
+};*/
