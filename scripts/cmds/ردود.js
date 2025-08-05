@@ -104,7 +104,6 @@ module.exports = {
 			}
 		}
 	}
-};			}
 
 			fs.writeFileSync(repliesFile, JSON.stringify(replies, null, 2));
 			return message.reply(getLang("added", key));
