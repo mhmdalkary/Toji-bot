@@ -6,12 +6,12 @@ module.exports = {
 		author: "sifo anter",
 		countDown: 5,
 		role: 0,
-		description: {
+		longdescription: {
 			vi: "xem số tiền hiện có của bạn hoặc người được tag",
 			en: "view your money or the money of the tagged person",
 			ar: "عرض رصيدك في البوت"
 		},
-		category: "economy",
+		category: "إقتصاد",
 		guide: {
 			vi: "   {pn}: xem số tiền của bạn"
 				+ "\n   {pn} <@tag>: xem số tiền của người được tag",
