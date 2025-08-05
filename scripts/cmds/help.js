@@ -119,7 +119,7 @@ function roleTextToString(roleText) {
     case 2: return "2 (المطور)";
     default: return "مجهول";
   }
-}      }
+}      
 
       const configCommand = command.config;
       const longDescription = configCommand.longDescription?.ar || "لا يوجد وصف.";
