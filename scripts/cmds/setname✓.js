@@ -24,7 +24,7 @@ module.exports = {
 			vi: "Đổi biệt danh của tất cả thành viên trong nhóm chat hoặc những thành viên được tag theo một định dạng",
 			en: "تعديل كنيات الأعضاء"
 		},
-		category: "المجموعة",
+		category: "إدارة المجموعة",
 		guide: {
 			vi: {
 				body: "   {pn} <nick name>: thay đổi biệt danh của bản thân"
@@ -39,18 +39,18 @@ module.exports = {
 					[`${__dirname}/assets/guide/setname_2.png`]: "https://i.ibb.co/BNWHKgj/guide2.png"
 				}
 			},
-			en: {
+			ar: {
 				body: "   كنية <الكتية>: غير كنيتك أنت 🌟"
 					+ "\n   كنية @تاغ <الكنية>:غير كنية الذي سويت له تاغ"
 					+ "\n   كنية الكل <الكنية>: تغيير كنية كل عضو 🙂❤️"
 					+ "\n\nممكن تكتب كمان:"
 					+ "\n   + {userName}: يحط إسمه"
 					+ "\n   + {userID}: يحط مُعرفه 🌟"
-					+ "\n\n   شوف الصورة كمثال: 🌟",
-				attachment: {
+					
+				 /*attachment: {
 					[`${__dirname}/assets/guide/setname_1.png`]: "https://i.ibb.co/gFh23zb/guide1.png",
 					[`${__dirname}/assets/guide/setname_2.png`]: "https://i.ibb.co/BNWHKgj/guide2.png"
-				}
+				}*/
 			}
 		}
 	},
