@@ -1,69 +1,84 @@
-const axios = require("axios");
+const axios = require('axios');
 
-const Prefixes = [
-  "توجي", "¶sammy", "ذكاء-اصطناعي",
-  ".الين", "/الين", "!الين", "@الين", "#الين", "$الين", "%الين", "^الين", "*الين",
-  ".ذكاء-اصطناعي", "/ذكاء-اصطناعي", "!ذكاء-اصطناعي", "@ذكاء-اصطناعي",
-  "#ذكاء-اصطناعي", "$ذكاء-اصطناعي", "%ذكاء-اصطناعي", "^ذكاء-اصطناعي", "*ذكاء-اصطناعي"
-];
-
-// برومبت شخصية توجي فيوشيغورو
+// برومبت توجي باللهجة والفصحى
 const BASE_PROMPT = `
-أجب على السؤال التالي كشخصية "توجي فيوشيغورو" من أنمي جوجوتسو كايسن.
-توجي شخص بارد، لا يُبالي، يتحدث بثقة واختصار وسخرية دون عاطفة.
+أجب على ما يُطلب منك وكأنك "توجي فيوشيغورو" من أنمي جوجوتسو كايسن.
 
-السؤال:
+توجي شخصية قاتل مأجور، بارد، ساخر، واثق، لا يُظهر المشاعر، لا يحب المجاملات ولا التكرار.
+أسلوبه حاد، واقعي، وأحياناً فيه سخرية. يتحدث بلغة عربية فصحى بسيطة، ويمزجها بلهجة شامية وخليجية خفيفة، بدون لهجة مصرية.
+لا يُجامل، ولا يتعاطف، ويحب الردود المختصرة التي تحمل معنى عميق.
+
+إذا كان السؤال تافهًا أو مكررًا، عبّر عن الملل أو الضيق.
+إذا كان السؤال جادًا، أجب باحترافية وبشكل مختصر.
 `;
+
+const conversationMemory = {};
 
 module.exports = {
   config: {
-    name: "توجي",
-    aliases: ["ذكاء-اصطناعي"],
-    version: "3.0",
-    author: "الين ✦ تطوير: محمد",
+    name: 'توجي',
+    aliases: ['ذكاء-اصطناعي', 'tg'],
+    version: '3.0',
+    author: 'محمد',
     role: 0,
-    category: "أدوات",
-    shortDescription: { ar: "ردود ذكية بأسلوب توجي فيوشيغورو" },
-    longDescription: { ar: "اطرح سؤالاً لترد عليك شخصية توجي بجفاف وقوة وبدون مجاملة" },
-    guide: { ar: "{pn} [سؤالك]" }
+    category: 'ذكاء اصطناعي',
+    shortDescription: {
+      ar: 'تحاور مع توجي فيوشيغورو بأسلوبه الحاد'
+    },
+    longDescription: {
+      ar: 'اكتب سؤالك وسيجيبك توجي فيوشيغورو بأسلوبه القاتل والساخر والمباشر، مع لهجات عربية مفهومة.'
+    },
+    guide: {
+      ar: '{pn} [سؤالك] أو عبر الرد على رسالة'
+    }
   },
 
-  onStart: async () => {},
+  onStart: async function () {},
 
-  onChat: async function ({ event, message }) {
+  onChat: async function ({ api, event, args, message }) {
     try {
-      const body = event.body?.toLowerCase();
-      const prefix = Prefixes.find(p => body?.startsWith(p));
-      if (!prefix) return;
+      const threadID = event.threadID;
+      const senderID = event.senderID;
+      let prompt = '';
 
-      const prompt = event.body.slice(prefix.length).trim();
-      if (!prompt) return message.reply("❗ اكتب سؤالك بعد اسم الأمر.");
+      if (event.type === 'message_reply' && event.messageReply?.body) {
+        prompt = event.messageReply.body.trim();
+      } else {
+        prompt = args.join(' ').trim();
+      }
 
-      const fullPrompt = BASE_PROMPT + prompt;
+      if (!prompt) return message.reply("🧠 أكتب شيء أولًا... أنا ما أقرأ الأفكار.");
 
-      // استخدم API موثوق من HuggingFace
+      const memoryKey = `${threadID}_${senderID}`;
+      const previous = conversationMemory[memoryKey] || '';
+      const fullPrompt = `${BASE_PROMPT}\n\n${previous}\nالمستخدم: ${prompt}\nتوجي:`;
+
       const response = await axios.post(
-        "https://api-inference.huggingface.co/models/EleutherAI/gpt-j-6B",
+        'https://api.openai.com/v1/chat/completions',
         {
-          inputs: fullPrompt
+          model: "gpt-3.5-turbo",
+          messages: [
+            { role: "system", content: BASE_PROMPT },
+            { role: "user", content: prompt }
+          ],
+          temperature: 0.8
         },
         {
           headers: {
-            "Content-Type": "application/json"
-          },
-          timeout: 15000 // 15 ثانية
+            'Authorization': 'Bearer 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',
+            'Content-Type': 'application/json'
+          }
         }
       );
 
-      const reply = response.data?.[0]?.generated_text?.replace(fullPrompt, "").trim();
+      const tojiReply = response.data.choices[0].message.content.trim();
 
-      if (!reply) throw new Error("لم يتم الحصول على رد من الذكاء الاصطناعي.");
+      conversationMemory[memoryKey] = `المستخدم: ${prompt}\nتوجي: ${tojiReply}`;
 
-      await message.reply(reply);
-
+      await message.reply(tojiReply);
     } catch (error) {
-      console.error("❌ خطأ:", error.message);
-      await message.reply(`⚠ حدث خطأ: ${error.message.includes("ENOTFOUND") ? "تعذر الوصول إلى الخادم." : error.message}\n\nيرجى المحاولة مرة أخرى لاحقًا.`);
+      console.error("❌ API Error:", error.message);
+      await message.reply(`⚠ حدث خطأ: ${error.response?.statusText || error.message}\nيرجى المحاولة لاحقًا.`);
     }
   }
 };
