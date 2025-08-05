@@ -1,6 +1,6 @@
 module.exports = {
 	config: {
-		name: "رصيدي",
+		name: "حساب",
 		aliases: ["حسااب", "حساب"],
 		version: "1.3",
 		author: "sifo anter",
