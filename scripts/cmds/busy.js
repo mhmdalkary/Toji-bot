@@ -9,7 +9,7 @@ module.exports = {
 		author: "sifo anter",
 		countDown: 5,
 		role: 1,
-		longdescription: {
+		shortDescription: {
 			vi: "bật chế độ không làm phiền, khi bạn được tag bot sẽ thông báo",
 			en: "turn on do not disturb mode, when you are tagged bot will notify",
 			ar: "تفعيل وضع عدم الازعاج"
