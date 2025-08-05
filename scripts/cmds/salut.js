@@ -4,15 +4,15 @@ module.exports = {
     version: "1.0",
     author: "الين",
     shortDescription: {
-      en: "لعبة سلوت",
+      ar: "لعبة سلوت",
     },
     longDescription: {
-      en: "لعبة سلوت.",
+      ar: "لعبة سلوت.",
     },
     category: "العاب",
   },
   langs: {
-    en: {
+    ar: {
       invalid_amount: "حط رقم كبير احتمال تفوز بالضعف خاطر يا بني",
       not_enough_money: "شوف رصيدك اذا عندك هذا المبلغ",
       spin_message: "جاري الدوران ",
