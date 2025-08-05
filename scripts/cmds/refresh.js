@@ -11,7 +11,7 @@ module.exports = {
 			en: "refresh information of group chat or user",
 			ar: "تحديث معلوماتك"
 		},
-		category: "box chat",
+		category: "إدارة المجموعة",
 		guide: {
 			vi: "   {pn} [thread | group]: làm mới thông tin nhóm chat của bạn"
 				+ "\n   {pn} group <threadID>: làm mới thông tin nhóm chat theo ID"
