@@ -10,7 +10,7 @@ module.exports = {
 			ar: "عمل منشن لجميع أعضاء المجموعة",
 			en: "Tag all members in your group chat"
 		},
-		category: "أدمن المجموعه + أدمن البوت",
+		category: "إدارة المجموعة",
 		guide: {
 			ar: "   {pn} [رسالة | اتركها فارغة]",
 			en: "   {pn} [content | empty]"
