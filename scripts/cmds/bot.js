@@ -19,7 +19,7 @@ onChat: async function({
 
     if (event.body && event.body.toLowerCase() == "سعيدة") return message.reply("\nقرة عيني 😻🤍🤍")                                                                      
 
-    if (event.body && event.body.toLowerCase() == "بحبك" ؛"احبك") return message.reply("\nحبك برص")
+    if (event.body && event.body.toLowerCase() == "تحبك") return message.reply("\nحبك برص")
 
     if (event.body && event.body.toLowerCase() == "توجي") return message.reply("\n 😳 خطيني")
 
