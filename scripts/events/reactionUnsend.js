@@ -22,7 +22,7 @@ module.exports = {
     if (event.userID === botID) return;
 
     // إذا كانت الريآكشن ❌ نحذف الرسالة
-    if (reaction === "❌") {
+    if (reaction === "😠") {
       try {
         await api.unsendMessage(messageID);
       } catch (err) {
