@@ -145,9 +145,9 @@ function roleTextToString(roleText) {
 
     
     
-    });
-  }
-};
+    
+  
+
 
 function roleTextToString(roleText) {
   switch (roleText) {
