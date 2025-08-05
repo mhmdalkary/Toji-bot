@@ -96,7 +96,7 @@ function roleTextToString(role) {
     case 2: return "2 (المطور)";
     default: return "غير معروف";
   }
-}    }
+}
 
     // تجميع الأوامر حسب الأقسام
     const categories = {};
