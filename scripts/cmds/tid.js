@@ -6,12 +6,12 @@ module.exports = {
 		author: "sifo anter",
 		countDown: 5,
 		role: 0,
-		description: {
+		longdescription: {
 			vi: "Xem id nhóm chat của bạn",
 			en: "View threadID of your group chat",
 			ar: "معرف المجموعة"
 		},
-		category: "info",
+		category: "أدوات",
 		guide: {
 			en: "{pn}",
 			ar: "{pn}"
