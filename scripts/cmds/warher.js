@@ -15,11 +15,11 @@ module.exports = {
         author: "NTKhang",
         countDown: 5,
         role: 0,
-        description: {
+        longdescription: {
             vi: "xem dự báo thời tiết hiện tại và 5 ngày sau",
             ar: "قم بالتطلع على الطقس الحالي والتوقعات للطقس في الخمس الايام التوالي"
         },
-        category: "أخرى",
+        category: "أدوات",
         guide: {
             vi: "{pn} <địa điểm>",
             ar: "{pn} <location>"
