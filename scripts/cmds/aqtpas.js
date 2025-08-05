@@ -5,7 +5,7 @@ module.exports = {
     name: "اقتباس",
     author: "حسين يعقوبي",
     aliases: ["aniquot"],
-    category: "أنمي",
+    category: "أدوات",
     shortDescription: {
       en: "إرسال رسالة .",
       tl: "Magpadala ng quote na may imahe."
