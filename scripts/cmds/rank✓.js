@@ -12,7 +12,7 @@ module.exports = {
     role: 0,
     shortDescription: "عرض مستواك في المجموعة",
     longDescription: "يعرض ترتيبك، مستواك، ونقاط الخبرة في المجموعة",
-    category: "معلومات",
+    category: "العاب",
     guide: "{pn}"
   },
 
