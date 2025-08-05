@@ -247,4 +247,3 @@ module.exports = {
       console.error(error);
       return message.reply("❌ | حدث خطأ أثناء تنفيذ الأمر. يرجى المحاولة لاحقًا.");
     }
-};
