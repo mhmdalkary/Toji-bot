@@ -1,18 +1,16 @@
 const axios = require("axios");
 
 const Prefixes = [
-  "توجي", "بوت", "¶sammy", "ذكاء-اصطناعي",
+  "توجي", "¶sammy", "ذكاء-اصطناعي",
   ".الين", "/الين", "!الين", "@الين", "#الين", "$الين", "%الين", "^الين", "*الين",
   ".ذكاء-اصطناعي", "/ذكاء-اصطناعي", "!ذكاء-اصطناعي", "@ذكاء-اصطناعي",
   "#ذكاء-اصطناعي", "$ذكاء-اصطناعي", "%ذكاء-اصطناعي", "^ذكاء-اصطناعي", "*ذكاء-اصطناعي"
 ];
 
-// برومبت يمثل شخصية توجي فيوشيغورو من جوجوتسو كايسن
+// برومبت شخصية توجي فيوشيغورو
 const BASE_PROMPT = `
 أجب على السؤال التالي كشخصية "توجي فيوشيغورو" من أنمي جوجوتسو كايسن.
-توجي هو قاتل محترف، بارد، واثق، لا يجامل، يتكلم باختصار، ساخر أحيانًا.
-ردوده حادة، مباشرة، ولا يظهر مشاعر واضحة.
-استخدم نبرة جدية، وتجنب العبارات اللطيفة أو الودية.
+توجي شخص بارد، لا يُبالي، يتحدث بثقة واختصار وسخرية دون عاطفة.
 
 السؤال:
 `;
@@ -21,64 +19,51 @@ module.exports = {
   config: {
     name: "توجي",
     aliases: ["ذكاء-اصطناعي"],
-    version: "2.5",
-    author: "الين",
+    version: "3.0",
+    author: "الين ✦ تطوير: محمد",
     role: 0,
     category: "أدوات",
-    shortDescription: {
-      ar: "اسأل الذكاء الاصطناعي عن إجابة بأسلوب توجي."
-    },
-    longDescription: {
-      ar: "استخدم هذا الأمر لطرح سؤال وسيتم الرد عليك بأسلوب شخصية توجي فيوشيغورو من أنمي جوجوتسو كايسن."
-    },
-    guide: {
-      ar: "{pn} [سؤالك]"
-    }
+    shortDescription: { ar: "ردود ذكية بأسلوب توجي فيوشيغورو" },
+    longDescription: { ar: "اطرح سؤالاً لترد عليك شخصية توجي بجفاف وقوة وبدون مجاملة" },
+    guide: { ar: "{pn} [سؤالك]" }
   },
 
-  onStart: async function () {},
+  onStart: async () => {},
 
-  onChat: async function ({ api, event, args, message }) {
+  onChat: async function ({ event, message }) {
     try {
       const body = event.body?.toLowerCase();
-      const prefix = Prefixes.find(p => body && body.startsWith(p));
-
-      if (!prefix) return; // تجاهل إذا لم يكن البريفكس موجود
+      const prefix = Prefixes.find(p => body?.startsWith(p));
+      if (!prefix) return;
 
       const prompt = event.body.slice(prefix.length).trim();
-
-      if (!prompt) {
-        return message.reply("❗ الرجاء كتابة سؤالك بعد الأمر.");
-      }
-
-      await message.reply("⌛ جارٍ التفكير...");
+      if (!prompt) return message.reply("❗ اكتب سؤالك بعد اسم الأمر.");
 
       const fullPrompt = BASE_PROMPT + prompt;
 
-      // إرسال الطلب الأول
-      const res1 = await axios.get(`https://wra--marok85067.repl.co/?gpt=${encodeURIComponent(fullPrompt)}`);
-      if (res1.status !== 200 || !res1.data) throw new Error("فشل في الاتصال بالسيرفر (المرحلة 1)");
+      // استخدم API موثوق من HuggingFace
+      const response = await axios.post(
+        "https://api-inference.huggingface.co/models/EleutherAI/gpt-j-6B",
+        {
+          inputs: fullPrompt
+        },
+        {
+          headers: {
+            "Content-Type": "application/json"
+          },
+          timeout: 15000 // 15 ثانية
+        }
+      );
 
-      // انتظار بسيط (20 مللي ثانية)
-      await new Promise(resolve => setTimeout(resolve, 20));
+      const reply = response.data?.[0]?.generated_text?.replace(fullPrompt, "").trim();
 
-      // إرسال الطلب الثاني للحصول على الرد
-      const res2 = await axios.get("https://wra--marok85067.repl.co/show");
-      if (res2.status !== 200 || !res2.data) throw new Error("فشل في استلام الرد من السيرفر (المرحلة 2)");
+      if (!reply) throw new Error("لم يتم الحصول على رد من الذكاء الاصطناعي.");
 
-      const replyText = res2.data.trim();
-      if (!replyText) throw new Error("الرد فارغ");
-
-      await message.reply(replyText);
-
-      console.log("✅ تم إرسال الرد بنجاح.");
+      await message.reply(reply);
 
     } catch (error) {
-      console.error("❌ حدث خطأ:", error.message);
-      api.sendMessage(
-        `⚠️ حدث خطأ: ${error.message}\n\nيرجى المحاولة مرة أخرى لاحقًا.`,
-        event.threadID
-      );
+      console.error("❌ خطأ:", error.message);
+      await message.reply(`⚠ حدث خطأ: ${error.message.includes("ENOTFOUND") ? "تعذر الوصول إلى الخادم." : error.message}\n\nيرجى المحاولة مرة أخرى لاحقًا.`);
     }
   }
 };
