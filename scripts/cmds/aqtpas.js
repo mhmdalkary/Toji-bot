@@ -7,15 +7,15 @@ module.exports = {
     aliases: ["aniquot"],
     category: "أدوات",
     shortDescription: {
-      en: "إرسال رسالة .",
+      ar: "إرسال رسالة .",
       tl: "Magpadala ng quote na may imahe."
     },
     longDescription: {
-      en: "سيرسل هذا الأمرسيقوم بعرض إقتباس عشوائيًا مع صورة أنمي فخمة.",
+      ar: "سيرسل هذا الأمرسيقوم بعرض إقتباس عشوائيًا مع صورة أنمي فخمة.",
       tl: "سيرسل هذا الأمر بعرض إقتباست أنمي عشوائيًا مع صور أنمي فهم ."
     },
     guide: {
-      en: "{p}إقتباس ",
+      ar: "{p}إقتباس ",
       tl: "{p}quote"
     }
   },
