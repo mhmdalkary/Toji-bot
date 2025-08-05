@@ -1,6 +1,6 @@
 module.exports = {
 	config: {
-		name: "فقط_الأدمن",
+		name: "تقييد",
 		aliases: ["تقييد", "adminbox", "البوت"],
 		version: "1.1",
 		author: "NTKhang",
@@ -14,7 +14,7 @@ module.exports = {
 			vi: "bật/tắt chế độ chỉ quản trị của viên nhóm mới có thể sử dụng bot",
 			ar: "تشغيل وضع أدمن المجموعة فقط"
 		},
-		category: "المجموعة",
+		category: "إدارة المجموعة",
 		guide: {
 			ar: "   البوت [تشغيل | إيقاف]"
 		}
