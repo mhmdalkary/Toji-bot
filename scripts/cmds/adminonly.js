@@ -10,7 +10,7 @@ module.exports = {
 		author: "SIFOANTER",
 		countDown: 5,
 		role: 2,
-		description: {
+		shortDescription: {
 			ar: "تشغيل/إيقاف وضع الأدمن فقط لاستخدام البوت",
 			en: "turn on/off only admin can use bot"
 		},
