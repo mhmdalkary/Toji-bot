@@ -145,7 +145,7 @@ module.exports = {
       }, event.threadID);
     } else {
       // رسالة الاستخدام الصحيح
-      api.sendMessage(" ⚠️ |عذراً، يرجى كتابة '.
+      api.sendMessage(" ⚠️ |عذراً، يرجى كتابة '...'".
                       .شخصيتي فتيات' أو '.شخصيتي فتيان' للحصول على شخصية أنمي مناسبة.", event.threadID);
     }
 
