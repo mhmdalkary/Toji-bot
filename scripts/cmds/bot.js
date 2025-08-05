@@ -16,14 +16,15 @@ onChat: async function({
     getLang
 }) {
     if (event.body && event.body.toLowerCase() == "بوت") return message.reply("\nتحت خدمتكم😾💢")
-                                                                            
-    if (event.body && event.body.toLowerCase() == "بحبك") return message.reply("\nحبك برص")
+    if (event.body && event.body.toLowerCase() == "سعيدة") return message.reply("\nقرة عيني 😻🤍🤍")
+    if (event.body && event.body.toLowerCase() == "ملوكة" ،"ملاك") return message.reply("\nزوجة المطور محد يقربها 👍🏼")                                                                       
+    if (event.body && event.body.toLowerCase() == "بحبك" ؛"احبك") return message.reply("\nحبك برص")
 
-    if (event.body && event.body.toLowerCase() == "نيرو") return message.reply("\n 😳 خطيني")
+    if (event.body && event.body.toLowerCase() == "توجي") return message.reply("\n 😳 خطيني")
 
-    if (event.body && event.body.toLowerCase() == "عنتور") return message.reply("\nلا تزعج بابا💢")
+    if (event.body && event.body.toLowerCase() == "حمادي") return message.reply("\nلا تزعج المطور💢")
 
-    if (event.body && event.body.toLowerCase() == "سلام عليكم") return message.reply("\nوعليكم سلام")
+    if (event.body && event.body.toLowerCase() == "السلام عليكم") return message.reply("\nوعليكم سلام")
 
     if (event.body && event.body.toLowerCase() == "المطور") return message.reply("\n بابا")
 
@@ -39,7 +40,7 @@ onChat: async function({
 
     if (event.body && event.body.toLowerCase() == "انت") return message.reply("\n مين هو😾💢")
 
-    if (event.body && event.body.toLowerCase() == "🙂💔") return message.reply("\nشفيه قلبك مكسور")
+    if (event.body && event.body.toLowerCase() == "💔") return message.reply("\nشفيه قلبك مكسور")
 
     if (event.body && event.body.toLowerCase() == "👽") return message.reply("\n هل انت فضائي؟")
 
@@ -47,7 +48,7 @@ onChat: async function({
 
     if (event.body && event.body.toLowerCase() == "🗿") return message.reply("\n:-:؟")
 
-    if (event.body && event.body.toLowerCase() == "يوسف") return message.reply("\n دير بالك من البانكاي")
+    if (event.body && event.body.toLowerCase() == "سبنرا") return message.reply("\n دير بالك من تزعجها")
 
     if (event.body && event.body.toLowerCase() == "ون بيس عمك") 
 return message.reply("\nاتفق")
