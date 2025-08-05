@@ -8,15 +8,15 @@ module.exports = {
     role: 0,
     countdown: 10,
     reward: Math.floor(Math.random() * (100 - 50 + 1) + 50),
-    category: "لعبة",
+    category: "العاب",
     shortDescription: {
-      en: "قم بإرسال الإبموحي حسب الوصف "
+      ar: "قم بإرسال الإبموحي حسب الوصف "
     },
     longDescription: {
-      en: "يقوم بإعطائك وصف لإيموجي ويجب انزترسلهولهفوز"
+      ar: "يقوم بإعطائك وصف لإيموجي ويجب انزترسلهولهفوز"
     },
     guide: {
-      en: "{prefix}عمس - ابدأ لعبة عكس الكلمات"
+      ar: "{prefix}عمس - ابدأ لعبة عكس الكلمات"
     }
   },
 
