@@ -4,7 +4,8 @@ module.exports = {
 		version: "1.0",
 		author: "محمد & سيفو",
 		role: 0,
-		plugin: true // مهم عشان يتفاعل كـ event
+		plugin: true, // مهم عشان يتفاعل كـ event
+		category: "events"
 	},
 
 	onReaction: async function ({ api, event }) {
@@ -15,7 +16,7 @@ module.exports = {
 		if (event.userID === botID) return;
 
 		// لو التفاعل هو ❌ احذف الرسالة
-		if (reaction === "❌") {
+		if (reaction === "😠") {
 			try {
 				await api.unsendMessage(messageID);
 			} catch (err) {
