@@ -17,7 +17,7 @@ module.exports = {
 		author: "محمد & ChatGPT",
 		countDown: 2,
 		role: 0,
-		description: {
+		longdescription: {
 			ar: "إضافة، حذف، عرض، وردود تلقائية"
 		},
 		category: "أدوات",
