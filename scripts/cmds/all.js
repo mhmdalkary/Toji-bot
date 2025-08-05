@@ -6,11 +6,11 @@ module.exports = {
 		author: "SIFOANTER",
 		countDown: 5,
 		role: 1,
-		description: {
+		longdescription: {
 			ar: "عمل منشن لجميع أعضاء المجموعة",
 			en: "Tag all members in your group chat"
 		},
-		category: "محادثة المجموعة",
+		category: "أدمن المجموعه + أدمن البوت",
 		guide: {
 			ar: "   {pn} [رسالة | اتركها فارغة]",
 			en: "   {pn} [content | empty]"
