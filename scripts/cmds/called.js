@@ -10,13 +10,13 @@ module.exports = {
 		role: 0,
 		shortDescription: {
 			vi: "gửi tin nhắn về admin bot",
-			en: "إرسال رسالة إلى مشرف البوت"
+			ar: "إرسال رسالة إلى مشرف البوت"
 		},
 		longDescription: {
 			vi: "gửi báo cáo, góp ý, báo lỗi,... của bạn về admin bot",
 			ar: "إرسال تقرير، ردود الفعل، علة,... إلى المشرف بوت"
 		},
-		category: "نداء",
+		category: "أدوات",
 		guide: {
 			vi: "   {pn} <tin nhắn>",
 			ar: "   {pn} <رسالة>"
