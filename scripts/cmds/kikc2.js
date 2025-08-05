@@ -13,7 +13,7 @@ module.exports = {
 			vi: "Kick thành viên khỏi box chat",
 			ar: "طرد الأعضاء من مجموعتك"
 		},
-		category: "المجموعة",
+		category: "إدارة المجموعة",
 		guide: {
 			vi: "{pn} @tags: dùng để kick những người được tag",
 			ar: "{طرد} @تاغ أو رد"
