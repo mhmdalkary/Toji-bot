@@ -16,7 +16,7 @@ module.exports = {
     hasPermission: 0,
     credits: "محمد & ChatGPT",
     description: "إضافة، حذف، عرض، وردود متعددة تلقائية",
-    commandCategory: "الردود",
+    Category: "أدوات",
     usages: `
 .اضفرد [كلمة] => [الرد]
 .احذررد [كلمة]
