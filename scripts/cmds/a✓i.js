@@ -1,4 +1,4 @@
-const axios = require("axios");
+/*const axios = require("axios");
 
 const BASE_PROMPT = `
 أجب على ما يُطلب منك وكأنك "توجي فيوشيغورو" من أنمي جوجوتسو كايسن.
@@ -66,4 +66,4 @@ module.exports = {
       await message.reply("⚠ حدث خطأ أثناء التواصل مع النموذج. أعد المحاولة لاحقًا.");
     }
   }
-};
+};*/
