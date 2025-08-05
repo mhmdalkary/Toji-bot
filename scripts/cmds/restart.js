@@ -9,12 +9,12 @@ module.exports = {
         author: "sifo anter",
         countDown: 5,
         role: 2,
-        description: {
+        longdescription: {
             vi: "Khởi động lại bot",
             en: "Restart bot",
             ar: "إعادة تشغيل البوت"
         },
-        category: "Owner",
+        category: "إدارة البوت",
         guide: {
             vi: "   {pn}: Khởi động lại bot",
             en: "   {pn}: Restart bot",
