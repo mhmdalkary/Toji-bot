@@ -4,10 +4,10 @@ module.exports = {
 		version: "1.1",
 		author: "Samir + ChatGPT",
 		role: 0,
-		category: "متعة",
+		category: "العاب",
 		guide: {
 			vi: "Just For Fun",
-			en: "احسب قبحك"
+			ar: "احسب قبحك"
 		} 
 	},
 
