@@ -9,7 +9,7 @@ module.exports.config = {
   hasPermssion: 0,
   credits: `عمر`,
   description: "انشاء شعار",
-  commandCategory: "🄻🄾🄶🄾🅂",
+  category: "🄻🄾🄶🄾🅂",
   usePrefix: true,
   usages: "لوكو",
   cooldowns: 2,
