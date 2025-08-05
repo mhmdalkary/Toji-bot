@@ -20,7 +20,7 @@ module.exports = {
 		description: {
 			ar: "إضافة، حذف، عرض، وردود تلقائية"
 		},
-		category: "tools",
+		category: "أدوات",
 		guide: {
 			ar: `
 {pn} .اضفرد [كلمة] => [الرد]
