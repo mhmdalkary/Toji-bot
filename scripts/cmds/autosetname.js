@@ -17,7 +17,7 @@ module.exports = {
 			en: "Auto change nickname of new member",
 			ar: "تغيير أسماء الأعضاء الجدد تلقائيا"
 		},
-		category: "box chat",
+		category: "إدارة المجموعة",
 		guide: {
 			vi: '   {pn} set <nickname>: dùng để cài đặt cấu hình để tự đổi biệt danh, với các shortcut có sẵn:'
 				+ '\n   + {userName}: tên thành viên vào nhóm'
