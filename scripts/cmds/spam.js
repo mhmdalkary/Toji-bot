@@ -8,7 +8,7 @@ module.exports = {
     role: 2,
     shortDescription: 'قم بإرسال العديد من الرسائل في وقت وجيز',
     longDescription: 'قم بإرسال العديد من الرسائل في ظرف وجيز ',
-    category: 'متعة',
+    category: 'أدوات',
     guide: '{pn}',
   },
 
