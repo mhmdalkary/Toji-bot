@@ -8,7 +8,7 @@ module.exports = {
     role: 0,
     shortDescription: { ar: "يعرض معنى الإيموجي" },
     longDescription: { ar: "يعرض وصف ومعنى أي إيموجي ترسله من خلال API خارجي" },
-    category: "ترفيه",
+    category: "أدوات",
     guide: { ar: "{p}معنى_إيموجي 😂" }
   },
 
