@@ -8,12 +8,12 @@ module.exports = {
 		author: "sifo anter",
 		countDown: 5,
 		role: 2,
-		description: {
+		shortDescription: {
 			vi: "Load lại config của bot",
 			en: "Reload config of bot",
 			ar: "إعادة تحميل الكونفيغ"
 		},
-		category: "owner",
+		category: "إدارة البوت",
 		guide: "{pn}"
 	},
 
