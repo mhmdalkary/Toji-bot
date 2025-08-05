@@ -26,7 +26,7 @@ module.exports = {
     longDescription: {
       ar: "عرض الأوامر مقسمة حسب التصنيف مع إمكانية عرض أوامر قسم معين"
     },
-    category: "النظام",
+    category: "أدوات",
     guide: {
       ar: "{pn} [رقم القسم أو اسم الأمر]"
     },
