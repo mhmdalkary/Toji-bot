@@ -11,7 +11,7 @@ module.exports = {
 			en: "Unsend bot's message",
 			ar: "مسح رسائل البوت"
 		},
-		category: "box chat",
+		category: "أدوات",
 		guide: {
 			vi: "reply tin nhắn muốn gỡ của bot và gọi lệnh {pn}",
 			en: "reply the message you want to unsend and call the command {pn}",
