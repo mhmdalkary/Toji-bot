@@ -10,8 +10,8 @@ config: {
 		countDown: 5,
 		role: 0,
 		shortDescription: "أنظر إلى كل معلومات المجموعة",
-		longDescription: "",
-		category: "المجموعة",
+		longDescription: "أنظر إلى كل معلومات المجموعة",
+		category: "أدوات",
 		guide: {
       en: "{p} [معلومات_حول_المجموعة|معلومات_حول]",
     }
