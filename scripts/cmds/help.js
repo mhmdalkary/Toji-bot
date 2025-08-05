@@ -1,58 +1,144 @@
-const { commands } = global.GoatBot;
+const fs = require("fs-extra");
+const axios = require("axios");
+const path = require("path");
 const { getPrefix } = global.utils;
+const { commands, aliases } = global.GoatBot;
 
 module.exports = {
   config: {
     name: "اوامر",
-    version: "1.2",
-    hasPermission: 0,
-    credits: "محمد ✨",
-    description: "عرض أقسام الأوامر أو أوامر قسم معين.",
-    commandCategory: "النظام",
-    usages: "[رقم القسم]",
-    cooldowns: 5
+    version: "1.3.0",
+    author: "محمد حسن",
+    countDown: 5,
+    role: 0,
+    shortDescription: { ar: "عرض الأوامر حسب الأقسام" },
+    longDescription: { ar: "عرض الأوامر مقسمة حسب التصنيف مع إمكانية عرض أوامر قسم معين" },
+    category: "النظام",
+    guide: { ar: "{pn} [رقم القسم أو اسم الأمر]" },
+    priority: 1,
   },
 
-  onStart: async function ({ args, message, event }) {
-    const prefix = getPrefix(event.threadID);
+  onStart: async function ({ message, args, event, threadsData, role }) {
+    const { threadID } = event;
+    const prefix = getPrefix(threadID);
 
-    // جمع الأوامر حسب القسم
-    const commandsByCategory = {};
-    for (const cmd of commands.values()) {
-      const category = cmd.config.commandCategory || "غير مصنف";
-      if (!commandsByCategory[category]) {
-        commandsByCategory[category] = [];
+    // صور خلفيات أنمي جوجتسو
+    const jujutsuImages = [
+      "https://i.imgur.com/6XyQZ3j.jpg",
+      "https://i.imgur.com/8KQnZ9F.jpg",
+      "https://i.imgur.com/7YvQZ2x.jpg",
+      "https://i.imgur.com/9KvQZ1w.jpg",
+      "https://i.imgur.com/0XwQZ4v.jpg",
+      "https://i.imgur.com/2YwQZ5u.jpg"
+    ];
+    const randomImage = jujutsuImages[Math.floor(Math.random() * jujutsuImages.length)];
+
+    // ======== عرض تفاصيل أمر =========
+    if (args.length > 0 && isNaN(parseInt(args[0]))) {
+      const commandName = args[0].toLowerCase();
+      const command = commands.get(commandName) || commands.get(aliases.get(commandName));
+      if (!command) {
+        return message.reply(`❌ | الأمر "${commandName}" غير موجود.`);
       }
-      commandsByCategory[category].push(cmd.config.name);
+
+      const configCommand = command.config;
+      const roleText = roleTextToString(configCommand.role);
+      const author = configCommand.author || "غير معروف";
+      const longDescription = configCommand.longDescription?.ar || "لا يوجد وصف.";
+
+      let usage = "لا يوجد دليل.";
+      if (typeof configCommand.guide?.ar === "string") {
+        usage = configCommand.guide.ar
+          .replace(/{p}/g, prefix)
+          .replace(/{n}/g, configCommand.name);
+      }
+
+      const response = `╭── ⭓ الإسم
+│ ${configCommand.name}
+├── ⭓ معلومات
+│ الوصف: ${longDescription}
+│ أسماء أخرى : ${configCommand.aliases ? configCommand.aliases.join(", ") : "لا يوجد"}
+│ الإصدار : ${configCommand.version || "1.0"}
+│ الصلاحية : ${roleText}
+│ وقت الإنتظار : ${configCommand.countDown || 1} ثانية
+│ المؤلف : ${author}
+├── ⭓ كيفية الاستخدام
+│ ${usage}
+├── ⭓ ملاحظة
+│ < > = محتوى مطلوب
+│ [a|b|c] = اختيار من القيم
+╰━━━━━━━━━━━━━❖`;
+
+      return message.reply(response);
     }
 
-    const categories = Object.keys(commandsByCategory);
+    // ======== تجميع الأوامر حسب الأقسام =========
+    const allCommands = Array.from(commands.entries()).filter(([name, cmd]) => {
+      return cmd.config.role <= role;
+    });
 
-    // 👈 عرض الأقسام
-    if (!args[0]) {
-      let text = `🌟 *دليل الأوامر المفصّل*\n\n🗂️ | الأقسام المتوفرة:\n\n`;
-      categories.forEach((cat, i) => {
-        text += `${i + 1}. ${cat} (${commandsByCategory[cat].length} أمر)\n`;
+    const categories = new Map();
+    allCommands.forEach(([name, cmd]) => {
+      const category = cmd.config.category || "بدون قسم";
+      if (!categories.has(category)) {
+        categories.set(category, []);
+      }
+      categories.get(category).push({ name, cmd });
+    });
+
+    // ======== عرض قائمة الأقسام =========
+    if (args.length === 0) {
+      const categoryList = Array.from(categories.keys());
+      let msg = "📂 قائمة الأقسام:\n\n";
+      
+      categoryList.forEach((category, index) => {
+        msg += `${index + 1}. ${category}\n`;
       });
-      text += `\n📌 لعرض أوامر قسم معين، أرسل:\n» ${prefix}اوامر [رقم القسم]\nمثال: ${prefix}اوامر 1`;
-      return message.reply(text);
+
+      msg += `\n🔹 اكتب "${prefix}اوامر [رقم القسم]" لعرض أوامر قسم معين\n`;
+      msg += `🔹 مثال: "${prefix}اوامر 1" لعرض أوامر القسم الأول`;
+
+      return message.reply({
+        body: msg,
+        attachment: await global.utils.getStreamFromURL(randomImage)
+      });
     }
 
-    // 👈 التحقق من الرقم
-    const sectionNumber = parseInt(args[0]);
-    if (isNaN(sectionNumber) || sectionNumber < 1 || sectionNumber > categories.length) {
-      return message.reply("⚠️ | رقم القسم غير صحيح، تأكد من إدخال رقم من القائمة.");
+    // ======== عرض أوامر قسم معين =========
+    const categoryIndex = parseInt(args[0]) - 1;
+    const categoryList = Array.from(categories.keys());
+    
+    if (categoryIndex < 0 || categoryIndex >= categoryList.length) {
+      return message.reply(`❌ | رقم القسم غير صحيح. الرجاء اختيار رقم بين 1 و ${categoryList.length}`);
     }
 
-    // 👈 عرض أوامر القسم المختار
-    const selectedCategory = categories[sectionNumber - 1];
-    const commandsInSection = commandsByCategory[selectedCategory];
+    const selectedCategory = categoryList[categoryIndex];
+    const commandsInCategory = categories.get(selectedCategory);
 
-    let replyText = `📂 | الأوامر في قسم: *${selectedCategory}*\n\n`;
-    replyText += commandsInSection.map(cmd => `🔹 ${prefix}${cmd}`).join('\n');
+    commandsInCategory.sort((a, b) => a.name.localeCompare(b.name));
 
-    replyText += `\n\n✍️ لعرض الأقسام مرة أخرى:\n» ${prefix}اوامر`;
+    let msg = `📂 أوامر قسم ${selectedCategory}:\n\n`;
+    commandsInCategory.forEach(({ name, cmd }, index) => {
+      const desc = cmd.config.shortDescription?.ar || "بدون وصف.";
+      msg += `${index + 1}. ${prefix}${name}\n» ${desc}\n\n`;
+    });
 
-    return message.reply(replyText);
-  }
+    msg += `\n💡 عدد الأوامر: ${commandsInCategory.length}\n`;
+    msg += `🧠 اكتب "${prefix}اوامر [اسم الأمر]" لرؤية تفاصيل أمر محدد.`;
+
+    return message.reply({
+      body: msg,
+      attachment: await global.utils.getStreamFromURL(randomImage)
+    });
+  },
 };
+
+// تحويل رتبة رقمية إلى نصية
+function roleTextToString(roleText) {
+  switch (roleText) {
+    case 0: return "0 (الجميع)";
+    case 1: return "1 (آدمن)";
+    case 2: return "2 (المطور)";
+    default: return "مجهول";
+  }
+}
