@@ -6,7 +6,7 @@ const { commands, aliases } = global.GoatBot;
 module.exports = {
   config: {
     name: "اوامر",
-    version: "2.5",
+    version: "2.6",
     author: "محمد حسن",
     countDown: 5,
     role: 0,
@@ -27,44 +27,103 @@ module.exports = {
     const { threadID } = event;
     const prefix = getPrefix(threadID);
 
-    try {
-      // عرض تفاصيل أمر معين
-      if (args.length > 0) {
-        const commandName = args[0].toLowerCase();
-        const command = commands.get(commandName) || commands.get(aliases.get(commandName));
-        
-        if (!command) {
-          return await message.reply(`❌ | الأمر "${commandName}" غير موجود.`);
-        }
+    const sendReply = async (content, attachment = null) => {
+      try {
+        return message.reply({
+          body: content,
+          attachment: attachment
+        });
+      } catch (error) {
+        console.error("Error sending message:", error);
+      }
+    };
 
-        const configCommand = command.config;
-        const longDescription = configCommand.longDescription?.ar || "لا يوجد وصف.";
-        const usage = configCommand.guide?.ar?.replace(/{p}/g, prefix)?.replace(/{n}/g, configCommand.name) || "لا يوجد دليل.";
+    // عرض تفاصيل أمر معين
+    if (args.length > 0) {
+      const commandName = args[0].toLowerCase();
+      const command = commands.get(commandName) || commands.get(aliases.get(commandName));
+      
+      if (!command) {
+        return sendReply(`❌ | الأمر "${commandName}" غير موجود.`);
+      }
 
-        const response = `╭── ⭓ الإسم: ${configCommand.name}
+      const configCommand = command.config;
+      const response = `╭── ⭓ الإسم: ${configCommand.name}
 ├── ⭓ معلومات:
-│ الوصف: ${longDescription}
+│ الوصف: ${configCommand.longDescription?.ar || "لا يوجد وصف."}
 │ أسماء أخرى: ${configCommand.aliases ? configCommand.aliases.join(", ") : "لا يوجد"}
 │ الإصدار: ${configCommand.version || "1.0"}
 │ الصلاحية: ${roleTextToString(configCommand.role)}
 │ وقت الإنتظار: ${configCommand.countDown || 1} ثانية
 │ المؤلف: ${configCommand.author || "غير معروف"}
 ├── ⭓ كيفية الاستخدام:
-│ ${usage}
+│ ${configCommand.guide?.ar?.replace(/{p}/g, prefix)?.replace(/{n}/g, configCommand.name) || "لا يوجد دليل."}
 ├── ⭓ ملاحظة:
 │ < > = محتوى مطلوب
 │ [a|b|c] = اختيار من القيم
 ╰━━━━━━━━━━━━━❖`;
 
-        return await message.reply(response);
-      }
+      return sendReply(response);
+    }
 
-      // تجميع الأوامر حسب الأقسام
-      const categories = {};
+    // تجميع الأوامر حسب الأقسام
+    const categories = {};
+    
+    for (const [name, command] of commands) {
+      if (command.config.role > role) continue;
       
-      for (const [name, command] of commands) {
-        if (command.config.role > role) continue;
-        
+      const category = command.config.category || "بدون قسم";
+      if (!categories[category]) {
+        categories[category] = [];
+      }
+      categories[category].push({
+        name: name,
+        description: command.config.shortDescription?.ar || "لا يوجد وصف"
+      });
+    }
+
+    // بناء رسالة الأوامر
+    let msg = "╔══════════════════╗\n";
+    msg += "     🐐 قائمة أوامر البوت 🐐\n";
+    msg += "╚══════════════════╝\n\n";
+    
+    for (const [category, commandsList] of Object.entries(categories)) {
+      msg += `╭── ⭓ ${category.toUpperCase()} ───\n`;
+      
+      commandsList.sort((a, b) => a.name.localeCompare(b.name)).forEach((cmd, index) => {
+        msg += `│ ${index + 1}. ${prefix}${cmd.name}\n`;
+        msg += `│ » ${cmd.description}\n`;
+      });
+      
+      msg += `╰──────────────────────❖\n\n`;
+    }
+
+    msg += `📌 عدد الأوامر: ${Object.values(categories).flat().length}\n`;
+    msg += `🔍 اكتب "${prefix}اوامر [اسم الأمر]" لعرض تفاصيله\n`;
+    msg += `🎀 المطور: محمد حسن`;
+
+    // إرسال الرسالة مع الصورة
+    const imagePath = path.join(__dirname, "commands.png");
+    let attachment = null;
+    
+    if (fs.existsSync(imagePath)) {
+      attachment = fs.createReadStream(imagePath);
+    } else {
+      msg += "\n\n⚠️ صورة الأوامر غير متوفرة حالياً";
+    }
+
+    return sendReply(msg, attachment);
+  }
+};
+
+function roleTextToString(roleText) {
+  switch (roleText) {
+    case 0: return "0 (الجميع)";
+    case 1: return "1 (آدمن)";
+    case 2: return "2 (المطور)";
+    default: return "مجهول";
+  }
+}        
         const category = command.config.category || "بدون قسم";
         if (!categories[category]) {
           categories[category] = [];
