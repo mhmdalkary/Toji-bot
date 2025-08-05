@@ -13,7 +13,7 @@ module.exports = {
 			en: "Receive daily gift",
 			ar: "الحصول على الهدية اليومية"
 		},
-		category: "game",
+		category: "أقتصاد",
 		guide: {
 			vi: "   {pn}: Nhận quà hàng ngày"
 				+ "\n   {pn} info: Xem thông tin quà hàng ngày",
