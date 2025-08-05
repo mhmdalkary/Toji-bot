@@ -1,84 +1,69 @@
-const axios = require('axios');
+const axios = require("axios");
 
-// برومبت توجي باللهجة والفصحى
 const BASE_PROMPT = `
 أجب على ما يُطلب منك وكأنك "توجي فيوشيغورو" من أنمي جوجوتسو كايسن.
 
 توجي شخصية قاتل مأجور، بارد، ساخر، واثق، لا يُظهر المشاعر، لا يحب المجاملات ولا التكرار.
 أسلوبه حاد، واقعي، وأحياناً فيه سخرية. يتحدث بلغة عربية فصحى بسيطة، ويمزجها بلهجة شامية وخليجية خفيفة، بدون لهجة مصرية.
-لا يُجامل، ولا يتعاطف، ويحب الردود المختصرة التي تحمل معنى عميق.
-
-إذا كان السؤال تافهًا أو مكررًا، عبّر عن الملل أو الضيق.
-إذا كان السؤال جادًا، أجب باحترافية وبشكل مختصر.
 `;
 
-const conversationMemory = {};
+const memory = {};
 
 module.exports = {
   config: {
-    name: 'توجي',
-    aliases: ['ذكاء-اصطناعي', 'tg'],
-    version: '3.0',
-    author: 'محمد',
+    name: "توجي",
+    aliases: ["tg", "ذكاء-اصطناعي"],
+    version: "3.1",
+    author: "محمد",
     role: 0,
-    category: 'ذكاء اصطناعي',
-    shortDescription: {
-      ar: 'تحاور مع توجي فيوشيغورو بأسلوبه الحاد'
-    },
-    longDescription: {
-      ar: 'اكتب سؤالك وسيجيبك توجي فيوشيغورو بأسلوبه القاتل والساخر والمباشر، مع لهجات عربية مفهومة.'
-    },
-    guide: {
-      ar: '{pn} [سؤالك] أو عبر الرد على رسالة'
-    }
+    category: "ذكاء اصطناعي",
+    shortDescription: { ar: "تحاور مع توجي بأسلوبه الحاد" },
+    longDescription: { ar: "يقدم ردود حادة، باردة، وبلهجة عربية فصحى ممزوجة بالخليجي والشامي." },
+    guide: { ar: "{pn} [سؤالك] أو رد على رسالة" }
   },
 
-  onStart: async function () {},
+  onStart: async () => {},
 
   onChat: async function ({ api, event, args, message }) {
+    const threadID = event.threadID;
+    const senderID = event.senderID;
+
+    let prompt = "";
+
+    if (event.type === "message_reply" && event.messageReply?.body) {
+      prompt = event.messageReply.body.trim();
+    } else {
+      prompt = args.join(" ").trim();
+    }
+
+    if (!prompt) return message.reply("✋ أكتب شيء أولًا، ما أعرف أقرأ العقول يا صاح.");
+
+    const memoryKey = `${threadID}_${senderID}`;
+    const prev = memory[memoryKey] || "";
+    const fullPrompt = `${BASE_PROMPT}\n\n${prev}\nالمستخدم: ${prompt}\nتوجي:`;
+
     try {
-      const threadID = event.threadID;
-      const senderID = event.senderID;
-      let prompt = '';
-
-      if (event.type === 'message_reply' && event.messageReply?.body) {
-        prompt = event.messageReply.body.trim();
-      } else {
-        prompt = args.join(' ').trim();
-      }
-
-      if (!prompt) return message.reply("🧠 أكتب شيء أولًا... أنا ما أقرأ الأفكار.");
-
-      const memoryKey = `${threadID}_${senderID}`;
-      const previous = conversationMemory[memoryKey] || '';
-      const fullPrompt = `${BASE_PROMPT}\n\n${previous}\nالمستخدم: ${prompt}\nتوجي:`;
-
-      const response = await axios.post(
-        'https://api.openai.com/v1/chat/completions',
+      const res = await axios.post(
+        "https://api-inference.huggingface.co/models/mistralai/Mistral-7B-Instruct-v0.1",
         {
-          model: "gpt-3.5-turbo",
-          messages: [
-            { role: "system", content: BASE_PROMPT },
-            { role: "user", content: prompt }
-          ],
-          temperature: 0.8
+          inputs: fullPrompt,
         },
         {
           headers: {
-            'Authorization': 'Bearer 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',
-            'Content-Type': 'application/json'
-          }
+            Authorization: "Bearer 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",
+            "Content-Type": "application/json"
+          },
         }
       );
 
-      const tojiReply = response.data.choices[0].message.content.trim();
+      const output = res.data?.[0]?.generated_text?.split("توجي:")[1]?.trim();
+      const reply = output || "ما عندي رد واضح على هالكلام...";
 
-      conversationMemory[memoryKey] = `المستخدم: ${prompt}\nتوجي: ${tojiReply}`;
-
-      await message.reply(tojiReply);
-    } catch (error) {
-      console.error("❌ API Error:", error.message);
-      await message.reply(`⚠ حدث خطأ: ${error.response?.statusText || error.message}\nيرجى المحاولة لاحقًا.`);
+      memory[memoryKey] = `المستخدم: ${prompt}\nتوجي: ${reply}`;
+      await message.reply(reply);
+    } catch (err) {
+      console.error(err.message);
+      await message.reply("⚠ حدث خطأ أثناء التواصل مع النموذج. أعد المحاولة لاحقًا.");
     }
   }
 };
