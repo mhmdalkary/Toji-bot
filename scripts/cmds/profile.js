@@ -7,7 +7,7 @@ module.exports = {
 		role: 0,
 		shortDescription: "صورة البروفايل",
 		longDescription: "صورة البروفايل",
-		category: "صور",
+		category: "أدوات",
 		guide: {
 			en: "   {pn} @تاغ"
 		}
