@@ -9,7 +9,7 @@ module.exports = {
 		author: "SIFOANTER",
 		countDown: 5,
 		role: 2,
-		description: {
+		shortDescription: {
 			ar: "إضافة، حذف أو تعديل صلاحيات الأدمن",
 			en: "Add, remove, edit admin role"
 		},
