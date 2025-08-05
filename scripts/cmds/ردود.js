@@ -85,4 +85,3 @@ module.exports = {
     }
   }
 };      return message.reply(replies[msg]);
-};
