@@ -12,7 +12,7 @@ module.exports = {
         role: 0,
         shortDescription: "ضرب",
         longDescription: "ضرب",
-        category: "صور",
+        category: "ميمز وتعديل الصور",
         guide: ""
     },
 
