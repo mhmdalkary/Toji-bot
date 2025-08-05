@@ -12,7 +12,7 @@ module.exports = {
     role: 0,
     shortDescription: "زواج عشوائي",
     longDescription: "يركب صورتك وصورة شخص من الجنس الآخر على صورة زواج",
-    category: "تسلية",
+    category: "العاب",
     guide: { ar: "{pn}" }
   },
 
@@ -26,9 +26,6 @@ module.exports = {
 
     if (![1, 2].includes(gender))
       return api.sendMessage("🏳️‍🌈 | آسف، هذا الأمر لا يدعم المثليين 😂", event.threadID);
-
-    if ((senderData.money || 0) < 100)
-      return api.sendMessage("💸 | تحتاج إلى 100 دينار لتتزوج. اجمع المزيد أولاً!", event.threadID);
 
     const threadInfo = await api.getThreadInfo(event.threadID);
     const members = threadInfo.participantIDs.filter(id => id !== senderID);
