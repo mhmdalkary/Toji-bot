@@ -10,7 +10,7 @@ module.exports = {
     countDown: 5,
     role: 0,
     shortDescription: "قم بإرسال رسالة إلى مجموعة معينة",
-    longDescription: "",
+    longDescription: "ارسال رسالة لمجموعه معينه",
     category: "إدارة البوت",
     guide: {
       en: "{pn} <الرسالة > [آيدي]",
