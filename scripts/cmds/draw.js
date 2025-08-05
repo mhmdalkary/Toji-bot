@@ -12,11 +12,11 @@ module.exports = {
     role: 0,
     countDown: 10,
     longDescription: {
-      en: "Generates an anime-style image based on the provided description."
+      ar: "Generates an anime-style image based on the provided description."
     },
-    category: "متعة",
+    category: "أدوات",
     guide: {
-      en: "{pn} <وصف الصورة>\nمثال: {pn} فتاة لطيفة"
+      ar: "{pn} <وصف الصورة>\nمثال: {pn} فتاة لطيفة"
     }
   },
 
