@@ -210,7 +210,7 @@ module.exports = {
 return message.reply(response);
 
         return message.reply(response);
-      }
+      
 
       // تجميع الأوامر حسب الأقسام
       const allCommands = Array.from(commands.entries())
