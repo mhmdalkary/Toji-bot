@@ -17,7 +17,7 @@ module.exports = {
 		author: "محمد & ChatGPT",
 		countDown: 2,
 		role: 0,
-		longdescription: {
+		longDescription: {
 			ar: "إضافة، حذف، عرض، وردود تلقائية"
 		},
 		category: "أدوات",
@@ -104,66 +104,4 @@ module.exports = {
 			}
 		}
 	}
-
-			fs.writeFileSync(repliesFile, JSON.stringify(replies, null, 2));
-			return message.reply(getLang("added", key));
-		}
-
-		// حذف رد
-		if (content.startsWith(".احذررد ")) {
-			const key = content.slice(9).trim().toLowerCase();
-			if (!replies[key]) return message.reply(getLang("notFound"));
-
-			delete replies[key];
-			fs.writeFileSync(repliesFile, JSON.stringify(replies, null, 2));
-			return message.reply(getLang("removed", key));
-		}
-
-		// عرض الردود
-		if (content === ".عرضالردود") {
-			const keys = Object.keys(replies);
-			if (keys.length === 0) return message.reply(getLang("noReplies"));
-
-			const formatted = keys.map(key =>
-				`🔹 "${key}":\n${replies[key].map((r, i) => `   ${i + 1}. ${r}`).join("\n")}`
-			).join("\n\n");
-
-			return message.reply(getLang("list", formatted));
-		}
-	},
-
-	// ✅ الرد التلقائي إذا كان داخل onChat
-	onChat: async function ({ event, message }) {
-		const content = event.body?.toLowerCase();
-		if (!content) return;
-
-		const replies = JSON.parse(fs.readFileSync(repliesFile, "utf8"));
-
-		for (let key in replies) {
-			if (content.includes(key)) {
-				const randomReply = replies[key][Math.floor(Math.random() * replies[key].length)];
-				return message.reply(randomReply);
-			}
-		}
-	}
-};    // أمر العرض
-    if (content === ".عرضالردود") {
-      const keys = Object.keys(replies);
-      if (keys.length === 0) return message.reply("📭 لا توجد أي ردود محفوظة حالياً.");
-
-      const formatted = keys.map(key =>
-        `🔹 "${key}":\n${replies[key].map((r, i) => `   ${i + 1}. ${r}`).join("\n")}`
-      ).join("\n\n");
-
-      return message.reply(`📋 الردود:\n\n${formatted}`);
-    }
-
-    // الرد التلقائي (تطابق جزئي + عشوائي)
-    const msg = content.toLowerCase();
-
-    for (let key in replies) {
-      if (msg.includes(key)) {
-        const possibleReplies = replies[key];
-        const randomReply = possibleReplies[Math.floor(Math.random() * possibleReplies.length)];
-        return message.reply(randomReply);
-};      
+};
