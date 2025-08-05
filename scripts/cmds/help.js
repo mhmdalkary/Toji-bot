@@ -189,7 +189,6 @@ module.exports = {
                                 return api.unsendMessage(info.messageID);
                         } else return;
                 }, event.messageID);
-        }
 
         return api.sendMessage(getText("moduleInfo", command.config.name, command.config.description, `${prefix}${command.config.name} ${(command.config.usages) ? command.config.usages : ""}`, command.config.commandCategory, command.config.cooldowns, ((command.config.hasPermssion == 0) ? getText("user") : (command.config.hasPermssion == 1) ? getText("adminGroup") : getText("adminBot")), command.config.credits), threadID, messageID);
 };          `│ ${usage}`,
