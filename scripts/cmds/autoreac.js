@@ -2,69 +2,78 @@ const axios = require('axios');
 let autoReact = "on";
 
 module.exports = {
-    config: {
-        name: "تفاعل_تلقائي",
-        aliases: [], 
-        version: "1.0",
-        hasPermission: 2, 
-        role: 0, 
-        author: "LiANE", 
-        credits: "LiANE", 
-        description: "خاص بالنظام يقوم بجعل البوت يتفاعل مع الاعضاء", 
-        shortDescription: "يقوم بجعل البوت يتفاعل مع الاعضاء تلقائيا", 
-        longDescription: " يقوم بجعل البوت بتفاعل مع المجموعة بإبموجي حسب محتوى النص", 
-        usePrefix: true, 
-        category: "إدارة البوت",  
-        usages: "Wala", 
-        guide: " تشغيل/إيقاف", 
-        cooldowns: 5, 
-        countDown:  5 // Removed the comma at the end
-    },
-    onMAIN: async({ api, event }, botType) => {
-        const [cmd, ...args] = event.body.split(" ");
-if (args[0] === "status") {
-}
-       else if (args[0] === "تشغيل") {
-            autoReact = "نشط";
-        } else if (args[0] === "إيقاف") {
-            autoReact = "معطل";
-        } else {
-            if (autoReact === "On") {
-                autoReact = "Off";
-            } else if (autoReact === "Off") { 
-                autoReact = "On";
-            }
-        }
+  config: {
+    name: "تفاعل_تلقائي",
+    aliases: [], 
+    version: "1.0",
+    hasPermission: 2, 
+    role: 0, 
+    author: "LiANE", 
+    credits: "LiANE", 
+    description: "خاص بالنظام يقوم بجعل البوت يتفاعل مع الاعضاء", 
+    shortDescription: "يقوم بجعل البوت يتفاعل مع الاعضاء تلقائيا", 
+    longDescription: "يقوم بجعل البوت بتفاعل مع المجموعة بإيموجي حسب محتوى النص", 
+    usePrefix: true, 
+    category: "إدارة البوت",  
+    usages: "Wala", 
+    guide: "تشغيل/إيقاف", 
+    cooldowns: 5, 
+    countDown: 5 
+  },
 
-        api.sendMessage(`✨ |  تفاعل تلقائي من أجل : ${botType}
+  onMAIN: async ({ api, event }, botType) => {
+    const [cmd, ...args] = event.body.split(" ");
 
- ✅ | تالتفاعل التلقائي حين سيقوم البوت بالتفاعل مع رسائل الأعضاء حسب محتوى الرسالة
+    if (args[0] === "status") {
+      // يمكن إضافة رد معين لو تحب
+    } else if (args[0] === "تشغيل") {
+      autoReact = "نشط";
+    } else if (args[0] === "إيقاف") {
+      autoReact = "معطل";
+    } else {
+      if (autoReact === "On") {
+        autoReact = "Off";
+      } else if (autoReact === "Off") { 
+        autoReact = "On";
+      }
+    }
+
+    await api.sendMessage(`✨ |  تفاعل تلقائي من أجل : ${botType}
+
+✅ | التفاعل التلقائي مع رسائل الأعضاء حسب محتوى الرسالة
 🎉
- | الحالة : ${autoReact}`, event.threadID);
-    },
-    onStart: async (context) => {
-        const botType = "يوتا البوت";
-        await .exports.onMAIN(context, botType); 
-    },
-    run: async (context) => {
-        const botType = "Botpack / Mirai";
-        await module.exports.onMAIN(context, botType); 
-    },
-    onChat: async (context) => { 
-        const { api, event } = context;
-if (autoReact === "Off") 
-{
-return;
-}
+الحالة : ${autoReact}`, event.threadID);
+  },
 
-        // Probability of 40%, adjust it depending on what you need, but not 100%, please
-        if (Math.random() < 0.7) {
-            const response = await axios.get(`https://school-project-lianefca.bene-edu-ph` + `.repl.co/autoreact?query=${encodeURIComponent(event.body)}`);
-            const emoji = response.data.message;
-            api.setMessageReaction(emoji, event.messageID, () => {}, true);
-        }
-    }, 
-    handleEvent: async (context) => {
-        await module.exports.onChat(context);
-    },
+  onStart: async (context) => {
+    const botType = "يوتا البوت";
+    await module.exports.onMAIN(context, botType); 
+  },
+
+  run: async (context) => {
+    const botType = "Botpack / Mirai";
+    await module.exports.onMAIN(context, botType); 
+  },
+
+  onChat: async (context) => { 
+    const { api, event } = context;
+    if (autoReact === "Off") {
+      return;
+    }
+
+    // احتمال 70% للتفاعل مع الرسالة
+    if (Math.random() < 0.7) {
+      try {
+        const response = await axios.get(`https://school-project-lianefca.bene-edu-ph.repl.co/autoreact?query=${encodeURIComponent(event.body)}`);
+        const emoji = response.data.message;
+        api.setMessageReaction(emoji, event.messageID, () => {}, true);
+      } catch (e) {
+        console.error("خطأ في جلب التفاعل:", e.message);
+      }
+    }
+  }, 
+
+  handleEvent: async (context) => {
+    await module.exports.onChat(context);
+  },
 };
