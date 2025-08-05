@@ -7,7 +7,7 @@ module.exports = {
         role: 0,
         shortDescription: "رد بوت",
         longDescription: "🌝",
-        category: "ردود",
+        category: "أدوات",
     },
 onStart: async function(){}, 
 onChat: async function({
