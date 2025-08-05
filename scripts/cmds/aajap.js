@@ -9,13 +9,13 @@ module.exports = {
     role: 0,
     category: 'ميمز وتعديل الصور',
     shortDescription: {
-      en: 'يخبرك بخطوط تعجب لإقناع شخص.'
+      ar: 'يخبرك بخطوط تعجب لإقناع شخص.'
     },
     longDescription: {
-      en: 'استخدم هذا الأمر لإقناع الفتيات'
+      ar: 'استخدم هذا الأمر لإقناع الفتيات'
     },
     guide: {
-      en: '{pn} إعجاب @منشن'
+      ar: '{pn} إعجاب @منشن'
     }
   },
   onStart: async function ({ api, event, args }) {
