@@ -45,13 +45,13 @@ module.exports = {
 │ ${configCommand.name}
 ├── ⭓ معلومات
 │ الوصف: ${longDescription}
-│ أسماء أخرى : ${configCommand.aliases ? configCommand.aliases.join(", ") : "لا يوجد"}
-│ الإصدار : ${configCommand.version || "1.0"}
-│ الصلاحية : ${roleText}
-│ وقت الإنتظار : ${configCommand.countDown || 1} ثانية
-│ المؤلف : ${author}
+│ أسماء أخرى: ${configCommand.aliases ? configCommand.aliases.join(", ") : "لا يوجد"}
+│ الإصدار: ${configCommand.version || "1.0"}
+│ الصلاحية: ${roleText}
+│ وقت الإنتظار: ${configCommand.countDown || 1} ثانية
+│ المؤلف: ${author}
 ├── ⭓ كيفية الاستخدام
-│ ${usage} , ${guide}
+│ ${usage}
 ├── ⭓ ملاحظة
 │ < > = محتوى مطلوب
 │ [a|b|c] = اختيار من القيم
@@ -93,6 +93,37 @@ module.exports = {
     const categoryIndex = parseInt(args[0]) - 1;
     const categoryList = Array.from(categories.keys());
     
+    if (categoryIndex < 0 || categoryIndex >= categoryList.length) {
+      return message.reply(`❌ | رقم القسم غير صحيح. الرجاء اختيار رقم بين 1 و ${categoryList.length}`);
+    }
+
+    const selectedCategory = categoryList[categoryIndex];
+    const commandsInCategory = categories.get(selectedCategory);
+
+    commandsInCategory.sort((a, b) => a.name.localeCompare(b.name));
+
+    let msg = `📂 أوامر قسم ${selectedCategory}:\n\n`;
+    commandsInCategory.forEach(({ name, cmd }, index) => {
+      const desc = cmd.config.shortDescription?.ar || "بدون وصف.";
+      msg += `${index + 1}. ${prefix}${name}\n» ${desc}\n\n`;
+    });
+
+    msg += `\n💡 عدد الأوامر: ${commandsInCategory.length}\n`;
+    msg += `🧠 اكتب "${prefix}اوامر [اسم الأمر]" لرؤية تفاصيل أمر محدد.`;
+
+    return message.reply(msg);
+  }
+};
+
+// تحويل رتبة رقمية إلى نصية
+function roleTextToString(roleText) {
+  switch (roleText) {
+    case 0: return "0 (الجميع)";
+    case 1: return "1 (آدمن)";
+    case 2: return "2 (المطور)";
+    default: return "مجهول";
+  }
+  }    
     if (categoryIndex < 0 || categoryIndex >= categoryList.length) {
       return message.reply(`❌ | رقم القسم غير صحيح. الرجاء اختيار رقم بين 1 و ${categoryList.length}`);
     }
