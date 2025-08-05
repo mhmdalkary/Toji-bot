@@ -167,7 +167,6 @@ module.exports = {
       return message.reply("❌ | حدث خطأ أثناء تنفيذ الأمر. يرجى المحاولة لاحقًا.");
     }
   }
-};      }
 
       // تجميع الأوامر حسب الأقسام
       const allCommands = Array.from(commands.entries())
