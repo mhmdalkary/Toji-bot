@@ -145,7 +145,7 @@ function roleTextToString(role) {
     }
 
     return sendReply(msg, attachment);
-  }
+  
 };
 
 function roleTextToString(roleText) {
