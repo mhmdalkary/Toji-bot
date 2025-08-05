@@ -1,40 +1,75 @@
 const axios = require('axios');
 const jimp = require("jimp");
 const fs = require("fs");
+
 module.exports = {
-        config: {
-                name: "بنر",
-                version: "1.0",
-                author: "Xemon.",
-                countDown: 10,
-                role: 0,
-                shortDescription: "قم بإنشاء خلفية فيسبوك",
-                longDescription: "",
-                category: "ميمز وتعديل الصور",
-                guide: {
-                        ar: "{p}{n}  الإسم أو الرمز | النص | النص",
-                }
-        },
+    config: {
+        name: "بنر",
+        version: "1.0",
+        author: "محمد ✨",
+        countDown: 10,
+        role: 0,
+        shortDescription: "قم بإنشاء بنر باسم ونص مخصص",
+        longDescription: "",
+        category: "ميمز وتعديل الصور",
+        guide: {
+            ar: "{p}{n} الرمز أو الاسم | الاسم | النص"
+        }
+    },
 
+    onStart: async function ({ message, args, event, api }) {
 
+        const info = args.join(" ");
+        if (!info) {
+            return message.reply(`⚠️ | أرجوك قم بإدخال البيانات بهذه الصيغة:\n/بنر  الرمز أو الاسم | الاسم | النص`);
+        }
 
-        onStart: async function ({ message, args, event, api }) {
+        const msg = info.split("|");
+        const id = msg[0]?.trim();
+        const name = msg[1]?.trim();
+        const text = msg[2]?.trim();
 
-    const info = args.join(" ");
-                if (!info){
-                        return message.reply(` ⚠️ | أرحوك قم بإدخالها بهذه السيغة:\n/أڤتار  الإسم أو الرمز | النص | النص`);
+        if (!id || !name || !text) {
+            return message.reply(`⚠️ | البيانات ناقصة! يرجى التأكد من إدخالها كما يلي:\n/بنر الرمز أو الاسم | الاسم | النص`);
+        }
 
-      }else {
-      const msg = info.split("|");
-      const id = msg[0];
-    const name = msg[1];
-    const juswa = msg[2];
+        if (isNaN(id)) {
+            await message.reply("⏱️ | جاري البحث عن الرمز، انتظر قليلًا...");
 
+            let id1;
+            try {
+                const response = await axios.get(`https://www.nguyenmanh.name.vn/api/searchAvt?key=${id}`);
+                id1 = response.data.result.ID;
 
+                const img = `https://www.nguyenmanh.name.vn/api/avtWibu?id=${id1}&tenchinh=${name}&tenphu=${text}&apikey=CF9unN3H`;
+                const form = {
+                    body: `✅ | إليك البنر الخاص بك 🎉`,
+                    attachment: [await global.utils.getStreamFromURL(img)]
+                };
+                return message.reply(form);
 
-       if (isNaN(id)) { // If input is not a number
-          await message.reply(" ⏱️ | جاري معالحة الطلب الخاص بك سينباي المرجو الانتظار");
+            } catch (error) {
+                // في حال لم يتم العثور على الشخصية
+                const fallback = `https://api.dicebear.com/7.x/fun-emoji/png?seed=${encodeURIComponent(id)}`;
+                const form = {
+                    body: `⚠️ | لم يتم العثور على الشخصية "${id}"، لذلك تم توليد بنر بديل 🎨`,
+                    attachment: [await global.utils.getStreamFromURL(fallback)]
+                };
+                return message.reply(form);
+            }
 
+        } else {
+            await message.reply("⏱️ | جاري إنشاء البنر الخاص بك، انتظر قليلاً...");
+
+            const img = `https://www.nguyenmanh.name.vn/api/avtWibu?id=${id}&tenchinh=${name}&tenphu=${text}&apikey=CF9unN3H`;
+            const form = {
+                body: `✅ | إليك البنر الخاص بك ✨`,
+                attachment: [await global.utils.getStreamFromURL(img)]
+            };
+            return message.reply(form);
+        }
+    }
+};
          let id1;
     try {
         id1 = (await axios.get(`https://www.nguyenmanh.name.vn/api/searchAvt?key=${id}`)).data.result.ID; 
