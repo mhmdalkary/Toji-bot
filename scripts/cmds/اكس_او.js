@@ -1,6 +1,6 @@
 module.exports = {
 	config: {
-		name: "إكس_أو",
+		name: "اكس_او",
     aliases: ['x.o'],
 		version: "1.1",
 		author: "HUSSEIN",
@@ -12,9 +12,9 @@ module.exports = {
 		},
 		longDescription: {
 			vi: "",
-			en: ""
+			ar: "لعبة اكس او"
 		},
-		category: "لعبة",
+		category: "العاب",
 		guide: "",
 		
 	},
@@ -22,7 +22,7 @@ module.exports = {
 onStart: async function ({ event, message, api, usersData, args}) {
   const mention = Object.keys(event.mentions);
 
-  if(args[0] == "إغلاق") {
+  if(args[0] == "اغلاق") {
 if(!global.game.hasOwnProperty(event.threadID) || global.game[event.threadID].on == false ){ message.reply("لا توجد مباراة قيد التشغيل في هذه المجموعة")
   } else {
 if(event.senderID == global.game[event.threadID].player1.id || event.senderID == global.game[event.threadID].player2.id ){
