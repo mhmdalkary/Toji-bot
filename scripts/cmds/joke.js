@@ -12,7 +12,7 @@ module.exports = {
     longDescription: {
       ar: "نكتة عشوائية",
     },
-    category: "متعة",
+    category: "العاب",
     guide: {
       ar: "{prefix} نكتة",
     },
