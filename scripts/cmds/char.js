@@ -10,7 +10,7 @@ module.exports = {
     role: 0,
     shortDescription: "يقوم بإقتراح عليك شخصيتك من الأنمي ",
     longDescription: "",
-    category: "أنمي",
+    category: "العاب",
     guide: "{pn}أنمي"
   },
 
