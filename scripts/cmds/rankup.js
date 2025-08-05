@@ -10,12 +10,12 @@ aliases: ["رانكاب", "مستوى_اشعار"],
 		author: "sifo anter",
 		countDown: 5,
 		role: 0,
-		description: {
+		longdescription: {
 			vi: "Bật/tắt thông báo level up",
 			en: "Turn on/off level up notification",
 			ar: "تشغيل إشعار المستوى في المجموعة."
 		},
-		category: "rank",
+		category: "إدارة البوت",
 		guide: {
 			en: "{pn} [on | off]",
 			ar: "{pn} [on | off]"
