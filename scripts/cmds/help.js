@@ -1,5 +1,4 @@
 const fs = require("fs-extra");
-const axios = require("axios");
 const path = require("path");
 const { getPrefix } = global.utils;
 const { commands, aliases } = global.GoatBot;
@@ -7,7 +6,7 @@ const { commands, aliases } = global.GoatBot;
 module.exports = {
   config: {
     name: "اوامر",
-    version: "2.0",
+    version: "2.1",
     author: "محمد حسن",
     countDown: 5,
     role: 0,
@@ -92,18 +91,60 @@ module.exports = {
     msg += `🔍 اكتب "${prefix}اوامر [اسم الأمر]" لرؤية تفاصيل أمر معين\n`;
     msg += `🎀 مطور البوت: محمد حسن`;
 
-    // إرسال الرسالة مع صورة
-    const helpImages = [
-      "https://i.ibb.co/pzY9C1q/images-2024-11-02-T221234-654.jpg",
-      "https://i.ibb.co/KKCqKNF/images-2024-11-02-T221220-635.jpg",
-      "https://i.ibb.co/9GbwGBS/images-2024-11-02-T221142-231.jpg"
-    ];
+    // إرسال الرسالة مع الفيديو
+    const videoPath = path.join(__dirname, "commands.mp4.mp4");
     
-    const randomImage = helpImages[Math.floor(Math.random() * helpImages.length)];
+    if (fs.existsSync(videoPath)) {
+      await message.reply({
+        body: msg,
+        attachment: fs.createReadStream(videoPath)
+      });
+    } else {
+      await message.reply({
+        body: msg + "\n\n⚠️ لم يتم العثور على الفيديو المرفق",
+        attachment: null
+      });
+    }
+  }
+};
+
+function roleTextToString(roleText) {
+  switch (roleText) {
+    case 0: return "0 (الجميع)";
+    case 1: return "1 (آدمن)";
+    case 2: return "2 (المطور)";
+    default: return "مجهول";
+  }
+}      
+      const category = cmd.config.category || "بدون قسم";
+      if (!categories[category]) {
+        categories[category] = [];
+      }
+      categories[category].push(name);
+    }
+
+    // بناء رسالة الأوامر
+    let msg = "╔═══════════════╗\n";
+    msg += "   🐐 قائمة أوامر البوت 🐐\n";
+    msg += "╚═══════════════╝\n\n";
     
-    await message.reply({
-      body: msg,
-      attachment: await global.utils.getStreamFromURL(randomImage)
+    for (const [category, commandsList] of Object.entries(categories)) {
+      msg += `╭── ⭓ ${category.toUpperCase()}\n`;
+      
+      // ترتيب الأوامر أبجدياً
+      commandsList.sort().forEach((cmd, index) => {
+        msg += `│ ${index + 1}. ${prefix}${cmd}\n`;
+      });
+      
+      msg += `╰───────────────────❖\n\n`;
+    }
+
+    msg += `📌 عدد الأوامر المتاحة: ${Object.values(categories).flat().length}\n`;
+    msg += `🔍 اكتب "${prefix}اوامر [اسم الأمر]" لرؤية تفاصيل أمر معين\n`;
+    msg += `🎀 مطور البوت: محمد حسن`;
+
+    
+    
     });
   }
 };
