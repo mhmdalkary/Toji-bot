@@ -124,7 +124,4 @@ module.exports = {
         const possibleReplies = replies[key];
         const randomReply = possibleReplies[Math.floor(Math.random() * possibleReplies.length)];
         return message.reply(randomReply);
-      }
-    }
-  }
 };      
