@@ -9,8 +9,8 @@ module.exports = {
 		author: "sifo anter",
 		countDown: 5,
 		role: 0,
-		description: "تعديل رمز البوت في المجموعات.",
-		category: "config",
+		longdescription: "تعديل رمز البوت في المجموعات.",
+		category: "إدارة البوت",
 		guide: {
 			vi: "   {pn} <new prefix>: thay đổi prefix mới trong box chat của bạn"
 				+ "\n   Ví dụ:"
