@@ -16,7 +16,7 @@ module.exports = {
 			vi: "Thêm thành viên vào box chat của bạn",
 			ar: "أضف شخص إلى مجموعتك أنت"
 		},
-		category: "أدمن المجموعه + أدمن البوت",
+		category: "إدارة المجموعة",
 		guide: {
 			en: "   أضف [آيدي | لينك]"
 		}
