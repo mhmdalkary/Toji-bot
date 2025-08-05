@@ -16,7 +16,7 @@ module.exports = {
 			vi: "Tạo/xem/thêm/sửa/đổi vị trí/xóa nội quy nhóm của bạn",
 			ar: "أنشأ/رؤية/اضف/عدل/غيرمكان/احذف قواعد المجموعة"
 		},
-		category: "المجموعة",
+		category: "إدارة المجموعة",
 		guide: {
 			vi: "   {pn} [add | -a] <nội quy muốn thêm>: thêm nội quy cho nhóm."
 				+ "\n   {pn}: xem nội quy của nhóm."
