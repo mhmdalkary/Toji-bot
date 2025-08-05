@@ -11,8 +11,8 @@ module.exports = {
     countDown: 5,
     role: 0,
     shortDescription: 'Auto video downloader for multiple platforms',
-    longDescription: { en: 'تحميل تلقائي للمقتطع من فيسبوك انستغرام فيسبوك يوتيوب' },
-    category: 'وسائط',
+    longDescription: { ar: 'تحميل تلقائي للمقتطع من فيسبوك انستغرام فيسبوك يوتيوب' },
+    category: 'أدوات',
     guide: '{p}{n}'
   },
   onStart: async function ({ api, event }) {
