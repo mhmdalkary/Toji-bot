@@ -3,65 +3,108 @@ const path = require("path");
 
 const repliesFile = path.join(__dirname, "autoReplies.json");
 
-// إنشاء الملف تلقائيًا إذا لم يوجد
 if (!fs.existsSync(repliesFile)) {
-  fs.writeFileSync(repliesFile, JSON.stringify({}, null, 2));
-  console.log("✅ تم إنشاء ملف الردود التلقائية.");
+	fs.writeFileSync(repliesFile, JSON.stringify({}, null, 2));
+	console.log("✅ تم إنشاء ملف الردود التلقائية.");
 }
 
 module.exports = {
-  config: {
-    name: "الرد",
-    version: "1.1.0",
-    hasPermission: 0,
-    credits: "محمد & ChatGPT",
-    description: "إضافة، حذف، عرض، وردود متعددة تلقائية",
-    category: "أدوات",
-    usages: `
-.اضفرد [كلمة] => [الرد]
-.احذررد [كلمة]
-.عرضالردود
-    `.trim(),
-    cooldowns: 2,
-  },
+	config: {
+		name: "الرد",
+		aliases: ["ردود", "اضفرد", "احذررد", "عرضالردود"],
+		version: "1.1.0",
+		author: "محمد & ChatGPT",
+		countDown: 2,
+		role: 0,
+		description: {
+			ar: "إضافة، حذف، عرض، وردود تلقائية"
+		},
+		category: "tools",
+		guide: {
+			ar: `
+{pn} .اضفرد [كلمة] => [الرد]
+{pn} .احذررد [كلمة]
+{pn} .عرضالردود
+`.trim()
+		}
+	},
 
-  run: async function ({ event, message }) {
-    const content = event.body;
-    let replies = JSON.parse(fs.readFileSync(repliesFile, "utf8"));
+	langs: {
+		ar: {
+			added: "✅ تم إضافة الرد على: \"%1\"",
+			exists: "⚠️ هذا الرد مضاف مسبقًا لهذه الكلمة.",
+			invalid: "❌ الصيغة غير صحيحة. استخدم:\n.اضفرد كلمة => الرد",
+			removed: "🗑️ تم حذف جميع الردود على: \"%1\"",
+			notFound: "❌ لا يوجد رد محفوظ بهذه الكلمة.",
+			noReplies: "📭 لا توجد أي ردود محفوظة حالياً.",
+			list: "📋 الردود:\n\n%1"
+		}
+	},
 
-    // أمر الإضافة
-    if (content.startsWith(".اضفرد ")) {
-      const parts = content.slice(8).split("=>").map(s => s.trim());
-      if (parts.length !== 2 || !parts[0] || !parts[1])
-        return message.reply("❌ الصيغة غير صحيحة. استخدم:\n.اضفرد كلمة => الرد");
+	onStart: async function ({ event, message, args, getLang }) {
+		const content = event.body;
+		let replies = JSON.parse(fs.readFileSync(repliesFile, "utf8"));
 
-      const [trigger, replyText] = parts;
-      const key = trigger.toLowerCase();
+		// إضافة رد
+		if (content.startsWith(".اضفرد ")) {
+			const parts = content.slice(8).split("=>").map(s => s.trim());
+			if (parts.length !== 2 || !parts[0] || !parts[1])
+				return message.reply(getLang("invalid"));
 
-      if (!replies[key]) {
-        replies[key] = [replyText];
-      } else {
-        if (replies[key].includes(replyText)) {
-          return message.reply("⚠️ هذا الرد مضاف مسبقًا لهذه الكلمة.");
-        }
-        replies[key].push(replyText);
-      }
+			const [trigger, replyText] = parts;
+			const key = trigger.toLowerCase();
 
-      fs.writeFileSync(repliesFile, JSON.stringify(replies, null, 2));
-      return message.reply(`✅ تم إضافة الرد على "${key}".`);
-    }
+			if (!replies[key]) {
+				replies[key] = [replyText];
+			} else {
+				if (replies[key].includes(replyText)) {
+					return message.reply(getLang("exists"));
+				}
+				replies[key].push(replyText);
+			}
 
-    // أمر الحذف
-    if (content.startsWith(".احذررد ")) {
-      const key = content.slice(9).trim().toLowerCase();
-      if (!replies[key]) return message.reply("❌ لا يوجد رد محفوظ بهذه الكلمة.");
+			fs.writeFileSync(repliesFile, JSON.stringify(replies, null, 2));
+			return message.reply(getLang("added", key));
+		}
 
-      delete replies[key];
-      fs.writeFileSync(repliesFile, JSON.stringify(replies, null, 2));
-      return message.reply(`🗑️ تم حذف جميع الردود على "${key}".`);
-    }
+		// حذف رد
+		if (content.startsWith(".احذررد ")) {
+			const key = content.slice(9).trim().toLowerCase();
+			if (!replies[key]) return message.reply(getLang("notFound"));
 
-    // أمر العرض
+			delete replies[key];
+			fs.writeFileSync(repliesFile, JSON.stringify(replies, null, 2));
+			return message.reply(getLang("removed", key));
+		}
+
+		// عرض الردود
+		if (content === ".عرضالردود") {
+			const keys = Object.keys(replies);
+			if (keys.length === 0) return message.reply(getLang("noReplies"));
+
+			const formatted = keys.map(key =>
+				`🔹 "${key}":\n${replies[key].map((r, i) => `   ${i + 1}. ${r}`).join("\n")}`
+			).join("\n\n");
+
+			return message.reply(getLang("list", formatted));
+		}
+	},
+
+	// ✅ الرد التلقائي إذا كان داخل onChat
+	onChat: async function ({ event, message }) {
+		const content = event.body?.toLowerCase();
+		if (!content) return;
+
+		const replies = JSON.parse(fs.readFileSync(repliesFile, "utf8"));
+
+		for (let key in replies) {
+			if (content.includes(key)) {
+				const randomReply = replies[key][Math.floor(Math.random() * replies[key].length)];
+				return message.reply(randomReply);
+			}
+		}
+	}
+};    // أمر العرض
     if (content === ".عرضالردود") {
       const keys = Object.keys(replies);
       if (keys.length === 0) return message.reply("📭 لا توجد أي ردود محفوظة حالياً.");
