@@ -1,5 +1,4 @@
 const fs = require("fs-extra");
-const axios = require("axios");
 const path = require("path");
 const { getPrefix } = global.utils;
 const { commands, aliases } = global.GoatBot;
@@ -7,7 +6,7 @@ const { commands, aliases } = global.GoatBot;
 module.exports = {
   config: {
     name: "اوامر",
-    version: "2.0",
+    version: "2.4",
     author: "محمد حسن",
     countDown: 5,
     role: 0,
@@ -25,23 +24,45 @@ module.exports = {
   },
 
   onStart: async function ({ message, args, event, threadsData, role }) {
-    const { threadID } = event;
-    const prefix = getPrefix(threadID);
-
-    // عرض تفاصيل أمر معين
-    if (args.length > 0) {
-      const commandName = args[0].toLowerCase();
-      const command = commands.get(commandName) || commands.get(aliases.get(commandName));
-      
-      if (!command) {
-        return message.reply(`❌ | الأمر "${commandName}" غير موجود.`);
+    const sendMessageWithImage = async (msgContent) => {
+      try {
+        const imagePath = path.join(__dirname, "commands.png");
+        
+        if (fs.existsSync(imagePath)) {
+          await message.reply({
+            body: msgContent,
+            attachment: fs.createReadStream(imagePath)
+          });
+        } else {
+          await message.reply({
+            body: msgContent + "\n\n⚠️ صورة الأوامر غير متوفرة حالياً",
+            attachment: null
+          });
+        }
+      } catch (error) {
+        console.error("حدث خطأ في إرسال الرسالة:", error);
+        await message.reply("❌ | حدث خطأ أثناء إرسال الرسالة. يرجى المحاولة لاحقًا.");
       }
+    };
 
-      const configCommand = command.config;
-      const longDescription = configCommand.longDescription?.ar || "لا يوجد وصف.";
-      const usage = configCommand.guide?.ar?.replace(/{p}/g, prefix)?.replace(/{n}/g, configCommand.name) || "لا يوجد دليل.";
+    try {
+      const { threadID } = event;
+      const prefix = getPrefix(threadID);
 
-      const response = `╭── ⭓ الإسم: ${configCommand.name}
+      // عرض تفاصيل أمر معين
+      if (args.length > 0) {
+        const commandName = args[0].toLowerCase();
+        const command = commands.get(commandName) || commands.get(aliases.get(commandName));
+        
+        if (!command) {
+          return await message.reply(`❌ | الأمر "${commandName}" غير موجود.`);
+        }
+
+        const configCommand = command.config;
+        const longDescription = configCommand.longDescription?.ar || "لا يوجد وصف.";
+        const usage = configCommand.guide?.ar?.replace(/{p}/g, prefix)?.replace(/{n}/g, configCommand.name) || "لا يوجد دليل.";
+
+        const response = `╭── ⭓ الإسم: ${configCommand.name}
 ├── ⭓ معلومات:
 │ الوصف: ${longDescription}
 │ أسماء أخرى: ${configCommand.aliases ? configCommand.aliases.join(", ") : "لا يوجد"}
@@ -56,13 +77,63 @@ module.exports = {
 │ [a|b|c] = اختيار من القيم
 ╰━━━━━━━━━━━━━❖`;
 
-      return message.reply(response);
-    }
+        return await message.reply(response);
+      }
 
-    // تجميع الأوامر حسب الأقسام
-    const categories = {};
-    
-    for (const [name, cmd] of commands) {
+      // تجميع الأوامر حسب الأقسام
+      const categories = {};
+      
+      for (const [name, command] of commands) {
+        if (command.config.role > role) continue;
+        
+        const category = command.config.category || "بدون قسم";
+        if (!categories[category]) {
+          categories[category] = [];
+        }
+        categories[category].push({
+          name: name,
+          description: command.config.shortDescription?.ar || "لا يوجد وصف"
+        });
+      }
+
+      // بناء رسالة الأوامر
+      let msg = "╔══════════════════╗\n";
+      msg += "     🐐 قائمة أوامر البوت 🐐\n";
+      msg += "╚══════════════════╝\n\n";
+      
+      for (const [category, commandsList] of Object.entries(categories)) {
+        msg += `╭── ⭓ ${category.toUpperCase()} ───\n`;
+        
+        commandsList.sort((a, b) => a.name.localeCompare(b.name)).forEach((cmd, index) => {
+          msg += `│ ${index + 1}. ${prefix}${cmd.name}\n`;
+          msg += `│ » ${cmd.description}\n`;
+        });
+        
+        msg += `╰──────────────────────❖\n\n`;
+      }
+
+      msg += `📌 عدد الأوامر: ${Object.values(categories).flat().length}\n`;
+      msg += `🔍 اكتب "${prefix}اوامر [اسم الأمر]" لعرض تفاصيله\n`;
+      msg += `🎀 المطور: محمد حسن`;
+
+      // إرسال الرسالة مع الصورة
+      await sendMessageWithImage(msg);
+
+    } catch (error) {
+      console.error("حدث خطأ في أمر المساعدة:", error);
+      await message.reply("❌ | حدث خطأ أثناء تنفيذ الأمر. يرجى المحاولة لاحقًا.");
+    }
+  }
+};
+
+function roleTextToString(roleText) {
+  switch (roleText) {
+    case 0: return "0 (الجميع)";
+    case 1: return "1 (آدمن)";
+    case 2: return "2 (المطور)";
+    default: return "مجهول";
+  }
+}    for (const [name, cmd] of commands) {
       if (cmd.config.role > role) continue;
       
       const category = cmd.config.category || "بدون قسم";
