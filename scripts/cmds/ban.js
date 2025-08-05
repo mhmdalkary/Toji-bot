@@ -9,7 +9,7 @@ module.exports = {
 		author: "sifo anter",
 		countDown: 5,
 		role: 1,
-		longdescription: {
+		shortDescription: {
 			vi: "Cấm thành viên khỏi box chat",
 			en: "Ban user from box chat",
 			ar: "حظر شخص من المجموعة"
