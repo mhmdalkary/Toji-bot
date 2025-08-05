@@ -16,8 +16,9 @@ onChat: async function({
     getLang
 }) {
     if (event.body && event.body.toLowerCase() == "بوت") return message.reply("\nتحت خدمتكم😾💢")
-    if (event.body && event.body.toLowerCase() == "سعيدة") return message.reply("\nقرة عيني 😻🤍🤍")
-    if (event.body && event.body.toLowerCase() == "ملوكة" ،"ملاك") return message.reply("\nزوجة المطور محد يقربها 👍🏼")                                                                       
+
+    if (event.body && event.body.toLowerCase() == "سعيدة") return message.reply("\nقرة عيني 😻🤍🤍")                                                                      
+
     if (event.body && event.body.toLowerCase() == "بحبك" ؛"احبك") return message.reply("\nحبك برص")
 
     if (event.body && event.body.toLowerCase() == "توجي") return message.reply("\n 😳 خطيني")
