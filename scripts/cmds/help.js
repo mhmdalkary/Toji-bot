@@ -141,7 +141,6 @@ function roleTextToString(roleText) {
 ╰━━━━━━━━━━━━━❖`;
 
       return message.reply(response);
-    }
 
     // تجميع الأوامر حسب الأقسام
     const categories = {};
