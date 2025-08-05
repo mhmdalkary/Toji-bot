@@ -121,7 +121,6 @@ function roleTextToString(roleText) {
         categories[category] = [];
       }
       categories[category].push(name);
-    }
 
     // بناء رسالة الأوامر
     let msg = "╔═══════════════╗\n";
