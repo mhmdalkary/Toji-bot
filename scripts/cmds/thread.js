@@ -7,13 +7,13 @@ module.exports = {
 		version: "1.5",
 		author: "sifo anter",
 		countDown: 5,
-		role: 0,
+		role: 2,
 		description: {
 			vi: "Quản lý các nhóm chat trong hệ thống bot",
 			en: "Manage group chat in bot system",
 			ar: "إدارة المجموعات مثل أمر مستخدم لاكن غير المستخدم بمعرف المجموعة."
 		},
-		category: "owner",
+		category: "إدارة البوت",
 		guide: {
 			vi: "   {pn} [find | -f | search | -s] <tên cần tìm>: tìm kiếm nhóm chat trong dữ liệu bot bằng tên"
 				+ "\n   {pn} [find | -f | search | -s] [-j | joined] <tên cần tìm>: tìm kiếm nhóm chat trong dữ liệu mà bot còn tham gia bằng tên"
