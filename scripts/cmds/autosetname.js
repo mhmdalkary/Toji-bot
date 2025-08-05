@@ -12,7 +12,7 @@ module.exports = {
 		author: "sifo anter",
 		cooldowns: 5,
 		role: 1,
-		description: {
+		shortDescription: {
 			vi: "Tự đổi biệt danh cho thành viên mới vào nhóm chat",
 			en: "Auto change nickname of new member",
 			ar: "تغيير أسماء الأعضاء الجدد تلقائيا"
