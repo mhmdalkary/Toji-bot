@@ -3,7 +3,6 @@ const path = require("path");
 const { getPrefix } = global.utils;
 const { commands, aliases } = global.GoatBot;
 
-// دالة مساعدة لتحويل الرتبة إلى نص
 function roleTextToString(roleText) {
   switch (roleText) {
     case 0: return "0 (الجميع)";
@@ -16,20 +15,14 @@ function roleTextToString(roleText) {
 module.exports = {
   config: {
     name: "مساعدة",
-    version: "1.4.0",
+    version: "1.4.2",
     author: "محمد حسن",
     countDown: 5,
     role: 0,
-    shortDescription: {
-      ar: "عرض الأوامر حسب الأقسام"
-    },
-    longDescription: {
-      ar: "عرض الأوامر مقسمة حسب التصنيف مع إمكانية عرض أوامر قسم معين"
-    },
+    shortDescription: { ar: "عرض الأوامر حسب الأقسام" },
+    longDescription: { ar: "عرض الأوامر مقسمة حسب التصنيف مع إمكانية عرض أوامر قسم معين" },
     category: "أدوات",
-    guide: {
-      ar: "{pn} [رقم القسم أو اسم الأمر]"
-    },
+    guide: { ar: "{pn} [رقم القسم أو اسم الأمر]" },
     priority: 1
   },
 
@@ -38,30 +31,71 @@ module.exports = {
       const { threadID, messageID } = event;
       const prefix = getPrefix(threadID);
 
-      // عرض تفاصيل أمر معين
-      if (args.length > 0 && isNaN(parseInt(args[0]))) {
-        const commandName = args[0].toLowerCase();
-        const command = commands.get(commandName) || commands.get(aliases.get(commandName));
+      // ... (الكود السابق يبقى كما هو حتى جزء عرض الأقسام)
+
+      if (args.length === 0) {
+        const categoryList = Array.from(categories.keys());
+        let msg = "📂 قائمة الأقسام:\n\n";
         
-        if (!command) {
-          return message.reply(`❌ | الأمر "${commandName}" غير موجود.`);
-        }
+        categoryList.forEach((category, index) => {
+          msg += `${index + 1}. ${category}\n`;
+        });
 
-        const configCommand = command.config;
-        const longDescription = configCommand.longDescription?.ar || "لا يوجد وصف.";
-        const usage = configCommand.guide?.ar?.replace(/{p}/g, prefix)?.replace(/{n}/g, configCommand.name) || "لا يوجد دليل.";
+        msg += `\n🔹 قم بالرد على هذه الرسالة برقم القسم الذي تريد عرض أوامره\n`;
+        msg += `🔹 مثال: الرد برقم "1" لعرض أوامر القسم الأول`;
 
-        const response = [
-          `╭── ⭓ الإسم: ${configCommand.name}`,
-          `├── ⭓ معلومات:`,
-          `│ الوصف: ${longDescription}`,
-          `│ أسماء أخرى: ${configCommand.aliases?.join(", ") || "لا يوجد"}`,
-          `│ الإصدار: ${configCommand.version || "1.0"}`,
-          `│ الصلاحية: ${roleTextToString(configCommand.role)}`,
-          `│ وقت الإنتظار: ${configCommand.countDown || 1} ثانية`,
-          `│ المؤلف: ${configCommand.author || "غير معروف"}`,
-          `├── ⭓ كيفية الاستخدام:`,
-          `│ ${usage}`,
+        const sentMsg = await message.reply(msg);
+        
+        // جعلنا الدالة async
+        const replyHandler = async (replyEvent) => {
+          try {
+            if (replyEvent.threadID === threadID && 
+                replyEvent.messageReply.messageID === sentMsg.messageID) {
+              
+              const replyContent = replyEvent.body.trim();
+              const categoryIndex = parseInt(replyContent) - 1;
+              
+              if (!isNaN(categoryIndex) && categoryIndex >= 0 && categoryIndex < categoryList.length) {
+                await api.unsendMessage(sentMsg.messageID);
+                api.removeMessageListener(replyHandler);
+                
+                const currentCategory = categoryList[categoryIndex];
+                const categoryCommands = categories.get(currentCategory)
+                  .sort((a, b) => a.name.localeCompare(b.name));
+
+                let categoryMessage = `📂 أوامر قسم ${currentCategory}:\n\n`;
+                categoryCommands.forEach(({ name, cmd }, index) => {
+                  const desc = cmd.config.shortDescription?.ar || "بدون وصف.";
+                  categoryMessage += `${index + 1}. ${prefix}${name}\n» ${desc}\n\n`;
+                });
+
+                categoryMessage += `\n💡 عدد الأوامر: ${categoryCommands.length}\n`;
+                categoryMessage += `🧠 اكتب "${prefix}مساعدة [اسم الأمر]" لرؤية تفاصيل أمر محدد.`;
+
+                const sentCategoryMsg = await message.reply(categoryMessage);
+                
+                setTimeout(async () => {
+                  await api.unsendMessage(sentCategoryMsg.messageID);
+                }, 5 * 60 * 1000);
+              }
+            }
+          } catch (error) {
+            console.error("حدث خطأ في معالج الرد:", error);
+          }
+        };
+
+        api.addMessageListener(replyHandler);
+        return;
+      }
+
+      // ... (بقية الكود يبقى كما هو)
+
+    } catch (error) {
+      console.error(error);
+      return message.reply("❌ | حدث خطأ أثناء تنفيذ الأمر. يرجى المحاولة لاحقًا.");
+    }
+  }
+};          `│ ${usage}`,
           `├── ⭓ ملاحظة:`,
           `│ < > = محتوى مطلوب`,
           `│ [a|b|c] = اختيار من القيم`,
