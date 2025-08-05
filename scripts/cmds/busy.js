@@ -8,13 +8,13 @@ module.exports = {
 		version: "1.6",
 		author: "sifo anter",
 		countDown: 5,
-		role: 0,
-		description: {
+		role: 1,
+		longdescription: {
 			vi: "bật chế độ không làm phiền, khi bạn được tag bot sẽ thông báo",
 			en: "turn on do not disturb mode, when you are tagged bot will notify",
 			ar: "تفعيل وضع عدم الازعاج"
 		},
-		category: "box chat",
+		category: "إدارة المجموعة",
 		guide: {
 			vi: "   {pn} [để trống | <lý do>]: bật chế độ không làm phiền"
 				+ "\n   {pn} off: tắt chế độ không làm phiền",
@@ -45,7 +45,7 @@ module.exports = {
 		ar: {
 			turnedOff: "✅ | وضع عدم الإزعاج تم إيقافه",
 			turnedOn: "✅ | تم تشغيل وضع عدم الإزعاج بنجاح",
-			turnedOnWithReason: "✅ |  تم تشغيل وضع لحد يزعجني عشان مانيكو 🌚💔: %1",
+			turnedOnWithReason: "✅ |  تم تشغيل وضع لحد يزعجني عشان ما اذبحه 🌚💔: %1",
 			turnedOnWithoutReason: "✅ | تم تفعيل وضع عدم الإزعاج بدون اي سبب كلاتك الدودة واقيلا 🌚",
 			alreadyOn: "%1 مشغول 🌚",
 			alreadyOnWithReason: "❎ %1 حاليا مشغول: %2"
