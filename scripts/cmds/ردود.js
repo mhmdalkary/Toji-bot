@@ -3,6 +3,7 @@ const path = require("path");
 
 const repliesFile = path.join(__dirname, "autoReplies.json");
 
+// إنشاء الملف إذا لم يكن موجودًا
 if (!fs.existsSync(repliesFile)) {
 	fs.writeFileSync(repliesFile, JSON.stringify({}, null, 2));
 	console.log("✅ تم إنشاء ملف الردود التلقائية.");
@@ -41,7 +42,7 @@ module.exports = {
 		}
 	},
 
-	onStart: async function ({ event, message, args, getLang }) {
+	onStart: async function ({ event, message, getLang }) {
 		const content = event.body;
 		let replies = JSON.parse(fs.readFileSync(repliesFile, "utf8"));
 
@@ -62,6 +63,48 @@ module.exports = {
 				}
 				replies[key].push(replyText);
 			}
+
+			fs.writeFileSync(repliesFile, JSON.stringify(replies, null, 2));
+			return message.reply(getLang("added", key));
+		}
+
+		// حذف رد
+		if (content.startsWith(".احذررد ")) {
+			const key = content.slice(9).trim().toLowerCase();
+			if (!replies[key]) return message.reply(getLang("notFound"));
+
+			delete replies[key];
+			fs.writeFileSync(repliesFile, JSON.stringify(replies, null, 2));
+			return message.reply(getLang("removed", key));
+		}
+
+		// عرض الردود
+		if (content === ".عرضالردود") {
+			const keys = Object.keys(replies);
+			if (keys.length === 0) return message.reply(getLang("noReplies"));
+
+			const formatted = keys.map(key =>
+				`🔹 "${key}":\n${replies[key].map((r, i) => `   ${i + 1}. ${r}`).join("\n")}`
+			).join("\n\n");
+
+			return message.reply(getLang("list", formatted));
+		}
+	},
+
+	onChat: async function ({ event, message }) {
+		const content = event.body?.toLowerCase();
+		if (!content) return;
+
+		const replies = JSON.parse(fs.readFileSync(repliesFile, "utf8"));
+
+		for (let key in replies) {
+			if (content.includes(key)) {
+				const randomReply = replies[key][Math.floor(Math.random() * replies[key].length)];
+				return message.reply(randomReply);
+			}
+		}
+	}
+};			}
 
 			fs.writeFileSync(repliesFile, JSON.stringify(replies, null, 2));
 			return message.reply(getLang("added", key));
