@@ -52,21 +52,21 @@ module.exports = {
         const usage = configCommand.guide?.ar?.replace(/{p}/g, prefix)?.replace(/{n}/g, configCommand.name) || "لا يوجد دليل.";
 
         const response = [
-          `╭── ⭓ الإسم: ${configCommand.name}`,
-          `├── ⭓ معلومات:`,
-          `│ الوصف: ${longDescription}`,
-          `│ أسماء أخرى: ${configCommand.aliases?.join(", ") || "لا يوجد"}`,
-          `│ الإصدار: ${configCommand.version || "1.0"}`,
-          `│ الصلاحية: ${roleTextToString(configCommand.role)}`,
-          `│ وقت الإنتظار: ${configCommand.countDown || 1} ثانية`,
-          `│ المؤلف: ${configCommand.author || "غير معروف"}`,
-          `├── ⭓ كيفية الاستخدام:`,
-          `│ ${usage}`,
-          `├── ⭓ ملاحظة:`,
-          `│ < > = محتوى مطلوب`,
-          `│ [a|b|c] = اختيار من القيم`,
-          `╰━━━━━━━━━━━━━❖`
-        ].join("\n");
+  `╭── ⭓ الإسم: ${configCommand.name}`,
+  `├── ⭓ معلومات:`,
+  `│ الوصف: ${longDescription}`,
+  `│ أسماء أخرى: ${configCommand.aliases ? configCommand.aliases.join(", ") : "لا يوجد"}`,
+  `│ الإصدار: ${configCommand.version || "1.0"}`,
+  `│ الصلاحية: ${roleTextToString(configCommand.role)}`,
+  `│ وقت الإنتظار: ${configCommand.countDown || 1} ثانية`,
+  `│ المؤلف: ${configCommand.author || "غير معروف"}`,
+  `├── ⭓ كيفية الاستخدام:`,
+  `│ ${usage}`,
+  `├── ⭓ ملاحظة:`,
+  `│ < > = محتوى مطلوب`,
+  `│ [a|b|c] = اختيار من القيم`,
+  `╰━━━━━━━━━━━━━❖`
+].join("\n");
 
         return message.reply(response);
       }
