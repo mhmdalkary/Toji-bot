@@ -190,13 +190,24 @@ module.exports = {
                         } else return;
                 }, event.messageID);
 
-        return api.sendMessage(getText("moduleInfo", command.config.name, command.config.description, `${prefix}${command.config.name} ${(command.config.usages) ? command.config.usages : ""}`, command.config.commandCategory, command.config.cooldowns, ((command.config.hasPermssion == 0) ? getText("user") : (command.config.hasPermssion == 1) ? getText("adminGroup") : getText("adminBot")), command.config.credits), threadID, messageID);
-          `│ ${usage}`,
-          `├── ⭓ ملاحظة:`,
-          `│ < > = محتوى مطلوب`,
-          `│ [a|b|c] = اختيار من القيم`,
-          `╰━━━━━━━━━━━━━❖`
-        ].join("\n");
+        const response = [
+  `╭── ⭓ الإسم: ${configCommand.name}`,
+  `├── ⭓ معلومات:`,
+  `│ الوصف: ${longDescription}`,
+  `│ أسماء أخرى: ${configCommand.aliases ? configCommand.aliases.join(", ") : "لا يوجد"}`,
+  `│ الإصدار: ${configCommand.version || "1.0"}`,
+  `│ الصلاحية: ${roleTextToString(configCommand.role)}`,
+  `│ وقت الإنتظار: ${configCommand.countDown || 1} ثانية`,
+  `│ المؤلف: ${configCommand.author || "غير معروف"}`,
+  `├── ⭓ كيفية الاستخدام:`,
+  `│ ${usage}`,
+  `├── ⭓ ملاحظة:`,
+  `│ < > = محتوى مطلوب`,
+  `│ [a|b|c] = اختيار من القيم`,
+  `╰━━━━━━━━━━━━━❖`
+].join("\n");
+
+return message.reply(response);
 
         return message.reply(response);
       }
