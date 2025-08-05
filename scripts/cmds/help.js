@@ -132,7 +132,7 @@ function roleTextToString(roleText) {
           name: name,
           description: command.config.shortDescription?.ar || "لا يوجد وصف"
         });
-      }
+      
 
       // بناء رسالة الأوامر
       let msg = "╔══════════════════╗\n";
