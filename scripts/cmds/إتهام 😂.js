@@ -1,4 +1,4 @@
-const axios = require('axios');
+/*const axios = require('axios');
 const jimp = require("jimp");
 const fs = require("fs")
 
@@ -46,4 +46,4 @@ async function bal(one, two) {
 
     await img.writeAsync(pth)
     return pth
-}
+}*/
