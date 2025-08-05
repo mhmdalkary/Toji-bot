@@ -7,7 +7,7 @@ module.exports = {
     author: 'kshitiz',
     countDown: 5,
     role: 0,
-    category: 'حب',
+    category: 'ميمز وتعديل الصور',
     shortDescription: {
       en: 'يخبرك بخطوط تعجب لإقناع شخص.'
     },
