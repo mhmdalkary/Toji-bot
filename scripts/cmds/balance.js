@@ -6,7 +6,7 @@ module.exports = {
 		author: "sifo anter",
 		countDown: 5,
 		role: 0,
-		longdescription: {
+		shortDescription: {
 			vi: "xem số tiền hiện có của bạn hoặc người được tag",
 			en: "view your money or the money of the tagged person",
 			ar: "عرض رصيدك في البوت"
