@@ -3,6 +3,7 @@ const path = require("path");
 const { getPrefix } = global.utils;
 const { commands, aliases } = global.GoatBot;
 
+// دالة مساعدة لتحويل الرتبة إلى نص
 function roleTextToString(roleText) {
   switch (roleText) {
     case 0: return "0 (الجميع)";
@@ -32,9 +33,152 @@ module.exports = {
     priority: 1
   },
 
-  onStart: async function ({ message, args, event, threadsData, role }) {
-    const { threadID, messageID, senderID } = event;
-    const prefix = getPrefix(threadID);
+  onStart: async function ({ message, args, event, threadsData, role, api }) {
+    try {
+      const { threadID, messageID } = event;
+      const prefix = getPrefix(threadID);
+
+      // عرض تفاصيل أمر معين
+      if (args.length > 0 && isNaN(parseInt(args[0]))) {
+        const commandName = args[0].toLowerCase();
+        const command = commands.get(commandName) || commands.get(aliases.get(commandName));
+        
+        if (!command) {
+          return message.reply(`❌ | الأمر "${commandName}" غير موجود.`);
+        }
+
+        const configCommand = command.config;
+        const longDescription = configCommand.longDescription?.ar || "لا يوجد وصف.";
+        const usage = configCommand.guide?.ar?.replace(/{p}/g, prefix)?.replace(/{n}/g, configCommand.name) || "لا يوجد دليل.";
+
+        const response = [
+          `╭── ⭓ الإسم: ${configCommand.name}`,
+          `├── ⭓ معلومات:`,
+          `│ الوصف: ${longDescription}`,
+          `│ أسماء أخرى: ${configCommand.aliases?.join(", ") || "لا يوجد"}`,
+          `│ الإصدار: ${configCommand.version || "1.0"}`,
+          `│ الصلاحية: ${roleTextToString(configCommand.role)}`,
+          `│ وقت الإنتظار: ${configCommand.countDown || 1} ثانية`,
+          `│ المؤلف: ${configCommand.author || "غير معروف"}`,
+          `├── ⭓ كيفية الاستخدام:`,
+          `│ ${usage}`,
+          `├── ⭓ ملاحظة:`,
+          `│ < > = محتوى مطلوب`,
+          `│ [a|b|c] = اختيار من القيم`,
+          `╰━━━━━━━━━━━━━❖`
+        ].join("\n");
+
+        return message.reply(response);
+      }
+
+      // تجميع الأوامر حسب الأقسام
+      const allCommands = Array.from(commands.entries())
+        .filter(([_, cmd]) => cmd.config.role <= role);
+
+      const categories = new Map();
+      allCommands.forEach(([name, cmd]) => {
+        const category = cmd.config.category || "بدون قسم";
+        if (!categories.has(category)) {
+          categories.set(category, []);
+        }
+        categories.get(category).push({ name, cmd });
+      });
+
+      // عرض قائمة الأقسام
+      if (args.length === 0) {
+        const categoryList = Array.from(categories.keys());
+        let msg = "📂 قائمة الأقسام:\n\n";
+        
+        categoryList.forEach((category, index) => {
+          msg += `${index + 1}. ${category}\n`;
+        });
+
+        msg += `\n🔹 قم بالرد على هذه الرسالة برقم القسم الذي تريد عرض أوامره\n`;
+        msg += `🔹 مثال: الرد برقم "1" لعرض أوامر القسم الأول`;
+
+        // إرسال رسالة الأقسام مع إضافة رد عليها
+        const sentMsg = await message.reply(msg);
+        
+        // دالة للتعامل مع الردود
+        const replyHandler = function (replyEvent) {
+          if (replyEvent.threadID === threadID && 
+              replyEvent.messageReply.messageID === sentMsg.messageID) {
+            
+            const replyContent = replyEvent.body.trim();
+            const categoryIndex = parseInt(replyContent) - 1;
+            
+            if (!isNaN(categoryIndex) && categoryIndex >= 0 && categoryIndex < categoryList.length) {
+              // حذف رسالة القوائم فوراً
+              api.unsendMessage(sentMsg.messageID);
+              
+              // إلغاء الاشتراك في الحدث
+              api.removeMessageListener(replyHandler);
+              
+              // عرض أوامر القسم المطلوب
+              const currentCategory = categoryList[categoryIndex];
+              const categoryCommands = categories.get(currentCategory)
+                .sort((a, b) => a.name.localeCompare(b.name));
+
+              let categoryMessage = `📂 أوامر قسم ${currentCategory}:\n\n`;
+              categoryCommands.forEach(({ name, cmd }, index) => {
+                const desc = cmd.config.shortDescription?.ar || "بدون وصف.";
+                categoryMessage += `${index + 1}. ${prefix}${name}\n» ${desc}\n\n`;
+              });
+
+              categoryMessage += `\n💡 عدد الأوامر: ${categoryCommands.length}\n`;
+              categoryMessage += `🧠 اكتب "${prefix}مساعدة [اسم الأمر]" لرؤية تفاصيل أمر محدد.`;
+
+              // إرسال رسالة الأوامر مع ضبط مؤقت للحذف بعد 5 دقائق
+              const sentCategoryMsg = await message.reply(categoryMessage);
+              
+              // حذف رسالة الأوامر بعد 5 دقائق
+              setTimeout(() => {
+                api.unsendMessage(sentCategoryMsg.messageID);
+              }, 5 * 60 * 1000); // 5 دقائق
+            }
+          }
+        };
+
+        // الاشتراك في حدث الرد على الرسالة
+        api.addMessageListener(replyHandler);
+        
+        return;
+      }
+
+      // عرض أوامر قسم معين مباشرة إذا تم إدخال رقم القسم
+      const categoryIndex = parseInt(args[0]) - 1;
+      const availableCategories = Array.from(categories.keys());
+      
+      if (categoryIndex < 0 || categoryIndex >= availableCategories.length) {
+        return message.reply(`❌ | رقم القسم غير صحيح. الرجاء اختيار رقم بين 1 و ${availableCategories.length}`);
+      }
+
+      const currentCategory = availableCategories[categoryIndex];
+      const categoryCommands = categories.get(currentCategory)
+        .sort((a, b) => a.name.localeCompare(b.name));
+
+      let categoryMessage = `📂 أوامر قسم ${currentCategory}:\n\n`;
+      categoryCommands.forEach(({ name, cmd }, index) => {
+        const desc = cmd.config.shortDescription?.ar || "بدون وصف.";
+        categoryMessage += `${index + 1}. ${prefix}${name}\n» ${desc}\n\n`;
+      });
+
+      categoryMessage += `\n💡 عدد الأوامر: ${categoryCommands.length}\n`;
+      categoryMessage += `🧠 اكتب "${prefix}مساعدة [اسم الأمر]" لرؤية تفاصيل أمر محدد.`;
+
+      // إرسال رسالة الأوامر مع ضبط مؤقت للحذف بعد 5 دقائق
+      const sentMsg = await message.reply(categoryMessage);
+      
+      setTimeout(() => {
+        api.unsendMessage(sentMsg.messageID);
+      }, 5 * 60 * 1000); // 5 دقائق
+
+    } catch (error) {
+      console.error(error);
+      return message.reply("❌ | حدث خطأ أثناء تنفيذ الأمر. يرجى المحاولة لاحقًا.");
+    }
+  }
+};    const prefix = getPrefix(threadID);
 
     // --------- 1. عند كتابة اسم أمر معين ---------
     if (args.length > 0 && isNaN(parseInt(args[0]))) {
