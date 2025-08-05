@@ -1,6 +1,6 @@
 global.botData = global.botData || {};
 global.botData.exemptUsers = global.botData.exemptUsers || [
-  "1000123456789", // اكتب هنا ID المستخدمين المستثنين
+  "100087632392287", // اكتب هنا ID المستخدمين المستثنين
   "1000987654321"
 ];
 
@@ -8,11 +8,11 @@ module.exports = {
   config: {
     name: "صمت",
     version: "1.6",
-    description: "تشغيل/إيقاف مود الصمت مع استثناءات",
+    longdescription: "تشغيل/إيقاف مود الصمت مع استثناءات",
     guide: {
       ar: "صمت تشغيل/إيقاف",
     },
-    category: "خدمات",
+    category: "إدارة المجموعة",
     role: 1,
     author: "Cliff + تعديل محمد"
   },
