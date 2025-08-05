@@ -8,12 +8,12 @@ module.exports = {
 		author: "sifo anter",
 		countDown: 5,
 		role: 2,
-		description: {
+		longdescription: {
 			vi: "Quản lý người dùng trong hệ thống bot",
 			en: "Manage users in bot system",
 			ar: "حظر او فك حظر شخص"
 		},
-		category: "owner",
+		category: "إدارة البوت",
 		guide: {
 			vi: "   {pn} [find | -f | search | -s] <tên cần tìm>: tìm kiếm người dùng trong dữ liệu bot bằng tên"
 				+ "\n"
