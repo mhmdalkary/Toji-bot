@@ -168,7 +168,7 @@ module.exports = {
     }
   }
 };      arrayInfo.push(name);
-    }
+    
 
     arrayInfo.sort((a, b) => a.data - b.data);
 
