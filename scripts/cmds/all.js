@@ -6,7 +6,7 @@ module.exports = {
 		author: "SIFOANTER",
 		countDown: 5,
 		role: 1,
-		longdescription: {
+		shortDescription: {
 			ar: "عمل منشن لجميع أعضاء المجموعة",
 			en: "Tag all members in your group chat"
 		},
