@@ -11,7 +11,7 @@ module.exports = {
 			en: "Kick member out of chat box",
 			ar: "طرد الأعضاء"
 		},
-		category: "box chat",
+		category: "إدارة المجموعة",
 		guide: {
 			vi: "   {pn} @tags: dùng để kick những người được tag",
 			en: "   {pn} @tags: use to kick members who are tagged",
