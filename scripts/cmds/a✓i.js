@@ -43,7 +43,7 @@ module.exports = {
     version: '2.5',
     author: 'الين',
     role: 0,
-    category: 'utility',
+    category: 'أدوات',
     shortDescription: {
       en: 'اسأل الذكاء الاصطناعي عن إجابة.'
     },
