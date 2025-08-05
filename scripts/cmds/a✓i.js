@@ -1,57 +1,38 @@
-const axios = require('axios');
+const axios = require("axios");
 
 const Prefixes = [
-  'توجي',
-  'بوت',
-  '¶sammy',
-  'ذكاء-اصطناعي',
-  '.الين',
-  '/الين',
-  '!الين',
-  '@الين',
-  '#الين',
-  '$الين',
-  '%الين',
-  '^الين',
-  '*الين',
-  '.ذكاء-اصطناعي',
-  '/ذكاء-اصطناعي',
-  '!ذكاء-اصطناعي',
-  '@ذكاء-اصطناعي',
-  '#ذكاء-اصطناعي',
-  '$ذكاء-اصطناعي',
-  '%ذكاء-اصطناعي',
-  '^ذكاء-اصطناعي',
-  '*ذكاء-اصطناعي',
+  "توجي", "بوت", "¶sammy", "ذكاء-اصطناعي",
+  ".الين", "/الين", "!الين", "@الين", "#الين", "$الين", "%الين", "^الين", "*الين",
+  ".ذكاء-اصطناعي", "/ذكاء-اصطناعي", "!ذكاء-اصطناعي", "@ذكاء-اصطناعي",
+  "#ذكاء-اصطناعي", "$ذكاء-اصطناعي", "%ذكاء-اصطناعي", "^ذكاء-اصطناعي", "*ذكاء-اصطناعي"
 ];
 
-// برومبت يمثل شخصية توجي فيوشيغورو
+// برومبت يمثل شخصية توجي فيوشيغورو من جوجوتسو كايسن
 const BASE_PROMPT = `
 أجب على السؤال التالي كشخصية "توجي فيوشيغورو" من أنمي جوجوتسو كايسن.
-توجي هو شخصية باردة، قاتل محترف، يتكلم باختصار وبشكل مباشر، لا يكثر من المجاملات، ولا يظهر المشاعر.
-هو واثق من نفسه، حاد الملاحظة، وساخر أحياناً.
-ردوده يجب أن تكون مليئة بالثقة والحدة، دون أن تكون وقحة.
-استخدم نبرة جادة وعقلانية، وتجنب العبارات اللطيفة أو الودية.
+توجي هو قاتل محترف، بارد، واثق، لا يجامل، يتكلم باختصار، ساخر أحيانًا.
+ردوده حادة، مباشرة، ولا يظهر مشاعر واضحة.
+استخدم نبرة جدية، وتجنب العبارات اللطيفة أو الودية.
 
 السؤال:
 `;
 
 module.exports = {
   config: {
-    name: 'توجي',
-    aliases: ['ذكاء-اصطناعي'],
-    version: '2.5',
-    author: 'الين',
+    name: "توجي",
+    aliases: ["ذكاء-اصطناعي"],
+    version: "2.5",
+    author: "الين",
     role: 0,
-    category: 'أدوات',
+    category: "أدوات",
     shortDescription: {
-      ar: 'اسأل الذكاء الاصطناعي عن إجابة.'
+      ar: "اسأل الذكاء الاصطناعي عن إجابة بأسلوب توجي."
     },
     longDescription: {
-      ar: 'اسأل الذكاء الاصطناعي للحصول على إجابة استنادا إلى مطالبة المستخدم.'
+      ar: "استخدم هذا الأمر لطرح سؤال وسيتم الرد عليك بأسلوب شخصية توجي فيوشيغورو من أنمي جوجوتسو كايسن."
     },
     guide: {
-      ar: '{pn} [سؤال]'
+      ar: "{pn} [سؤالك]"
     }
   },
 
@@ -59,51 +40,43 @@ module.exports = {
 
   onChat: async function ({ api, event, args, message }) {
     try {
-      const prefix = Prefixes.find(p => event.body && event.body.toLowerCase().startsWith(p));
+      const body = event.body?.toLowerCase();
+      const prefix = Prefixes.find(p => body && body.startsWith(p));
 
-      // تحقق من صحة البريفكس
-      if (!prefix) {
-        return; // تجاهل الأمر إذا البريفكس غير صحيح
-      }
+      if (!prefix) return; // تجاهل إذا لم يكن البريفكس موجود
 
-      // استخرج محتوى السؤال بدون البريفكس
-      const prompt = event.body.substring(prefix.length).trim();
+      const prompt = event.body.slice(prefix.length).trim();
 
-      if (prompt === '') {
-        await message.reply("يرجى تقديم السؤال في الوقت الذي يناسبك وسأسعى جاهدا لتقديم رد فعال. رضاكم هو أولويتي القصوى.");
-        return;
+      if (!prompt) {
+        return message.reply("❗ الرجاء كتابة سؤالك بعد الأمر.");
       }
 
       await message.reply("⌛ جارٍ التفكير...");
 
-      // دمج البرومبت مع سؤال المستخدم
       const fullPrompt = BASE_PROMPT + prompt;
 
-      // طلب الرد من API مجاني (يمكن تعديله حسب API لديك)
-      const response = await axios.get(`https://wra--marok85067.repl.co/?gpt=${encodeURIComponent(fullPrompt)}`);
+      // إرسال الطلب الأول
+      const res1 = await axios.get(`https://wra--marok85067.repl.co/?gpt=${encodeURIComponent(fullPrompt)}`);
+      if (res1.status !== 200 || !res1.data) throw new Error("فشل في الاتصال بالسيرفر (المرحلة 1)");
 
-      if (response.status !== 200 || !response.data) {
-        throw new Error('استجابة غير صالحة أو مفقودة من واجهة برمجة التطبيقات');
-      }
-
-      // انتظار بسيط ثم جلب الرد النهائي
+      // انتظار بسيط (20 مللي ثانية)
       await new Promise(resolve => setTimeout(resolve, 20));
 
-      const output = await axios.get('https://wra--marok85067.repl.co/show');
+      // إرسال الطلب الثاني للحصول على الرد
+      const res2 = await axios.get("https://wra--marok85067.repl.co/show");
+      if (res2.status !== 200 || !res2.data) throw new Error("فشل في استلام الرد من السيرفر (المرحلة 2)");
 
-      if (output.status !== 200 || !output.data) {
-        throw new Error('استجابة غير صالحة أو مفقودة من واجهة برمجة التطبيقات');
-      }
+      const replyText = res2.data.trim();
+      if (!replyText) throw new Error("الرد فارغ");
 
-      const messageText = output.data.trim();
+      await message.reply(replyText);
 
-      await message.reply(messageText);
+      console.log("✅ تم إرسال الرد بنجاح.");
 
-      console.log('تم إرسال الإجابة كرد على المستخدم');
     } catch (error) {
-      console.error(`Failed to get answer: ${error.message}`);
+      console.error("❌ حدث خطأ:", error.message);
       api.sendMessage(
-        `${error.message}.\n\nيمكنك محاولة كتابة سؤالك مرة أخرى أو إعادة إرساله ، حيث قد يكون هناك خطأ من الخادم الذي يسبب المشكلة. قد يحل المشكلة.`,
+        `⚠️ حدث خطأ: ${error.message}\n\nيرجى المحاولة مرة أخرى لاحقًا.`,
         event.threadID
       );
     }
