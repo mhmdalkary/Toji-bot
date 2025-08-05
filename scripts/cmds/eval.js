@@ -14,7 +14,7 @@ module.exports = {
 			en: "Test code quickly",
 			ar: "جرب كودك بعناية"
 		},
-		category: "owner",
+		category: "إدارة البوت",
 		guide: {
 			vi: "{pn} <đoạn code cần test>",
 			en: "{pn} <code to test>",
