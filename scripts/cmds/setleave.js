@@ -8,7 +8,7 @@ module.exports = {
 		author: "sifo anter",
 		countDown: 5,
 		role: 1,
-		description: {
+		longdescription: {
 			vi: "Chỉnh sửa nội dung/bật/tắt tin nhắn tạm biệt thành viên rời khỏi nhóm chat của bạn",
 			en: "Edit content/turn on/off leave message when member leave your group chat",
 			ar: "تعديل او تشغيل نص الوداع"
