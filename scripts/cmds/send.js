@@ -11,7 +11,7 @@ module.exports = {
     role: 0,
     shortDescription: "قم بإرسال رسالة إلى مجموعة معينة",
     longDescription: "",
-    category: "إدارةالبوت",
+    category: "إدارة البوت",
     guide: {
       en: "{pn} <الرسالة > [آيدي]",
     },
