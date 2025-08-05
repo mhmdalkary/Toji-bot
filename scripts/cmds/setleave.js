@@ -7,13 +7,13 @@ module.exports = {
 		version: "1.7",
 		author: "sifo anter",
 		countDown: 5,
-		role: 0,
+		role: 1,
 		description: {
 			vi: "Chỉnh sửa nội dung/bật/tắt tin nhắn tạm biệt thành viên rời khỏi nhóm chat của bạn",
 			en: "Edit content/turn on/off leave message when member leave your group chat",
 			ar: "تعديل او تشغيل نص الوداع"
 		},
-		category: "custom",
+		category: "إدارة المجموعة",
 		guide: {
 			vi: {
 				body: "   {pn} on: Bật tin nhắn tạm biệt"
