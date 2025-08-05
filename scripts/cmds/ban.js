@@ -3,18 +3,18 @@ const moment = require("moment-timezone");
 
 module.exports = {
 	config: {
-		name: "ban",
+		name: "حظر",
 		aliases: ["باان", "بان"],
 		version: "1.4",
 		author: "sifo anter",
 		countDown: 5,
 		role: 1,
-		description: {
+		longdescription: {
 			vi: "Cấm thành viên khỏi box chat",
 			en: "Ban user from box chat",
 			ar: "حظر شخص من المجموعة"
 		},
-		category: "box chat",
+		category: "إدارة المجموعة",
 		guide: {
             vi: "   {pn} [@tag|uid|link fb|reply] [<lý do cấm>|để trống nếu không có lý do]: Cấm thành viên khỏi box chat"
              + "\n   {pn} check: Kiểm tra thành viên bị cấm và kick thành viên đó ra khỏi box chat"
