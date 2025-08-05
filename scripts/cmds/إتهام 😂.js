@@ -41,7 +41,7 @@ async function bal(one, two) {
     let avtwo = await jimp.read(`https://graph.facebook.com/${two}/picture?width=512&height=512&access_token=6628568379%7Cc1e620fa708a1d5696fb991c1bde5662`)
     avtwo.circle()
     let pth = "spiderman.png"
-    let img = await jimp.read("https://i.imgur.com/AIizK0f.jpeg")
+    let img = await jimp.read("https://ibb.co/xt1MWNz7")
     img.resize(1440, 1080).composite(avone.resize(170, 170), 325, 110).composite(avtwo.resize(170, 170), 1000, 95);
 
     await img.writeAsync(pth)
