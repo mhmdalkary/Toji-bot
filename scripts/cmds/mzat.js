@@ -5,8 +5,8 @@ module.exports = {
     name: "مزه",
     aliases: ["انمي", "بنت", "جميله"],
     version: "1.0",
-    description: "يرسل صورة بنت عشوائية (أنمي أو واقعية)",
-    category: "ترفيه",
+    longdescription: "يرسل صورة بنت عشوائية (أنمي أو واقعية)",
+    category: "العاب",
     usage: "[انمي | واقعي]",
     role: 0,
     author: "ChatGPT"
