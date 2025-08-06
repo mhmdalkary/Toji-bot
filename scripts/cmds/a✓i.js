@@ -1,48 +1,42 @@
-/*const axios = require("axios");
-
-const BASE_PROMPT = `
-أجب على ما يُطلب منك وكأنك "توجي فيوشيغورو" من أنمي جوجوتسو كايسن.
-
-توجي شخصية قاتل مأجور، بارد، ساخر، واثق، لا يُظهر المشاعر، لا يحب المجاملات ولا التكرار.
-أسلوبه حاد، واقعي، وأحياناً فيه سخرية. يتحدث بلغة عربية فصحى بسيطة، ويمزجها بلهجة شامية وخليجية خفيفة، بدون لهجة مصرية.
-`;
-
-const memory = {};
-
-module.exports = {
-  config: {
+module.exports.config = {
     name: "توجي",
-    aliases: ["tg", "ذكاء-اصطناعي"],
-    version: "3.1",
-    author: "محمد",
-    role: 0,
-    category: "ذكاء اصطناعي",
-    shortDescription: { ar: "تحاور مع توجي بأسلوبه الحاد" },
-    longDescription: { ar: "يقدم ردود حادة، باردة، وبلهجة عربية فصحى ممزوجة بالخليجي والشامي." },
-    guide: { ar: "{pn} [سؤالك] أو رد على رسالة" }
-  },
+    version: "1.0.0",
+    hasPermssion: 0,
+    credits: "Gry KJ",
+    description: "Talk to Neymar",
+    commandCategory: "Neymar",
+    usages: "[ask]",
+    cooldowns: 2,
+};
 
-  onStart: async () => {},
-
-  onChat: async function ({ api, event, args, message }) {
-    const threadID = event.threadID;
-    const senderID = event.senderID;
-
-    let prompt = "";
-
-    if (event.type === "message_reply" && event.messageReply?.body) {
-      prompt = event.messageReply.body.trim();
-    } else {
-      prompt = args.join(" ").trim();
-    }
-
-    if (!prompt) return message.reply("✋ أكتب شيء أولًا، ما أعرف أقرأ العقول يا صاح.");
-
-    const memoryKey = `${threadID}_${senderID}`;
-    const prev = memory[memoryKey] || "";
-    const fullPrompt = `${BASE_PROMPT}\n\n${prev}\nالمستخدم: ${prompt}\nتوجي:`;
-
+module.exports.run = async function({ api, event, args }) {
+    const axios = require("axios");
+    let { messageID, threadID, senderID, body } = event;
+    let tid = threadID,
+    mid = messageID;
+    const content = encodeURIComponent(args.join(" "));
+    if (!args[0]) return api.sendMessage("كتب شي حاجة من ورا غوجو", tid, mid);
     try {
+        const res = await axios.get(`https://api.easy0.repl.co/api/blackbox?query=${content}\n\nact as a Goju Satoru from Jujutsu Kaisen, talk with arabic`);
+        const respond = res.data.response;
+        if (res.data.error) {
+            api.sendMessage(`Error: ${res.data.error}`, tid, (error, info) => {
+                if (error) {
+                    console.error(error);
+                }
+            }, mid);
+        } else {
+            api.sendMessage(respond, tid, (error, info) => {
+                if (error) {
+                    console.error(error);
+                }
+            }, mid);
+        }
+    } catch (error) {
+        console.error(error);
+        api.sendMessage("حدث خطأ يرجى المحاولة لاحقا.", tid, mid);
+    }
+};    try {
       const res = await axios.post(
         "https://api-inference.huggingface.co/models/mistralai/Mistral-7B-Instruct-v0.1",
         {
@@ -66,4 +60,4 @@ module.exports = {
       await message.reply("⚠ حدث خطأ أثناء التواصل مع النموذج. أعد المحاولة لاحقًا.");
     }
   }
-};*/
+};
