@@ -3,7 +3,7 @@ const fs = require('fs');
 module.exports = {
     config: {
         name: "لعبة-الموت",
-        version: "3.0",
+        version: "3.1",
         author: "حسين يعقوبي",
         role: 0,
         countdown: 15,
@@ -20,55 +20,70 @@ module.exports = {
     },
 
     onStart: async function ({ message, event, participants, api }) {
-        // التحقق من عدد المشاركين (3 أشخاص على الأقل)
-        const players = participants.map(p => p.userID);
-        if (players.length < 3) {
-            return message.reply("❌ | تحتاج إلى 3 أشخاص على الأقل لبدء اللعبة!");
-        }
-
-        // تهيئة بيانات اللعبة
-        const gameData = {
-            players: {},
-            currentRound: 0,
-            gameState: "playing",
-            gameStartTime: Date.now(),
-            gameStarter: event.senderID
-        };
-
-        // تعيين 3 قلوب لكل لاعب
-        for (const player of players) {
-            gameData.players[player] = {
-                hearts: 3,
-                name: "",
-                score: 0
-            };
-        }
-
-        // الحصول على أسماء اللاعبين
         try {
-            const userInfos = await api.getUserInfo(players);
-            for (const id in userInfos) {
-                gameData.players[id].name = userInfos[id].name;
+            // التحقق من وجود مشاركين
+            if (!participants || !Array.isArray(participants)) {
+                return message.reply("❌ | لا يوجد مشاركين في المجموعة!");
             }
-        } catch (e) {
-            console.error(e);
+
+            // تحضير قائمة اللاعبين
+            const allParticipants = participants.map(p => p.userID).filter(id => id);
+            
+            // التحقق من عدد المشاركين (3 أشخاص على الأقل)
+            if (allParticipants.length < 3) {
+                return message.reply("❌ | تحتاج إلى 3 أشخاص على الأقل لبدء اللعبة!");
+            }
+
+            // تهيئة بيانات اللعبة
+            const gameData = {
+                players: {},
+                currentRound: 0,
+                gameState: "playing",
+                gameStartTime: Date.now(),
+                gameStarter: event.senderID
+            };
+
+            // تعيين 3 قلوب لكل لاعب
+            for (const player of allParticipants) {
+                gameData.players[player] = {
+                    hearts: 3,
+                    name: "",
+                    score: 0
+                };
+            }
+
+            // الحصول على أسماء اللاعبين
+            try {
+                const userInfos = await api.getUserInfo(allParticipants);
+                for (const id in userInfos) {
+                    if (gameData.players[id]) {
+                        gameData.players[id].name = userInfos[id].name;
+                    }
+                }
+            } catch (e) {
+                console.error("خطأ في جلب أسماء اللاعبين:", e);
+            }
+
+            // بدء الجولة الأولى
+            message.reply(
+                `🎮 | بدأت لعبة الموت مع ${allParticipants.length} لاعبين!\n` +
+                `✧━━━━━━━━━━━━━━━━━✧\n` +
+                `💖 | كل لاعب لديه 3 قلوب\n` +
+                `🗡️ | الفائز في كل جولة يختار لاعبًا لقتله\n` +
+                `✧━━━━━━━━━━━━━━━━━✧\n` +
+                `🛠️ | الأوامر المتاحة:\n` +
+                `- "الحالة": لعرض حالة اللعبة\n` +
+                `- "إنهاء": لإنهاء اللعبة (للمشرف فقط)\n` +
+                `✧━━━━━━━━━━━━━━━━━✧`
+            );
+
+            startNewRound(message, gameData);
+        } catch (err) {
+            console.error("حدث خطأ في بدء اللعبة:", err);
+            message.reply("❌ | حدث خطأ غير متوقع أثناء بدء اللعبة!");
         }
-
-        // بدء الجولة الأولى
-        message.reply(
-            `🎮 | بدأت لعبة الموت مع ${players.length} لاعبين!\n` +
-            `✧━━━━━━━━━━━━━━━━━✧\n` +
-            `💖 | كل لاعب لديه 3 قلوب\n` +
-            `🗡️ | الفائز في كل جولة يختار لاعبًا لقتله\n` +
-            `✧━━━━━━━━━━━━━━━━━✧\n` +
-            `🛠️ | الأوامر المتاحة:\n` +
-            `- "الحالة": لعرض حالة اللعبة\n` +
-            `- "إنهاء": لإنهاء اللعبة (للمشرف فقط)\n` +
-            `✧━━━━━━━━━━━━━━━━━✧`
-        );
-
-        startNewRound(message, gameData);
     },
+
 
     onReply: async ({ message, event, Reply, api }) => {
         const input = event.body.trim();
