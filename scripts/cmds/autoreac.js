@@ -46,7 +46,7 @@ module.exports = {
   },
 
   onStart: async (context) => {
-    const botType = "يوتا البوت";
+    const botType = "توجي البوت";
     await module.exports.onMAIN(context, botType); 
   },
 
@@ -62,7 +62,7 @@ module.exports = {
     }
 
     // احتمال 70% للتفاعل مع الرسالة
-    if (Math.random() < 0.7) {
+    if (Math.random() < 0.9) {
       try {
         const response = await axios.get(`https://school-project-lianefca.bene-edu-ph.repl.co/autoreact?query=${encodeURIComponent(event.body)}`);
         const emoji = response.data.message;
