@@ -70,7 +70,8 @@ module.exports = {
       }
       categories[category].push({
         name: name,
-        description: command.config.shortDescription?.ar || "لا يوجد وصف"
+        // حذفنا الوصف من العرض هنا
+        // description: command.config.shortDescription?.ar || "لا يوجد وصف"
       });
     }
 
@@ -85,10 +86,10 @@ module.exports = {
       // ترتيب الأوامر أبجدياً
       commandsList.sort((a, b) => a.name.localeCompare(b.name)).forEach((cmd, index) => {
         msg += `│ ${index + 1}. ${prefix}${cmd.name}\n`;
-        msg += `│ » ${cmd.description}\n`;
+        // حذفنا سطر الوصف اللي كان تحت كل أمر
       });
       
-      msg += `╰──────────────────────❖\n\n`;
+      msg += `╰──────────────────────❖\n\n`; // سطر فارغ بين كل قسم
     }
 
     msg += `📌 عدد الأوامر: ${Object.values(categories).flat().length}\n`;
