@@ -98,9 +98,7 @@ module.exports = {
     const filePath = path.join(__dirname, "cache", `zawaj-${event.threadID}.png`);
     fs.writeFileSync(filePath, canvas.toBuffer());
 
-    senderData.money -= 10000;
-    await usersData.set(senderID, senderData);
-
+    
     const message = {
       body: `💒 | تم الزواج بنجاح!\n❤️‍🔥 نسبة التوافق: ${lovePercent}%\n ${girlName} ❤️  ${boyName}.`,
       attachment: fs.createReadStream(filePath)
