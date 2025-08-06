@@ -21,7 +21,7 @@ module.exports = {
 
     onStart: async function ({ message, event, commandName, participants, api }) {
         // تحقق من عدد المشاركين
-        const allParticipants = participants.map(p => p.userID);
+        const allParticipants = event.participantIDs;
         if (allParticipants.length < 3) {
             return message.reply("❌ | تحتاج إلى 3 أشخاص على الأقل لبدء اللعبة!");
         }
