@@ -49,7 +49,7 @@ module.exports = {
 			resetRole: "Đã reset role của lệnh \"%1\" về mặc định",
 			changedRole: "Đã thay đổi role của lệnh \"%1\" thành %2"
 		},
-		en: {
+		ar: {
 			noEditedCommand: "✅ مجموعتك لم تعدل أي أمر",
 			editedCommand: "⚠️مجموعتك عدلت أوامر:\n",
 			noPermission: "❗روح عدل قوانين المطبخ أو أطلب رتبة أدمن من الأدمن يا عضو 🌝",
