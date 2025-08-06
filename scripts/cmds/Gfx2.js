@@ -12,9 +12,9 @@ module.exports = {
     role: 0,
     shortDescription: "قم بإنشاء تصميم خاص بك",
     longDescription: "قم بإنشاء تصميم",
-    category: "خدمات",
+    category: "ميمز وتعديل الصور",
     guide: {
-      en: "{p}{n} الإسم",
+      ar: "{p}{n} الإسم",
     }
   },
 
