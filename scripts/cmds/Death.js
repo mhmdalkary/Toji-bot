@@ -1,160 +1,168 @@
-const fs = require('fs');
-const path = require('path');
+const fs = require("fs");
+
+let gameData = {};
+
+function shuffle(array) {
+  return array.sort(() => Math.random() - 0.5);
+}
+
+function getRandomQuestion(type) {
+  if (type === "flags") {
+    const data = JSON.parse(fs.readFileSync("flags.json"));
+    return data[Math.floor(Math.random() * data.length)];
+  } else if (type === "emojie") {
+    const data = JSON.parse(fs.readFileSync("emojie.json"));
+    return data[Math.floor(Math.random() * data.length)];
+  } else if (type === "capitals") {
+    const data = [
+      { question: "عاصمة ليبيا", answer: "طرابلس" },
+      { question: "عاصمة فرنسا", answer: "باريس" },
+      { question: "عاصمة مصر", answer: "القاهرة" }
+    ];
+    return data[Math.floor(Math.random() * data.length)];
+  }
+  return null;
+}
 
 module.exports = {
   config: {
     name: "لعبة-الموت",
-    version: "2.0",
-    author: "حسين يعقوبي - تعديل محمد",
-    countDown: 15,
+    version: "3.0",
+    author: "محمد ✦ تطوير",
+    countDown: 10,
     role: 0,
     category: "العاب",
     shortDescription: {
-      ar: "لعبة جماعية فيها قتل وتصويت"
+      ar: "ابدأ لعبة الموت الجماعية 🎮💀"
     },
     longDescription: {
-      ar: "لعبة الموت الجماعية - كل لاعب عنده ثلاث قلوب، في كل جولة يُقتل شخص وتستمر حتى يبقى فائز واحد!"
+      ar: "لعبة جماعية ممتعة تتضمن تحديات أعلام، إيموجي، عواصم! 🎌❓🔠"
     },
     guide: {
-      ar: "اكتب .لعبة-الموت لبدء اللعبة في المجموعة"
+      ar: ".لعبة-الموت @منشن1 @منشن2 @منشن3 ..."
     }
   },
 
-  onStart: async function ({ message, event, threadsData, usersData, api }) {
-    const threadID = event.threadID;
-
-    // جلب معلومات المجموعة
-    const threadInfo = await api.getThreadInfo(threadID);
-    if (!threadInfo || !threadInfo.participantIDs) {
-      return message.reply("❌ لم أستطع جلب المشاركين في المجموعة.");
+  onStart: async function ({ api, event, args }) {
+    if (!args.length || event.mentions.length < 2) {
+      return api.sendMessage("✋ يرجى منشن على الأقل لاعبين لبدء اللعبة.\nمثال: .لعبة-الموت @أحمد @سارة @ياسر", event.threadID);
     }
 
-    const botID = api.getCurrentUserID();
-    let players = threadInfo.participantIDs.filter(id => id != botID && id != event.senderID);
-
-    if (players.length < 2) {
-      return message.reply("❌ يجب أن يكون هناك على الأقل لاعبين اثنين غيرك لبدء اللعبة.");
-    }
-
-    // إدراج صاحب الأمر
-    players.push(event.senderID);
-
-    // تهيئة بيانات اللاعبين
-    let gameData = players.map(id => ({
+    const mentions = event.mentions;
+    const players = Object.entries(mentions).map(([id, name]) => ({
       id,
-      lives: 3
+      name,
+      hearts: 3,
+      points: 0
     }));
 
-    let round = 1;
-
-    const runRound = async () => {
-      if (gameData.length <= 1) {
-        const winner = await usersData.getName(gameData[0].id);
-        return message.reply(`🏆 انتهت اللعبة! الفائز هو: ${winner}`);
-      }
-
-      message.reply(`🎲 الجولة ${round} بدأت!`);
-
-      // اختيار لعبة عشوائية
-      const games = ['emojie', 'flags', 'question'];
-      const selectedGame = games[Math.floor(Math.random() * games.length)];
-
-      switch (selectedGame) {
-        case 'emojie':
-          {
-            const emojieData = JSON.parse(fs.readFileSync(path.join(__dirname, 'emojie.json')));
-            const random = emojieData[Math.floor(Math.random() * emojieData.length)];
-            message.reply(`❓ أرسل الإيموجي المناسب للوصف التالي: ${random.question}`);
-
-            const collected = [];
-
-            const handler = ({ body, senderID }) => {
-              if (collected.includes(senderID)) return;
-              if (body === random.answer && gameData.some(p => p.id === senderID)) {
-                collected.push(senderID);
-                message.reply(`✅ ${senderID} جاوب بشكل صحيح!`);
-
-                if (collected.length === 1) {
-                  // أول من جاوب هو الناجي
-                  const others = gameData.filter(p => p.id !== senderID);
-                  const victim = others[Math.floor(Math.random() * others.length)];
-                  victim.lives--;
-
-                  if (victim.lives <= 0) {
-                    message.reply(`☠️ ${victim.id} مات وتم استبعاده!`);
-                    gameData = gameData.filter(p => p.id !== victim.id);
-                  } else {
-                    message.reply(`💔 ${victim.id} فقد قلبًا! تبقى له ${victim.lives} قلوب.`);
-                  }
-
-                  api.removeListener('message', handler);
-                  round++;
-                  setTimeout(runRound, 3000);
-                }
-              }
-            };
-
-            api.listen(handler);
-
-            setTimeout(() => {
-              api.removeListener('message', handler);
-              message.reply("⏱️ انتهى الوقت ولم يجب أحد!");
-              round++;
-              setTimeout(runRound, 3000);
-            }, 15000);
-          }
-          break;
-
-        case 'flags':
-          {
-            const flags = JSON.parse(fs.readFileSync(path.join(__dirname, 'flags.json')));
-            const random = flags[Math.floor(Math.random() * flags.length)];
-            message.reply(`🌍 لأي دولة هذا العلم؟`, {
-              attachment: await global.utils.getStreamFromURL(random.image)
-            });
-
-            const collected = [];
-
-            const handler = ({ body, senderID }) => {
-              if (collected.includes(senderID)) return;
-              if (body.toLowerCase() === random.name.toLowerCase() && gameData.some(p => p.id === senderID)) {
-                collected.push(senderID);
-                message.reply(`✅ ${senderID} جاوب بشكل صحيح!`);
-
-                if (collected.length === 1) {
-                  const others = gameData.filter(p => p.id !== senderID);
-                  const victim = others[Math.floor(Math.random() * others.length)];
-                  victim.lives--;
-
-                  if (victim.lives <= 0) {
-                    message.reply(`☠️ ${victim.id} مات!`);
-                    gameData = gameData.filter(p => p.id !== victim.id);
-                  } else {
-                    message.reply(`💔 ${victim.id} فقد قلبًا! تبقى له ${victim.lives} قلوب.`);
-                  }
-
-                  api.removeListener('message', handler);
-                  round++;
-                  setTimeout(runRound, 3000);
-                }
-              }
-            };
-
-            api.listen(handler);
-
-            setTimeout(() => {
-              api.removeListener('message', handler);
-              message.reply("⏱️ الوقت انتهى.");
-              round++;
-              setTimeout(runRound, 3000);
-            }, 15000);
-          }
-          break;
-
-        // ألعاب إضافية يتم إضافتها هنا...
-      }
+    gameData[event.threadID] = {
+      players,
+      round: 1
     };
 
-    runRound();
+    const names = players.map(p => `• ${p.name} ❤️❤️❤️`).join("\n");
+
+    api.sendMessage(
+      `🎮 تم بدء *لعبة الموت*!\n\n👥 اللاعبون:\n${names}\n\n🔔 سيتم إرسال التحدي الأول خلال ثوانٍ...`,
+      event.threadID
+    );
+
+    setTimeout(() => {
+      runRound(api, event.threadID);
+    }, 4000);
   }
 };
+
+async function runRound(api, threadID) {
+  const data = gameData[threadID];
+  if (!data) return;
+
+  const players = data.players.filter(p => p.hearts > 0);
+
+  if (players.length <= 1) {
+    const winner = players[0];
+    const report = data.players
+      .sort((a, b) => b.points - a.points)
+      .map(p => `• ${p.name} — ${p.points} نقطة — ${"❤️".repeat(p.hearts)}`)
+      .join("\n");
+
+    api.sendMessage(
+      `🏁 انتهت اللعبة!\n\n🏆 الفائز: ${winner.name}\n\n📊 تقرير اللعبة:\n${report}`,
+      threadID
+    );
+    delete gameData[threadID];
+    return;
+  }
+
+  const games = ["flags", "emojie", "capitals"];
+  const chosenGame = games[Math.floor(Math.random() * games.length)];
+  const question = getRandomQuestion(chosenGame);
+
+  let questionText = "";
+  let correctAnswer = "";
+
+  if (chosenGame === "flags") {
+    questionText = `🌍 ما اسم هذا العلم؟`;
+    correctAnswer = question.name;
+  } else if (chosenGame === "emojie") {
+    questionText = `😃 ما الإيموجي الذي يدل على:\n${question.question}`;
+    correctAnswer = question.answer;
+  } else if (chosenGame === "capitals") {
+    questionText = `🏙️ ${question.question}`;
+    correctAnswer = question.answer;
+  }
+
+  api.sendMessage(
+    `📣 الجولة ${data.round}\n\n${questionText}\n⏳ لديك 15 ثانية للإجابة!`,
+    threadID
+  );
+
+  const listener = async function (msg) {
+    if (msg.threadID !== threadID) return;
+
+    const player = data.players.find(p => p.id === msg.senderID && p.hearts > 0);
+    if (!player) return;
+
+    if (msg.body.trim().toLowerCase() === correctAnswer.trim().toLowerCase()) {
+      player.points += 10;
+
+      api.sendMessage(
+        `✅ أحسنت يا ${player.name}!\n+10 نقاط 🎯\nالآن اختر من تريد أن يخسر قلبًا:\nاكتب رقم اللاعب.`,
+        threadID
+      );
+
+      const others = data.players
+        .filter(p => p.id !== player.id && p.hearts > 0)
+        .map((p, i) => `${i + 1}. ${p.name} ❤️${"❤️".repeat(p.hearts)}`)
+        .join("\n");
+
+      api.sendMessage(`👤 اللاعبين:\n${others}`, threadID);
+
+      const killerListener = async function (killMsg) {
+        if (killMsg.senderID !== player.id) return;
+        const index = parseInt(killMsg.body.trim()) - 1;
+        const targets = data.players.filter(p => p.id !== player.id && p.hearts > 0);
+
+        if (targets[index]) {
+          targets[index].hearts -= 1;
+          api.sendMessage(
+            `💔 ${targets[index].name} خسر قلبًا!\n${targets[index].name} الآن لديه ${"❤️".repeat(targets[index].hearts) || "لا شيء"}`,
+            threadID
+          );
+
+          api.removeListener("message", killerListener);
+          setTimeout(() => {
+            data.round++;
+            runRound(api, threadID);
+          }, 4000);
+        }
+      };
+
+      api.listenMqtt(killerListener);
+      api.removeListener("message", listener);
+    }
+  };
+
+  api.listenMqtt(listener);
+        }
