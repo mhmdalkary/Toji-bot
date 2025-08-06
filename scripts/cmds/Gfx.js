@@ -15,7 +15,7 @@ module.exports = {
     longDescription: "قم بإنشاء تصمين",
     category: "ميمز وتعديل الصور",
     guide: {
-      en: "{p}{n} الإسم",
+      ar: "{p}{n} الإسم",
     }
   },
 
