@@ -9,7 +9,7 @@ module.exports = {
     role: 0,
     shortDescription: "احصل على معلومات عن عناصر مختلفة",
     longDescription: "احصل على معلومات عن عناصر مختلفة مثل النار، الهواء، الأرض، الماء، الشمس، الأشجار، والحجر.",
-    category: "أدوات",
+    category: "العاب",
   },
 
   onStart: async function ({ message, getLang }) {
