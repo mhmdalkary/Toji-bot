@@ -102,7 +102,7 @@ module.exports = {
     await usersData.set(senderID, senderData);
 
     const message = {
-      body: `💒 | تم الزواج بنجاح!\n❤️‍🔥 نسبة التوافق: ${lovePercent}%\n ${girlName} ❤️  ${boyName}\n💸 تم خصم 10000 دينار من حسابك.`,
+      body: `💒 | تم الزواج بنجاح!\n❤️‍🔥 نسبة التوافق: ${lovePercent}%\n ${girlName} ❤️  ${boyName}.`,
       attachment: fs.createReadStream(filePath)
     };
 
