@@ -98,7 +98,7 @@ module.exports = {
 			missingFile: "Please reply this message with image/video/audio file",
 			addedFile: "Added %1 attachment file to your leave message"
 		},
-		en: {
+		ar: {
             turnedOn: "تم تشغيل رسالة المغادرة بنجاح",
             turnedOff: "تم إيقاف رسالة المغادرة بنجاح",
             missingContent: "يرجى إدخال المحتوى",
