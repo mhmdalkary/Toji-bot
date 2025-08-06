@@ -12,7 +12,7 @@ module.exports = {
     role: 0,
     shortDescription: "زواج عشوائي",
     longDescription: "يركب صورتك وصورة شخص من الجنس الآخر على صورة زواج",
-    category: "العاب",
+    category: "ميمز وتعديل الصور",
     guide: { ar: "{pn}" }
   },
 
