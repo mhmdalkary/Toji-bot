@@ -6,7 +6,7 @@ module.exports.config = {
   hasPermssion: 0,
   credits: "محمد ✨",
   description: "تحدث مع توجي باستخدام OpenRouter",
-  commandCategory: "ذكاء اصطناعي",
+  category: "ذكاء اصطناعي",
   usages: "[سؤال]",
   cooldowns: 2,
 };
