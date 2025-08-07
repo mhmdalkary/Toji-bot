@@ -8,7 +8,7 @@ module.exports = {
     usage: "ذكي <your message>",
     cooldown: 3,
     role: 0,
-    category: الذكاء الاصطناعي 
+    category: "الذكاء الاصطناعي" 
   },
 
   run: async ({ api, event, args }) => {
