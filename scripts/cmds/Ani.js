@@ -1,6 +1,6 @@
 module.exports = {
   config: {
-    name: "مقطع_أنمي",
+    name: "اديت",
     aliases: ["أنمي_فيديو", "animeedit"],
     version: "1.0",
     author: "KSHITIZ",
@@ -8,7 +8,7 @@ module.exports = {
     role: 0,
     shortDescription: "مجموعة من فيديوهات الأنمي",
     longDescription: "سوف يرسل لك مختلف الصور للأنمي",
-    category: "أنمي",
+    category: "ميمز وتعديل الصور",
     guide: "{pn} مقطع_أنمي",
   },
 
