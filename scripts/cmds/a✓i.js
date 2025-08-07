@@ -1,69 +1,63 @@
 const axios = require("axios");
 
-module.exports.config = {
-  name: "توجي",
-  version: "3.0.0",
-  hasPermssion: 0,
-  credits: "محمد ✨",
-  description: "تحدث مع توجي باستخدام OpenRouter",
-  category: "ذكاء اصطناعي",
-  usages: "[سؤال]",
-  cooldowns: 2,
-};
+module.exports = {
+  config: {
+    name: "توجي",
+    aliases: ["toji"],
+    version: "3.0.0",
+    author: "محمد ✨",
+    countDown: 2,
+    role: 0,
+    shortDescription: "تحدث مع توجي بأسلوب مخصص",
+    longDescription: "استخدم ذكاء اصطناعي للحديث مع شخصية توجي من أنمي جوجتسو كايسن بأسلوب مرعب وذكي",
+    category: "ذكاء اصطناعي",
+    guide: {
+      ar: "{p}توجي [سؤالك]",
+    }
+  },
 
-const API_KEY = "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"; // مثال: openrouter-abc123xyz456
-const MODEL = "mistralai/mistral-7b-instruct";
+  onStart: async function ({ message, event, args, api }) {
+    const API_KEY = "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"; // مثال: openrouter-abc123xyz
+    const MODEL = "mistralai/mistral-7b-instruct";
 
-const PROMPT_STYLE = "أجب كأنك توجي من أنمي جوجتسو كايسن، كن ذكيًا، مرعبًا، وغامضًا، واستخدم العربية الفصحى بلمسة ليبية إذا أمكن.";
+    const PROMPT_STYLE = "أجب كأنك توجي من أنمي جوجتسو كايسن، كن ذكيًا، مرعبًا، وغامضًا، واستخدم العربية الفصحى بلمسة ليبية إذا أمكن.";
 
-module.exports.run = async function({ api, event, args }) {
-  const { threadID, messageID, messageReply, body } = event;
-  let userInput = args.join(" ").trim();
+    let userInput = args.join(" ").trim();
+    const messageReply = event.messageReply;
 
-  if (!userInput && messageReply?.senderID !== api.getCurrentUserID()) {
-    return api.sendMessage("👀 أكتب شي بعد 'توجي' أو رد على رسالته مباشرة.", threadID, messageID);
-  }
+    // لو ما كتب شي وش رد على رسالة من توجي، اعتبرها مواصلة للحوار
+    if (!userInput && messageReply?.senderID === api.getCurrentUserID()) {
+      userInput = messageReply.body;
+    }
 
-  if (!userInput && messageReply?.senderID === api.getCurrentUserID()) {
-    userInput = messageReply.body;
-  }
+    // لو فاضي تمامًا
+    if (!userInput) {
+      return message.reply("👀 أكتب شي بعد 'توجي' أو رد على رسالته مباشرة.");
+    }
 
-  const fullPrompt = `${PROMPT_STYLE}\n\nالمستخدم: ${userInput}\nتوجي:`;
+    const fullPrompt = `${PROMPT_STYLE}\n\nالمستخدم: ${userInput}\nتوجي:`;
 
-  try {
-    const res = await axios.post(
-      "https://openrouter.ai/api/v1/chat/completions",
-      {
-        model: MODEL,
-        messages: [{ role: "user", content: fullPrompt }],
-      },
-      {
-        headers: {
-          Authorization: `Bearer ${API_KEY}`,
-          "HTTP-Referer": "https://chat.openrouter.ai", // اختياري، لكن بعض النماذج تحتاجه
-          "Content-Type": "application/json"
+    try {
+      const res = await axios.post(
+        "https://openrouter.ai/api/v1/chat/completions",
+        {
+          model: MODEL,
+          messages: [{ role: "user", content: fullPrompt }],
         },
-      }
-    );
+        {
+          headers: {
+            Authorization: `Bearer ${API_KEY}`,
+            "HTTP-Referer": "https://chat.openrouter.ai", // بعض النماذج تتطلبه
+            "Content-Type": "application/json"
+          },
+        }
+      );
 
-    const reply = res.data.choices?.[0]?.message?.content || "🔇 ما عنديش رد واضح.";
-    api.sendMessage(reply, threadID, messageID);
-  } catch (err) {
-    console.error("❌ خطأ:", err.message);
-    api.sendMessage("⚠️ حدث خطأ أثناء الاتصال بـ OpenRouter. جرب لاحقًا.", threadID, messageID);
-  }
-};
-
-module.exports.handleEvent = async function({ api, event }) {
-  const { body, threadID, messageID, messageReply } = event;
-
-  if (!body) return;
-
-  const bodyTrimmed = body.trim().toLowerCase();
-  if (bodyTrimmed.startsWith("توجي")) {
-    const fakeArgs = body.trim().replace(/^توجي\s*/i, "").split(" ");
-    module.exports.run({ api, event, args: fakeArgs });
-  } else if (messageReply?.senderID === api.getCurrentUserID()) {
-    module.exports.run({ api, event, args: [body] });
+      const reply = res.data.choices?.[0]?.message?.content || "🔇 ما عنديش رد واضح.";
+      message.reply(reply);
+    } catch (err) {
+      console.error("❌ خطأ:", err.message);
+      message.reply("⚠️ حدث خطأ أثناء الاتصال بـ OpenRouter. جرب لاحقًا.");
+    }
   }
 };
