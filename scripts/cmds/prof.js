@@ -2,7 +2,7 @@ const axios = require("axios");
 
 module.exports = {
         config: {
-                name: "بروفايل_البوت",
+                name: بروف",
                 aliases: ["changeavt", "setavatar"],
                 version: "1.3",
                 author: "NTKhang",
