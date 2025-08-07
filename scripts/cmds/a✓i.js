@@ -7,7 +7,8 @@ module.exports = {
     description: "AI Chat using external API",
     usage: "ذكي <your message>",
     cooldown: 3,
-    permissions: []
+    role: 0,
+    category: الذكاء الاصطناعي 
   },
 
   run: async ({ api, event, args }) => {
