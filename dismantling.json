@@ -1,3 +1,4 @@
+[
   { "question": "بيت", "answer": "ب ي ت" },
   { "question": "رجل", "answer": "ر ج ل" },
   { "question": "امرأة", "answer": "ا م ر أ ة" },
@@ -31,4 +32,5 @@
   { "question": "دراجة", "answer": "د ر ا ج ة" },
   { "question": "طائرة", "answer": "ط ا ئ ر ة" },
   { "question": "قطار", "answer": "ق ط ا ر" },
-  { "question": "سفينة", "answer": "س ف ي ن ة" },
+  { "question": "سفينة", "answer": "س ف ي ن ة" }
+]
