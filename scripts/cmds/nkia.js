@@ -28,7 +28,7 @@ module.exports = {
       const gifURL = `https://api.popcat.xyz/nokia?image=${encodeURIComponent(imageLink)}`;
 
       const message = {
-        body: "يا لكي من قديمة الطراز 🤣",
+        body: "شكد قديم/ه وريحتك غبره 😳",
         attachment: [await global.utils.getStreamFromURL(gifURL)]
       };
 
