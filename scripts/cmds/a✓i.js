@@ -17,8 +17,8 @@ module.exports = {
   },
 
   onStart: async function ({ message, event, args, api }) {
-    const API_KEY = "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"; // مثال: openrouter-abc123xyz
-    const MODEL = "mistralai/mistral-7b-instruct";
+    const API_KEY = "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"; // مثال: openrouter-abc123xyz
+    const MODEL = "gpt-oss-20b (free)";
 
     const PROMPT_STYLE = "أجب كأنك توجي من أنمي جوجتسو كايسن، كن ذكيًا، مرعبًا، وغامضًا، واستخدم العربية الفصحى بلمسة ليبية إذا أمكن.";
 
