@@ -11,7 +11,7 @@ const animeCharacters = [
 
 module.exports = {
   config: {
-    name: "مي",
+    name: "ايدي",
     version: "1.0",
     author: "حسين يعقوبي",
     countDown: 60,
@@ -73,7 +73,7 @@ module.exports = {
         const userIsFriend = userInfo[uid].isFriend ? "✅ نعم" : "❌ لا";
         const isBirthdayToday = userInfo[uid].isBirthday ? "✅ نعم" : "❌ لا";
 
-        const userInformation = `\t\t•——[معلومات]——•\n\n❏اسمك👤: 『${userInfo[uid].name}』\n❏جنسك: 『${genderText}』\n❏تصنيفك: 『${rank}』\n❏البنك: 『${balance}』\n❏عدد الأعضاء  : 『${memberCount}』\n❏عدد رسائلك : 『${messageCounts[uid] || 0}』\n❏هل هو صديق✅ : 『${userIsFriend}』\n❏هل عيد ميلادك اليوم : 『${isBirthdayToday}』\n❏العنصر الخاص بك: 『${userIndex !== -1 ? animeCharacters[userIndex] : randomCharacter}』`;
+        const userInformation = `\t\t•——[معلومات]——•\n\n❏اسمك: 『${userInfo[uid].name}』\n❏جنسك: 『${genderText}』\n❏تصنيفك: 『${rank}』\n❏البنك: 『${balance}』\n❏عدد الأعضاء  : 『${memberCount}』\n❏عدد رسائلك : 『${messageCounts[uid] || 0}』\n❏هل هو صديق✅ : 『${userIsFriend}』\n❏هل عيد ميلادك اليوم : 『${isBirthdayToday}』\n❏العنصر الخاص بك: 『${userIndex !== -1 ? animeCharacters[userIndex] : randomCharacter}』`;
 
         message.reply({
           body: userInformation,
