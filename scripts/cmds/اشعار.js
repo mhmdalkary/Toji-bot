@@ -16,7 +16,7 @@ module.exports = {
       vi: "Gửi thông báo từ admin đến tất cả các box",
       ar: "إرسال إشعار إلى جميع المجموعات",
     },
-    category: "المالك",
+    category: "إدارة البوت",
     guide: {
       ar: "{pn} <رسالة>",
     },
@@ -47,7 +47,7 @@ module.exports = {
     if (!args[0])
       return message.reply(getLang("missingMessage"));
     const formSend = {
-      body: `${getLang("notification")}\n🧿▬▬▬▬๑۩💌۩๑▬▬▬🧿\n\n✏${args.join(" ")}\n\n🧿▬▬▬▬๑۩💌۩๑▬▬▬🧿\n━「🧿 ميدوريا البوت 🧿」━`,
+      body: `${getLang("notification")}\n▬▬▬▬๑۩🌪۩๑▬▬▬\n\n✏${args.join(" ")}\n\n▬▬▬▬๑۩🌪۩๑▬▬▬\n━「 توجي البوت 」━`,
       attachment: await getStreamsFromAttachment(
         [
           ...event.attachments,
