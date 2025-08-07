@@ -9,7 +9,7 @@ on:
       - main
   workflow_dispatch:
   schedule:
-    - cron: '0 */6 * * *'  # كل ساعتين
+    - cron: '0 */6 * * *'  # كل 6 ساعات
 
 jobs:
   run-bot:
@@ -17,6 +17,13 @@ jobs:
     timeout-minutes: 360  # يوقف بعد 6 ساعات كحد أقصى (حد GitHub)
 
     steps:
+      - name: Cancel previous runs
+        uses: styfle/cancel-workflow-action@0.9.1
+        with:
+          access_token: ${{ secrets.GITHUB_TOKEN }}
+          # optional: only cancel runs for the same workflow
+          # workflow_id: Run Priyanh-Bot-V2.yml  # اسم ملف ال workflow أو اسمه
+
       - name: Checkout code
         uses: actions/checkout@v4
 
@@ -29,4 +36,4 @@ jobs:
         run: npm install
 
       - name: Run the bot
-        run: node index.js  # أو npm start حسب ما عندك
+        run: node index.js
