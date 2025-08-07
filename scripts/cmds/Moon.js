@@ -16,12 +16,12 @@ module.exports = {
         role: 0,
         description: {
             vi: "xem ảnh mặt trăng vào đêm bạn chọn (dd/mm/yyyy)",
-            en: "عرض صورة القمر في الليلة التي تختارها (اليوم/الشهر/السنة)"
+            ar: "عرض صورة القمر في الليلة التي تختارها (اليوم/الشهر/السنة)"
         },
         category: "صور",
         guide: {
             vi: "  {pn} <ngày/tháng/năm>\n   {pn} <ngày/tháng/năm> <caption>",
-            en: "  {pn} اليوم/الشهر/السنة\n   {pn} اليوم/الشهر/السنة <تعليق>"
+            ar: "  {pn} اليوم/الشهر/السنة\n   {pn} اليوم/الشهر/السنة <تعليق>"
         }
     },
 
@@ -32,7 +32,7 @@ module.exports = {
             invalidDate: "Ngày %1 không hợp lệ",
             caption: "- Ảnh mặt trăng vào đêm %1"
         },
-        en: {
+        ar: {
             invalidDateFormat: " ⚠️ | المرجو إدخالها بهذه الشاكلة اليوم/الشهر/السنة",
             error: " ❌ | حدث خطأ في %1",
             invalidDate: " ❌ | %1 ليس تاريخا صالحا ",
