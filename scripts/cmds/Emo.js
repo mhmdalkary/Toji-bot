@@ -24,7 +24,7 @@ module.exports = {
     const questions = JSON.parse(fs.readFileSync('emojie.json'));
     const randomQuestionObj = questions[Math.floor(Math.random() * questions.length)];
 
-    message.reply(` ⚜️ | أرسل الإيموجي حسب الوصف : ${randomQuestionObj.question}" ؟`, (err, info) => {
+    message.reply(` ▪︎ | أرسل الإيموجي حسب الوصف : ${randomQuestionObj.question}" ؟`, (err, info) => {
       global.GoatBot.onReply.set(info.messageID, {
         commandName,
         messageID: info.messageID,
@@ -45,7 +45,7 @@ module.exports = {
       const reward = Math.floor(Math.random() * (100 - 50 + 1) + 50);
       await usersData.addMoney(event.senderID, reward);
       const userName = await api.getUserInfo(event.senderID);
-      message.reply(`تهانينا 🎉🎊 يا ، ${userName[event.senderID].name}، لقد فزت بمبلغ ${reward} دولار 💵 !`);
+      message.reply(`تهانينا  يا ، ${userName[event.senderID].name}، لقد فزت بمبلغ ${reward} $ 💵 !`);
       api.setMessageReaction("✅", event.messageID, (err) => {}, true);
     } else {
       message.reply("❌ | آسف، هذا غير صحيح.");
