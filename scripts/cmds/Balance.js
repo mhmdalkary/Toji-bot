@@ -11,7 +11,7 @@ module.exports = {
 			en: "view your money or the money of the tagged person",
 			ar: "عرض رصيدك في البوت"
 		},
-		category: "أقتصاد",
+		category: "إقتصاد",
 		guide: {
 			vi: "   {pn}: xem số tiền của bạn"
 				+ "\n   {pn} <@tag>: xem số tiền của người được tag",
@@ -32,8 +32,8 @@ module.exports = {
 			moneyOf: "%1 has %2$"
 		},
 		ar: {
-		    money: "⭐معك %1 دينار",
-		    moneyOf: "%1 معه %2 دينار"
+		    money: "عندك %1 $",
+		    moneyOf: "%1 %2 $"
 		}
 	},
 
