@@ -13,7 +13,7 @@ module.exports = {
 			en: "Receive daily gift",
 			ar: "الحصول على الهدية اليومية"
 		},
-		category: "أقتصاد",
+		category: "إقتصاد",
 		guide: {
 			vi: "   {pn}: Nhận quà hàng ngày"
 				+ "\n   {pn} info: Xem thông tin quà hàng ngày",
@@ -62,7 +62,7 @@ module.exports = {
 			saturday: "السبت",
 			sunday: "الأحد",
 			alreadyReceived: "حبيبي إنقلع و عد غدا 😳يخي مبهدل",
-			received: "حصلت على %5 دينار و %3 ⭐نقاط"
+			received: "حصلت على %5 دينار و %3 نقاط"
 		}
 	},
 
