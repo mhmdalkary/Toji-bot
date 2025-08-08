@@ -84,8 +84,8 @@ module.exports = {
       const sortedCmds = commandsList.sort((a, b) => a.name.localeCompare(b.name));
 
       // تقسيم الأوامر إلى صفوف كل صف 3 أوامر
-      for (let i = 0; i < sortedCmds.length; i += 3) {
-        const slice = sortedCmds.slice(i, i + 3).map(cmd => cmd.name);
+      for (let i = 0; i < sortedCmds.length; i += 2) {
+        const slice = sortedCmds.slice(i, i + 2).map(cmd => cmd.name);
         msg += `◉ ${slice.join(" ◉ ")}\n`;
       }
 
