@@ -24,7 +24,7 @@ module.exports = {
     const questions = JSON.parse(fs.readFileSync('dismantling.json'));
     const randomQuestionObj = questions[Math.floor(Math.random() * questions.length)];
 
-    message.reply(`❛ ━━━━━･❪ 🕊️ ❫ ･━━━━━ ❜\n ⚜️ | قم بتفكيك هذه الكلمة : \n${randomQuestionObj.question}\n❛ ━━━━━･❪ 🕊️ ❫ ･━━━━━ ❜ 
+    message.reply(`❛ ━━━━━･❪ 🌪 ❫ ･━━━━━ ❜\n ▪︎ | قم بتفكيك هذه الكلمة : \n${randomQuestionObj.question}\n❛ ━━━━━･❪ 🌪 ❫ ･━━━━━ ❜ 
     `, (err, info) => {
       global.GoatBot.onReply.set(info.messageID, {
         commandName,
@@ -46,7 +46,7 @@ module.exports = {
       const reward = Math.floor(Math.random() * (100 - 50 + 1) + 50);
       await usersData.addMoney(event.senderID, reward);
       const userName = await api.getUserInfo(event.senderID);
-      message.reply(`تهانينا 🎉🎊 يا ، ${userName[event.senderID].name}، لقد حزرت إسم العاصمة و فزت ب مبلغ يقدر ب ${reward} دولار 💵 !`);
+      message.reply(`تهانينا يا ، ${userName[event.senderID].name}، لقد حزرت إسم العاصمة و فزت ب مبلغ يقدر ب ${reward} $ 💵 !`);
       api.setMessageReaction("✅", event.messageID, (err) => {}, true);
     } else {
       message.reply("❌ | آسف، هذا غير صحيح.");
