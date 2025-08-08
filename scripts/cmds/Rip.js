@@ -10,7 +10,7 @@ module.exports = {
     role: 0,
     shortDescription: "صورة على قبر",
     longDescription: "صورة صديق على قبر من اجل المتعة ليس إلا 😂",
-    category: "متعة",
+    category: "ميمز وتعديل الصور",
     guide: {
       vi: "{pn} [@tag | blank]",
       ar: "{pn} [@منشن]"
