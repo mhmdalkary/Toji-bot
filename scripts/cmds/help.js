@@ -27,11 +27,11 @@ module.exports = {
     const { threadID } = event;
     const prefix = getPrefix(threadID);
 
-    // عرض تفاصيل أمر معين
+    // عرض تفاصيل أمر معين  
     if (args.length > 0) {
       const commandName = args[0].toLowerCase();
       const command = commands.get(commandName) || commands.get(aliases.get(commandName));
-      
+
       if (!command) {
         return message.reply(`❌ | الأمر "${commandName}" غير موجود.`);
       }
@@ -41,6 +41,7 @@ module.exports = {
       const usage = configCommand.guide?.ar?.replace(/{p}/g, prefix)?.replace(/{n}/g, configCommand.name) || "لا يوجد دليل.";
 
       const response = `╭── ⭓ الإسم: ${configCommand.name}
+
 ├── ⭓ معلومات:
 │ الوصف: ${longDescription}
 │ أسماء أخرى: ${configCommand.aliases ? configCommand.aliases.join(", ") : "لا يوجد"}
@@ -58,44 +59,47 @@ module.exports = {
       return message.reply(response);
     }
 
-    // تجميع الأوامر حسب الأقسام
+    // تجميع الأوامر حسب الأقسام  
     const categories = {};
-    
+
     for (const [name, command] of commands) {
       if (command.config.role > role) continue;
-      
+
       const category = command.config.category || "بدون قسم";
       if (!categories[category]) {
         categories[category] = [];
       }
       categories[category].push({
         name: name,
-        // حذفنا الوصف من العرض هنا
-        // description: command.config.shortDescription?.ar || "لا يوجد وصف"
       });
     }
 
-    // بناء رسالة الأوامر بالشكل الجديد حسب طلبك
-let msg = "◈ ───『قائمة الاوامر』─── ◈\n\n";
+    // بناء رسالة الأوامر بالشكل الجديد مع 3 أوامر في كل سطر
+    let msg = "◈ ───『قائمة الاوامر』─── ◈\n\n";
 
-for (const [category, commandsList] of Object.entries(categories)) {
-  msg += `◯ ${category.toUpperCase()} :\n`;
-  // نجمع أسماء الأوامر مفصولة بـ "◉"
-  const namesLine = commandsList
-    .sort((a, b) => a.name.localeCompare(b.name))
-    .map(cmd => cmd.name)
-    .join(" ◉ ");
-  msg += `◉ ${namesLine}\n`;
-  msg += "———————————————\n\n";
-}
+    for (const [category, commandsList] of Object.entries(categories)) {
+      msg += `◯ ${category.toUpperCase()} :\n`;
 
-msg += `◈ ─────────────── ◈\n`;
-msg += `│←› عدد الاوامر هو: ${Object.values(categories).flat().length}\n`;
-msg += `│←› لحذف رسائل قم بالرد بـ ح\n`;
-msg += `│←› استمتع بـ توجي\n`;
-    // إرسال الرسالة مع الصورة الثابتة
+      // ترتيب الأوامر أبجدياً
+      const sortedCmds = commandsList.sort((a, b) => a.name.localeCompare(b.name));
+
+      // تقسيم الأوامر إلى صفوف كل صف 3 أوامر
+      for (let i = 0; i < sortedCmds.length; i += 3) {
+        const slice = sortedCmds.slice(i, i + 3).map(cmd => cmd.name);
+        msg += `◉ ${slice.join(" ◉ ")}\n`;
+      }
+
+      msg += "———————————————\n\n";
+    }
+
+    msg += `◈ ─────────────── ◈\n`;
+    msg += `│←› عدد الاوامر هو: ${Object.values(categories).flat().length}\n`;
+    msg += `│←› لحذف رسائل قم بالرد بـ ح\n`;
+    msg += `│←› استمتع بـ توجي\n`;
+
+    // إرسال الرسالة مع الصورة الثابتة  
     const imagePath = path.join(__dirname, "commands.png");
-    
+
     if (fs.existsSync(imagePath)) {
       await message.reply({
         body: msg,
