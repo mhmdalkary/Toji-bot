@@ -1,70 +1,47 @@
-global.botData = global.botData || {};
-global.botData.exemptUsers = global.botData.exemptUsers || [
-  "100087632392287", // اكتب هنا ID المستخدمين المستثنين
-  "1000987654321"
-];
+global.botData = {};
 
 module.exports = {
-  config: {
-    name: "صمت",
-    version: "1.6",
-    longdescription: "تشغيل/إيقاف مود الصمت مع استثناءات",
-    guide: {
-      ar: "صمت تشغيل/إيقاف",
-    },
-    category: "إدارة المجموعة",
-    role: 1,
-    author: "Cliff + تعديل محمد"
-  },
+                config: {
+                                name: "صمت",
+                                version: "1.2",
+                                description: "قم بتشغيله و إيقافه",
+                                guide: {
+                                                vi: "Dùng để bật/tắt chức năng chat",
+                                                en: "يستخدم لتشغيل/إيقاف وظيفة الدردشة"
+                                },
+                                category: "إدارة البوت",
+                                countDown: 15,
+                                role: 1,
+                                author: "Cliff"
+                },
 
-  onStart: async function ({ message, args, role }) {
-    if (!args[0]) {
-      return message.reply("❗ استخدم: صمت تشغيل | صمت إيقاف");
-    }
+                onStart: async function ({ message, args, role, getLang }) {
+                                if (args[0] === "ايقاف") {
+                                                if (role < 1) {
+                                                                return message.reply(getLang("onlyAdmin"));
+            }
+                                                global.botData.chatEnabled = true;
+                                                message.reply(" ❌ | تم تعطيل مود الصمت ، ويمكن للجميع أن يتحدث بحرية");
+                                } else if (args[0] === "تشغيل") {
+                                                if (role < 1) {
+                                                                return message.reply(getLang("onlyAdmin"));
+                                                }
+                                                global.botData.chatEnabled = false;
+                                                message.reply(" ✅ | تم تشغيل مود.الصمت ، ولن يستطيع أحد التحدث وإلا سيبلع طرد.");
+                                }
+                },
 
-    if (role < 1) {
-      return message.reply("❌ لا يمكنك تنفيذ هذا الأمر، أنت لست مشرفاً.");
-    }
+                onChat: async function ({ message, event, api, getLang }) {
+                                const chatEnabled = global.botData.chatEnabled === undefined ? true : global.botData.chatEnabled;
 
-    const command = args[0].toLowerCase();
-    if (command === "إيقاف") {
-      global.botData.chatEnabled = true;
-      return message.reply("✅ تم إيقاف مود الصمت.");
-    } else if (command === "تشغيل") {
-      global.botData.chatEnabled = false;
-      return message.reply("✅ تم تفعيل مود الصمت، سيتم طرد من يتكلم من الأعضاء العاديين.");
-    } else {
-      return message.reply("⚠️ أمر غير معروف. استخدم: تشغيل أو إيقاف.");
-    }
-  },
+                                if (!chatEnabled) {
 
-  onChat: async function ({ message, event, api }) {
-    const chatEnabled = global.botData.chatEnabled ?? true;
-    if (chatEnabled) return;
-
-    const senderID = event.senderID;
-    const threadID = event.threadID;
-
-    // لا تطرد البوت نفسه
-    if (senderID === api.getCurrentUserID()) return;
-
-    // لا تطرد الأشخاص الموجودين في قائمة الاستثناء
-    if (global.botData.exemptUsers.includes(senderID)) return;
-
-    // احصل على معلومات المجموعة
-    const threadInfo = await api.getThreadInfo(threadID);
-    const participant = threadInfo.adminIDs.find(u => u.id === senderID);
-
-    // لا تطرد المشرفين
-    if (participant) return;
-
-    // طرد المستخدم المخالف
-    try {
-      await api.removeUserFromGroup(senderID, threadID);
-      return message.reply(`🚫 تم طرد عضو لتجاوزه الصمت.`);
-    } catch (err) {
-      console.error("خطأ أثناء محاولة الطرد:", err);
-      return message.reply("⚠️ حدث خطأ أثناء محاولة طرد العضو.");
-    }
-  }
+                                                api.removeUserFromGroup(event.senderID, event.threadID, (err) => {
+                                                                if (err) {
+                                                                                console.error(err);
+                                                                }
+                                                });
+                                                message.reply(" ⚠️ | تم تحديد شخص يتحدث لهذا تم طرده من المجموعة.");
+                                }
+                }
 };
