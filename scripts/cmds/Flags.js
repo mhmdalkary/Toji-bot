@@ -41,7 +41,7 @@ module.exports = {
         const imageStream = await global.utils.getStreamFromURL(randomFlag.image);
 
         message.reply({
-            body: `✿━━━━━━━━━━━━━━━━━✿\n | ما هو اسم العلم في الصورة ؟\n\n${optionsText}\n\n✿━━━━━━━━━━━━━━━━━✿`,
+            body: `━━━━━━━━━━━━━━━━\n | ما هو اسم العلم في الصورة ؟\n\n${optionsText}\n\n━━━━━━━━━━━━━━━━`,
             attachment: imageStream
         }, async (err, info) => {
             global.GoatBot.onReply.set(info.messageID, {
@@ -71,7 +71,7 @@ module.exports = {
             const reward = Math.floor(Math.random() * (100 - 50 + 1) + 50);
             await usersData.addMoney(event.senderID, reward);
             const userName = await api.getUserInfo(event.senderID);
-            message.reply(`تهانينا 🎉🎊 ${userName[event.senderID].name}، لقد فزت بمبلغ ${reward} دولار 💵 !`);
+            message.reply(`تهانينا ${userName[event.senderID].name}، لقد فزت بمبلغ ${reward} $ 💵 !`);
             api.setMessageReaction("✅", event.messageID, (err) => {}, true);
         } else {
             message.reply("❌ | آسف، هذا غير صحيح.");
