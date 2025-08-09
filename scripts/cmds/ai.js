@@ -1,78 +1,149 @@
 const axios = require("axios");
-const { getStreamFromURL } = global.utils;
+const fs = require("fs");
 
 module.exports = {
   config: {
     name: "توجي",
-    //aliases: ["heygoogle", "ai", "bard"],
     version: "1.0",
-    author: "SiAM | @Siam.The.Fox",
+    author: "rehat--",
     countDown: 5,
     role: 0,
-    shortDescription: {
-      ar: "يقوم بالإجابة على الإسئلة ويدعم الرد على الصور",
-    },
-    longDescription: {
-      ar: "يقوم بالإجابة على الأسئلة و هو يدعم الرد على الصور",
-    },
+    longDescription: { ar: "ذكاء أصطناعي يجيب عن الأسئلة" },
+    guide: { ar: "{pn} <سؤال>" },
     category: "الذكاء الإصطناعي",
-    guide: {
-      ar: "{pn} 'الكلمة'\n\nإذا قمت بالرد على صورة ستكون بمثابة مرفق بالنسبة ل بارد",
-    },
+  },
+  clearHistory: function () {
+    global.GoatBot.onReply.clear();
   },
 
-  onStart: async function ({ api, args, message, event }) {
+  onStart: async function ({ message, event, args, commandName }) {
+    const uid = event.senderID;
     const prompt = args.join(" ");
+
     if (!prompt) {
-      message.reply("المرجو إدخال كلمة أو سؤال. الإستعمال: ©بارد 'سؤال أو إستفسار'");
+      message.reply(" ⚠️ | المرجو إدخال سؤال.");
       return;
     }
-    const cookie = 'EAAAAAtSyulYTLzmfqtDMXVo2m4es0KYt05WCg7a8YS3JId1ekvbmNXznf5PBZvO6TRx2dhuSQmUhBgnL8WcDMPwTmB7NpJvitA9Qt29BMvIz3empT6F6WJEKP2BFXb99JSUb1n8MhNNlP2b1SZoemUSgGXJLQeJityiRm8xn8KL7biN8jAsyAvjwsF38Q9pNcdBRZBr2L45qKsouBVG1rmsXL5Ye33bBluyO040Hmx5rot4MXMmc6eDrqhPkPcpq1JB'; //if you don't know know how to get cookie from cookies editor then just don't add the cookie parameter with api params ( it will use my default cookie ) . but i recommend  add your own cookies for less error. 
 
-    const key = 'SiAM_YQEZB'; // Add your  API key here ( get it from SiAM)
-
-
-
-    let params = {
-      prompt: encodeURIComponent(prompt),
-      cookie: cookie,//if you add cookies don't encode the cookie. Exact same as cookies editor " __Secure-1PSID " value .
-      apiKey: key,
-      attImage: "", 
-    };
-
-    if (event.type === "message_reply" && event.messageReply.attachments && event.messageReply.attachments.length > 0 && ["photo", "sticker"].includes(event.messageReply.attachments[0].type)) {
-      params.attImage = encodeURIComponent(event.messageReply.attachments[0].url); // Encode artImage ( its needed or Facebook link will gib error )
+    if (prompt.toLowerCase() === "clear") {
+      this.clearHistory();
+      const clear = await axios.get(`https://project-bard.onrender.com/api/bard?query=clear&uid=${uid}`);
+      message.reply(clear.data.message);
+      return;
     }
 
+    if (event.type === "message_reply" && event.messageReply.attachments && event.messageReply.attachments[0].type === "photo") {
+      const photo = encodeURIComponent(event.messageReply.attachments[0].url);
+      const query = args.join(" ");
+      const url = `https://turtle-apis.onrender.com/api/gemini/img?prompt=${encodeURIComponent(query)}&url=${photo}`;
+      const response = await axios.get(url);
+      message.reply(response.data.answer);
+      return;
+    }
+
+    const apiUrl = `https://project-bard.onrender.com/api/bard?query=${encodeURIComponent(prompt)}&uid=${uid}`;
     try {
-      const response = await axios.get("https://api.siambardproject.repl.co/getBard", { params: params });
+      const response = await axios.get(apiUrl);
       const result = response.data;
 
-      let content = result.answer;
-      let attachment = [];
+      let content = result.message;
+      let imageUrls = result.imageUrls;
 
-      if (result.attachment && result.attachment.length > 0) {
-        const noSpam = result.attachment.slice(0, 6); // it will prevent spam , now matter how many images users ask this will send only first 6 image. 
+      let replyOptions = {
+        body: content,
+      };
 
-        for (let url of noSpam) {
+      if (Array.isArray(imageUrls) && imageUrls.length > 0) {
+        const imageStreams = [];
+
+        if (!fs.existsSync(`${__dirname}/cache`)) {
+          fs.mkdirSync(`${__dirname}/cache`);
+        }
+
+        for (let i = 0; i < imageUrls.length; i++) {
+          const imageUrl = imageUrls[i];
+          const imagePath = `${__dirname}/cache/image` + (i + 1) + ".png";
+
           try {
-            const stream = await getStreamFromURL(url);
-            if (stream) {
-              attachment.push(stream);
-            }
+            const imageResponse = await axios.get(imageUrl, {
+              responseType: "arraybuffer",
+            });
+            fs.writeFileSync(imagePath, imageResponse.data);
+            imageStreams.push(fs.createReadStream(imagePath));
           } catch (error) {
-            console.error(`error: ${url}`);
+            console.error(" ❌ |حدث خطأ أثناء تنزيل الصورة وحفظها:", error);
+            message.reply(' ❌ |حدث خطأ.');
           }
         }
+
+        replyOptions.attachment = imageStreams;
       }
 
-      await message.reply({
-        body: content,
-        attachment: attachment,
+      message.reply(replyOptions, (err, info) => {
+        if (!err) {
+          global.GoatBot.onReply.set(info.messageID, {
+            commandName,
+            messageID: info.messageID,
+            author: event.senderID,
+          });
+        }
       });
     } catch (error) {
-      console.error("Error:", error);
-      message.reply("error...");
+      message.reply(' ❌ |حدث خطأ.');
+      console.error(error.message);
+    }
+  },
+
+  onReply: async function ({ message, event, Reply, args }) {
+    const prompt = args.join(" ");
+    let { author, commandName, messageID } = Reply;
+    if (event.senderID !== author) return;
+
+    try {
+      const apiUrl = `https://project-bard.onrender.com/api/bard?query=${encodeURIComponent(prompt)}&uid=${author}`;
+      const response = await axios.get(apiUrl);
+
+      let content = response.data.message;
+      let replyOptions = {
+        body: content,
+      };
+
+      const imageUrls = response.data.imageUrls;
+      if (Array.isArray(imageUrls) && imageUrls.length > 0) {
+        const imageStreams = [];
+
+        if (!fs.existsSync(`${__dirname}/cache`)) {
+          fs.mkdirSync(`${__dirname}/cache`);
+        }
+        for (let i = 0; i < imageUrls.length; i++) {
+          const imageUrl = imageUrls[i];
+          const imagePath = `${__dirname}/cache/image` + (i + 1) + ".png";
+
+          try {
+            const imageResponse = await axios.get(imageUrl, {
+              responseType: "arraybuffer",
+            });
+            fs.writeFileSync(imagePath, imageResponse.data);
+            imageStreams.push(fs.createReadStream(imagePath));
+          } catch (error) {
+            console.error("Error occurred while downloading and saving the image:", error);
+            message.reply(' ❌ |حدث خطأ.');
+          }
+        }
+        replyOptions.attachment = imageStreams;
+      }
+      message.reply(replyOptions, (err, info) => {
+        if (!err) {
+          global.GoatBot.onReply.set(info.messageID, {
+            commandName,
+            messageID: info.messageID,
+            author: event.senderID,
+          });
+        }
+      });
+    } catch (error) {
+      console.error(error.message);
+      message.reply(" ❌ |حدث خطأ.");
     }
   },
 };
