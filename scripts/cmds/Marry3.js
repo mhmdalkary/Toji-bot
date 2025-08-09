@@ -5,7 +5,7 @@ const fs = require("fs-extra");
 module.exports = {
         config: {
                 name: "زوجني3", 
-                aliases: ["زواج"], 
+                aliases: ["3زواج"], 
                 version: "1.0", 
                 author: "Ncs Pro", 
                 role: 0,
