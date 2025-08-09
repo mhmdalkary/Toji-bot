@@ -1,4 +1,4 @@
-name: Run Priyanh-Bot-V2
+name: Run Toji-Bot-V2
 
 on:
   push:
@@ -7,14 +7,14 @@ on:
   pull_request:
     branches:
       - main
-  workflow_dispatch:
+  workflow_dispatch:   # تشغيل يدوي
   schedule:
     - cron: '0 */6 * * *'  # كل 6 ساعات
 
 jobs:
   run-bot:
     runs-on: ubuntu-latest
-    timeout-minutes: 360  # يوقف بعد 6 ساعات كحد أقصى
+    timeout-minutes: 360  # إيقاف بعد 6 ساعات كحد أقصى
 
     steps:
       - name: Cancel previous runs
@@ -24,19 +24,12 @@ jobs:
 
       - name: Checkout code
         uses: actions/checkout@v4
-        with:
-          fetch-depth: 0  # مهم علشان نقدر نعدل على فرع آخر
 
-      # استرجاع بيانات البوت
-      - name: Restore bot data
-        uses: actions/cache@v4
+      - name: Restore bot data cache
+        uses: actions/cache@v3
         with:
-          path: |
-            database
-            config
-            configCommands
-            account
-          key: bot-data-cache
+          path: database
+          key: bot-data
 
       - name: Set up Node.js
         uses: actions/setup-node@v4
@@ -48,37 +41,3 @@ jobs:
 
       - name: Run the bot
         run: node index.js
-
-      # حفظ بيانات البوت في الـ cache
-      - name: Save bot data
-        uses: actions/cache@v4
-        with:
-          path: |
-            database
-            config
-            configCommands
-            account
-          key: bot-data-cache
-
-      # رفع نسخة احتياطية إلى فرع bot-backups
-      - name: Push backup to branch
-        run: |
-          git config user.name "github-actions[bot]"
-          git config user.email "github-actions[bot]@users.noreply.github.com"
-
-          # نسخ الملفات المهمة لمجلد مؤقت
-          mkdir backup
-          cp -r database backup/
-          cp -r config backup/
-          cp -r configCommands backup/
-          cp -r account backup/
-
-          # تبديل للفرع الخاص بالباك أب
-          git checkout --orphan bot-backups
-          git rm -rf .
-          mv backup/* ./
-          rm -rf backup
-
-          git add .
-          git commit -m "Backup on $(date)"
-          git push --force origin bot-backups
