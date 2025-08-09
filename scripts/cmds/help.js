@@ -75,7 +75,7 @@ module.exports = {
     }
 
     // بناء رسالة الأوامر بالشكل الجديد مع 3 أوامر في كل سطر
-    let msg = "◈ ───『قائمة الاوامر』─── ◈\n\n";
+    let msg = " ───< قائمة توجي >─── \n\n";
 
     for (const [category, commandsList] of Object.entries(categories)) {
       msg += ` ${category.toUpperCase()} :\n`;
@@ -93,9 +93,8 @@ module.exports = {
     }
 
     msg += `◈ ─────────────── ◈\n`;
-    msg += `│←› عدد الاوامر هو: ${Object.values(categories).flat().length}\n`;
-    msg += `│←› لحذف رسائل قم بالرد بـ ح\n`;
-    msg += `│←› استمتع بـ توجي\n`;
+    msg += `│TB: عدد الاوامر المتاحة: ${Object.values(categories).flat().length}\n`;
+    msg += `│TB: لحذف رسالة قم بالرد بـ ح\n`;
 
     // إرسال الرسالة مع الصورة الثابتة  
     const imagePath = path.join(__dirname, "commands.png");
