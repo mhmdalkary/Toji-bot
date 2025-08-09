@@ -78,7 +78,7 @@ module.exports = {
     let msg = "◈ ───『قائمة الاوامر』─── ◈\n\n";
 
     for (const [category, commandsList] of Object.entries(categories)) {
-      msg += `◯ ${category.toUpperCase()} :\n`;
+      msg += ` ${category.toUpperCase()} :\n`;
 
       // ترتيب الأوامر أبجدياً
       const sortedCmds = commandsList.sort((a, b) => a.name.localeCompare(b.name));
@@ -86,7 +86,7 @@ module.exports = {
       // تقسيم الأوامر إلى صفوف كل صف 3 أوامر
       for (let i = 0; i < sortedCmds.length; i += 2) {
         const slice = sortedCmds.slice(i, i + 2).map(cmd => cmd.name);
-        msg += `◉ ${slice.join(" ◉ ")}\n`;
+        msg += `+ ${slice.join(" + ")}\n`;
       }
 
       msg += "———————————————\n\n";
