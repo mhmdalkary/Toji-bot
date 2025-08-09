@@ -1,0 +1,21 @@
+name: backup-data
+
+on:
+  push:               # أي تعديل في الملفات
+    paths:
+      - "database/**" # فقط إذا تغير شيء داخل مجلد database
+  workflow_dispatch:  # إمكانية التشغيل اليدوي
+
+jobs:
+  backup:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Commit and push backup
+        run: |
+          git config --global user.name "github-actions[bot]"
+          git config --global user.email "github-actions[bot]@users.noreply.github.com"
+          git add database
+          git commit -m "Auto backup database [skip ci]" || echo "No changes to commit"
+          git push
