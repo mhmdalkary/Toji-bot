@@ -1,61 +1,48 @@
 const axios = require('axios');
-
+const FormData = require('form-data');
 
 module.exports = {
-
   config: {
-
-    name: "إيمجور",
-
+    name: "رابط",
+    aliases: ["i"],
     version: "1.0",
-
-    author: "kaizenji",//cliff API 
-
+    author: "OtinXSandip",
     countDown: 5,
-
     role: 0,
-
-    longDescription: { ar: "قم برفع صورة، صورة متحركة ، أو مقطع"},
-
-    category: "صور",
-
+    shortDescription: {
+      ar: "قم برفع صورة إلى i.imgbb"
+    },
+    longDescription: {
+      ar: "قم بتحميل الصورة على imgbb عن طريق الرد على الصورة"
+    },
+    category: "خدمات",
     guide: {
-
-      ar: "{pn} فقط رد على المرفق"
-
+      ar: ""
     }
-
   },
 
-
-  onStart: async function ({ message, api, event }) {
-
-    const pogi = event.messageReply?.attachments[0]?.url;
-
-
-    if (!pogi) {
-
-      return message.reply(' ❗ | أرجوك.قم بالرد على صورة ، صورة متحركة ، أو مقطع');
-
+  onStart: async function ({ api, event }) {
+    const imgbbApiKey = "1b4d99fa0c3195efe42ceb62670f2a25"; // Replace "YOUR_API_KEY_HERE" with your actual API key
+    const linkanh = event.messageReply?.attachments[0]?.url;
+    if (!linkanh) {
+      return api.sendMessage(' ⚠️ |الرجاء الرد على الصورة.', event.threadID, event.messageID);
     }
-
 
     try {
-
-      const res = await axios.get(`https://69070.replit.app/imgur2?link=${encodeURIComponent(pogi)}`);
-
-      const kaiz = res.data.uploaded.image;
-
-      return message.reply(kaiz);
-
+      const response = await axios.get(linkanh, { responseType: 'arraybuffer' });
+      const formData = new FormData();
+      formData.append('image', Buffer.from(response.data, 'binary'), { filename: 'image.png' });
+      const res = await axios.post('https://api.imgbb.com/1/upload', formData, {
+        headers: formData.getHeaders(),
+        params: {
+          key: imgbbApiKey
+        }
+      });
+      const imageLink = res.data.data.url;
+      return api.sendMessage(imageLink, event.threadID, event.messageID);
     } catch (error) {
-
-      console.error(error);
-
-      return message.reply('api sucks bro.');
-
+      console.log(error);
+      return api.sendMessage('فشل تحميل الصورة إلى imgbb.', event.threadID, event.messageID);
     }
-
   }
-
 };
