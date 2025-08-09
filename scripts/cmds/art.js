@@ -1,84 +1,42 @@
-const axios = require("axios");
-const { getStreamFromURL } = global.utils;
-
-
-const models = {
-  "1": "أنيمي الأولي",
-  "2": "الحرتون الأولي",
-  "3": "نمط الأنمي: زي الخادمة",
-  "4": "نمط الأنمي: فاتنة الشاطئ",
-  "5": "نمط الأنمي: خيال حلو",
-  "6": "نمط الأنمي: قصة حب كوميدية",
-  "7": "نمط الأنمي: ذكريات المدرسة الثانوية",
-  "8": "نمط الأنمي: عيد الميلاد الاحتفالي",
-  "9": "فن الأنمي: مغامرة القراصنة ( ونبيس)",
-  "10": "فن الأنمي: إحساس نجم البوب (أومشي نوحو)",
-  "11": "فن الأنمي: تراث النينجا (ناروتو )",
-  "12": "فن الأنمي: سوبر ووريورز ( دراغون بول زيد )",
-  "13": "فن الأنمي: دفتر الظلام (مذكرة الموت )",
-  "14": "فن الأنمي: المعركة الأبدية ( بليتش )",
-  "15": "فن الأنمي: أجنحة القدر ( أوت )",
-  "16": "فن الأنمي : الخطأ السحري  (جوجيتسو كايسن)",
-  "17": "فن الأنمي: معجزة التنس (أمير التنس).)",
-  "18": "فن الأنمي: سجلات قاتل الشياطين (قاتل الشياطين)",
-  "19": "فن الرسوم المتحركة: مغامرات كيميائية (الكيميائي المعدني الكامل)",
-  "20": "فن الأنمي: المستقبل البطولي (أكاديمية بطلي).)",
-  "21": "فن الأنمي: مهمة ما قبل التاريخ (دكتور ستون)",
-  "22": "فن الأنمي: صراع المحكمة (هايكيو)"
-};
+const axios = require('axios');
+const fs = require('fs-extra');
 
 module.exports = {
   config: {
-    name: "فن",
+    name: "انمي",
+    aliases: [],
     version: "1.0",
-    author: "SiAM",// Don't change 
-    countDown: 15,
+    author: "حسين يعقوبي",
+    countDown: 2,
     role: 0,
-    shortDescription: "قم بتحويل نفسك إلى شخصبة أنمي",
-    longDescription: "تقوم بتحويل الشخص إلى شخصية انمي بفضل فيلتر.",
-    category: "الذكاء الاصطناعي",
-    guide: {
-      ar: "{pn} [رقم النموذج]\nمثال : {pn} 2\n\nوهنا النماذج المتاحة:\n" + Object.entries(models).map(([number, name]) => `❏ ${number} : ${name}`).join("\n")
-    }
+    shortDescription: "تحويل الصورة إلى نمط أنيمي",
+    longDescription: "تحويل صورة على طريقة الأنمي",
+    category: "أنمي",
+    guide: "{pn} {قم بالرد على صورة}"
   },
 
-  onStart: async function ({ api, args, message, event }) {
+  onStart: async function ({ api, event, args }) {
+    const { threadID, messageID } = event;
+
+    const imageUrl = event.messageReply && event.messageReply.attachments[0].url ? event.messageReply.attachments[0].url : args.join(" ");
+
     try {
-      if (args[0] === "قائمة") {
-            const modelList = Object.entries(models).map(([number, name]) => `❏ ${number} : ${name}`).join("\n");
-            return message.reply("⚜️ | أليك قائمة النماذج المتاحة :\n" + modelList);
-      }
-      const [modelNumber] = args;
+      const response = await axios.get(`https://sandipapi.onrender.com/anime`);
+      const image = response.data.url;
 
-      if (!modelNumber || isNaN(modelNumber) || !models[modelNumber]) {
-        return message.reply(" ⚠️ | النموذج اللذي أدخلته غير موجود في القائمة .\n\nأكتب : ©تحويل_إلى_أنمي قائمة\nلترى كل النماذج المتاحة");
-      }
+      const imgResponse = await axios.get(image, { responseType: "arraybuffer" });
+      const img = Buffer.from(imgResponse.data, 'binary');
 
-      if (!(event.type === "message_reply" && event.messageReply.attachments && event.messageReply.attachments.length > 0 && ["photo", "sticker"].includes(event.messageReply.attachments[0].type))) {
-        return message.reply("يرجى الرد على الصورة لتطبيق فيلتر الأنمي على الصورة.⚠");
-      }
+      const pathie = __dirname + `/cache/animefy.jpg`;
+      fs.writeFileSync(pathie, img);
 
-      const imageUrl = event.messageReply.attachments[0].url;
-      const encodedImageUrl = encodeURIComponent(imageUrl);
+      api.sendMessage({
+        body: " ✨ إليك صورة الأنمي :",
+        attachment: fs.createReadStream(pathie)
+      }, threadID, () => fs.unlinkSync(pathie), messageID);
 
-      const processingMessage = message.reply(` ⚙️ |جارٍ تطبيق عامل التصفية، برجاء الانتظار...\nالنموذج المستخدم : ${modelNumber} (${models[modelNumber]})\n ⌛ | يرجى الإنتظار...`);
-
-      const response = await axios.get(`https://simoapi-aimirror.onrender.com/generate?imageUrl=${encodedImageUrl}&modelNumber=${modelNumber}`);
-
-      const { imageUrl: generatedImageUrl } = response.data;
-      const Stream = await getStreamFromURL(generatedImageUrl);
-
-      await message.reply({
-        body: ` ✨ | تم تطبيق فيلتر الأنمي \nالنموذج المستخدم : ${modelNumber} (${models[modelNumber]})`,
-        attachment: Stream,
-      });
-
-      message.reaction("✅", event.messageID);
-      message.unsend((await processingMessage).messageID);
-
-    } catch (error) {
-      console.error(error);
-      message.reply(" ⚠️ |فشل في تطبيق مرشح الأنيمي.⚠");
+    } catch (e) {
+      api.sendMessage(` ❌ | حدث خطأ :\n\n${e}`, threadID, messageID);
     }
   }
 };
