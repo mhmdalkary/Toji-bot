@@ -13,7 +13,7 @@ module.exports = {
     role: 0,
     shortDescription: "@منشن لفتاة من أجل طلب يدها للزواج",
     longDescription: "",
-    category: "طلب",
+    category: "ميمز وتعديل الصور",
     guide: "{pn} @منشن/@تاغ"
   },
 
