@@ -73,7 +73,7 @@ module.exports = {
     role: 0,
     shortDescription: "قم بتشغيل أغاني عن طريق سبوتيفاي",
     longDescription: "قم بتشغيل أغانيك المفضلة عن كريقة سبوتيفاي",
-    category: "أدوات",
+    category: "خدمات",
     guide: "{p}سبوتيفاي {إسم الأغني } أو رد على أغنية او مقطع بإستخدام {p}سبوتيفاي"
   },
   onStart: function ({ api, event, args, message }) {
