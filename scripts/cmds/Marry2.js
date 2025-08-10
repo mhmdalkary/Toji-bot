@@ -13,7 +13,7 @@ module.exports = {
     role: 0,
     shortDescription: "قم بالحصول على زوجة",
     longDescription: "",
-    category: "حب",
+    category: "ميمز وتعديل الصور",
     guide: "{pn}"
   },
 
