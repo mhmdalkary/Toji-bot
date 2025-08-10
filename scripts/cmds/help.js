@@ -92,7 +92,7 @@ module.exports = {
       msg += "———————————————\n\n";
     }
 
-    msg += `「 ─────────────── 」\n`;
+    msg += `「 ────────────── 」\n`;
     msg += `│TB: عدد الاوامر المتاحة: ${Object.values(categories).flat().length}\n`;
     msg += `│TB: لحذف رسالة قم بالرد بـ ح\n`;
 
