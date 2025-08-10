@@ -21,7 +21,7 @@ onChat: async function({
 
     if (event.body && event.body.toLowerCase() == "تحبك") return message.reply("\nحبك برص")
 
-    if (event.body && event.body.toLowerCase() == "توجي") return message.reply("\n 😳 خطيني")
+    if (event.body && event.body.toLowerCase() == "حمود") return message.reply("\n 😳 عيونه")
 
     if (event.body && event.body.toLowerCase() == "حمادي") return message.reply("\nلا تزعج المطور💢")
 
@@ -49,7 +49,7 @@ onChat: async function({
 
     if (event.body && event.body.toLowerCase() == "🗿") return message.reply("\n:-:؟")
 
-    if (event.body && event.body.toLowerCase() == "سبنرا") return message.reply("\n دير بالك من تزعجها")
+    if (event.body && event.body.toLowerCase() == "سينرا") return message.reply("\n دير بالك من تزعجها")
 
     if (event.body && event.body.toLowerCase() == "ون بيس عمك") 
 return message.reply("\nاتفق")
@@ -60,9 +60,9 @@ return message.reply("\nاتفق")
 
     if (event.body && event.body.toLowerCase() == "بحبك") return message.reply("\nحبك برص")
 
-    if (event.body && event.body.toLowerCase() == "نيرو") return message.reply("\n 😳وي")
+    if (event.body && event.body.toLowerCase() == "توته") return message.reply("\n 😳وي")
 
-    if (event.body && event.body.toLowerCase() == "عنتر") return message.reply("\nلا تزعجو مطوري😾💢")
+    if (event.body && event.body.toLowerCase() == "حمودي") return message.reply("\nلا تزعجو مطوري😾💢")
 
     if (event.body && event.body.toLowerCase() == "سلام عليكم") return message.reply("\nوعليكم سلام")
 
@@ -75,8 +75,8 @@ return message.reply("\nكذاب")
     if (event.body && event.body.toLowerCase() =="😐") 
 return message.reply("\n😐")
 
-    if (event.body && event.body.toLowerCase() =="اوامر") 
-return message.reply("\nضع نقطة ")
+    if (event.body && event.body.toLowerCase() =="😺") 
+return message.reply("\nمياووو  ")
 
     if (event.body && event.body.toLowerCase() =="كيفك") 
 return message.reply("\nالحمدلله مشتاقين")
@@ -90,13 +90,13 @@ return message.reply("\n😾💢ايموجي مستفز")
     if (event.body && event.body.toLowerCase() =="اي") 
 return message.reply("\nكذب")
 
-    if (event.body && event.body.toLowerCase() =="بتعرف موسى") 
-return message.reply("\nيلي دحشلك الكوسى")
+    if (event.body && event.body.toLowerCase() =="موسى") 
+return message.reply("\nموسى كوسى")
 
     if (event.body && event.body.toLowerCase() =="انجب") 
 return message.reply("\nعيب")
 
-    if (event.body && event.body.toLowerCase() =="الاوامر") return message.reply("\n ضع نقطة")
+    if (event.body && event.body.toLowerCase() =="هلا") return message.reply("\nنورتت")
 
     if (event.body && event.body.toLowerCase() =="منور") 
 return message.reply("\n بوجودك عيوني ")
@@ -107,7 +107,7 @@ return message.reply("\nبوجودك عيوني")
     if (event.body && event.body.toLowerCase() =="احمد") 
 return message.reply("\n احمد محسن")
 
-    if (event.body && event.body.toLowerCase() == "حسنا") return message.reply("\n 😽")
+    if (event.body && event.body.toLowerCase() == "طيب") return message.reply("\n 😽")
 
     if (event.body && event.body.toLowerCase() == "احبك") return message.reply("\nمي طو برو نرتبط؟")
 
@@ -119,13 +119,13 @@ return message.reply("\n احمد محسن")
 
     if (event.body && event.body.toLowerCase() == "ايوا") return message.reply("\nايواااااااا")
 
-    if (event.body && event.body.toLowerCase() == "طز") return message.reply("\n في ابوك")
+    if (event.body && event.body.toLowerCase() == "طز") return message.reply("\nفيك")
 
     if (event.body && event.body.toLowerCase() == "تم") return message.reply("\nهل انت نعسان؟")
 
     if (event.body && event.body.toLowerCase() == "حصل") return message.reply("\nهل انت بصل🌰؟")
 
-    if (event.body && event.body.toLowerCase() == "بانكاي") return message.reply("\n ")
+    if (event.body && event.body.toLowerCase() == "بانكاي") return message.reply("\n عيب")
 
     if (event.body && event.body.toLowerCase() == "🥺") return message.reply("\nعيب!!")
 
