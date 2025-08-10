@@ -8,7 +8,7 @@ module.exports = {
     role: 0,
     shortDescription: "مجموعة من فيديوهات الأنمي",
     longDescription: "سوف يرسل لك مختلف الصور للأنمي",
-    category: "ميمز وتعديل الصور",
+    category: "وسائط",
     guide: "{pn} مقطع_أنمي",
   },
 
