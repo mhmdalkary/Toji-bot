@@ -5,7 +5,6 @@ const path = require("path");
 const maxStorageMessage = 50;
 const PROMPT_FILE = path.join(__dirname, "../data/toji_prompt.json");
 
-// معرف المطور (غيره برقمك)
 const DEVELOPER_ID = "100087632392287";
 
 if (!global.temp.mistralHistory) global.temp.mistralHistory = {};
@@ -23,12 +22,10 @@ const defaultPrompt = `أنت توجي فيوشيغورو من أنمي جوجو
 function loadPrompt() {
   try {
     if (!fs.existsSync(PROMPT_FILE)) {
-      // الملف غير موجود، ننشئه مع البرومبت الافتراضي
       fs.mkdirSync(path.dirname(PROMPT_FILE), { recursive: true });
       fs.writeFileSync(PROMPT_FILE, JSON.stringify({ prompt: defaultPrompt }, null, 2), "utf-8");
       return defaultPrompt;
     }
-    // إذا الملف موجود نقرأه
     const data = fs.readFileSync(PROMPT_FILE, "utf-8");
     const json = JSON.parse(data);
     return json.prompt || defaultPrompt;
@@ -50,14 +47,38 @@ function savePrompt(newPrompt) {
 
 let currentPrompt = loadPrompt();
 
+async function generateResponse(userId, query) {
+  if (!mistralHistory[userId]) mistralHistory[userId] = [];
+  let history = mistralHistory[userId]
+    .map((entry) => `${entry.role}: ${entry.content}`)
+    .join("\n");
+  let finalQuery = history
+    ? `${currentPrompt}\n\nالسياق:\n${history}\n\nمستخدم: ${query}`
+    : `${currentPrompt}\n\n${query}`;
+
+  const apiUrl = `https://cat-x-xr1v.onrender.com/catx?q=${encodeURIComponent(finalQuery)}`;
+  const res = await axios.get(apiUrl);
+
+  if (!res.data || !res.data.response) throw new Error("لا يوجد رد");
+
+  const { response } = res.data;
+
+  mistralHistory[userId].push({ role: "مستخدم", content: query });
+  mistralHistory[userId].push({ role: "توجي", content: response });
+
+  if (mistralHistory[userId].length > maxStorageMessage) mistralHistory[userId].shift();
+
+  return response;
+}
+
 module.exports = {
   config: {
     name: "توجي",
     aliases: ["تو", "ذكاء", "ai"],
-    version: "2.3",
+    version: "2.4",
     role: 0,
     countDown: 5,
-    author: "إيهاب - تطوير برومبت قابل للتعديل",
+    author: "إيهاب",
     shortDescription: { ar: "دردشة مع توجي" },
     longDescription: { ar: "تحدث مع توجي بأسلوبه البارد والسّاخر أحيانًا." },
     category: "الذكاء AI",
@@ -69,16 +90,10 @@ module.exports = {
   },
 
   onStart: async ({ api, args, message, event }) => {
-    if (!mistralHistory[event.senderID]) mistralHistory[event.senderID] = [];
+    if (!args.length) return message.reply("⚠️ | اكتب سؤالك بعد الأمر.");
 
-    // دعم أمر تعيين المحادثة (مسح التاريخ)
-    if (args[0]?.toLowerCase() === "تعيين") {
-      mistralHistory[event.senderID] = [];
-      return message.reply("✅ | تم مسح سجل المحادثة.");
-    }
-
-    // أمر تغيير البرومبت (للمطور فقط)
-    if (args[0]?.toLowerCase() === "برومبت") {
+    // دعم تغيير البرومبت (للمطور فقط)
+    if (args[0].toLowerCase() === "برومبت") {
       if (event.senderID !== DEVELOPER_ID)
         return message.reply("❌ | فقط المطور يمكنه تعديل البرومبت.");
       const newPrompt = args.slice(1).join(" ").trim();
@@ -96,10 +111,12 @@ module.exports = {
       }
     }
 
-    // إذا ما كتب المستخدم أي نص
-    if (!args.length) return message.reply("⚠️ | اكتب سؤالك أو طلبك بعد الأمر.");
+    // دعم تعيين (مسح المحادثة)
+    if (args[0].toLowerCase() === "تعيين") {
+      mistralHistory[event.senderID] = [];
+      return message.reply("✅ | تم مسح سجل المحادثة.");
+    }
 
-    // نص المستخدم كامل للسؤال
     const query = args.join(" ");
     if (query.length > 1250) return message.reply("❌ | النص طويل جدًا.");
 
@@ -110,29 +127,7 @@ module.exports = {
     }
 
     try {
-      let history = mistralHistory[event.senderID]
-        .map((entry) => `${entry.role}: ${entry.content}`)
-        .join("\n");
-      let finalQuery = history
-        ? `${currentPrompt}\n\nالسياق:\n${history}\n\nمستخدم: ${query}`
-        : `${currentPrompt}\n\n${query}`;
-
-      const apiUrl = `https://cat-x-xr1v.onrender.com/catx?q=${encodeURIComponent(finalQuery)}`;
-      const res = await axios.get(apiUrl);
-
-      if (!res.data || !res.data.response) {
-        return message.reply("❌ | لم يصل رد من توجي.");
-      }
-
-      const { response } = res.data;
-
-      mistralHistory[event.senderID].push({ role: "مستخدم", content: query });
-      mistralHistory[event.senderID].push({ role: "توجي", content: response });
-
-      if (mistralHistory[event.senderID].length > maxStorageMessage) {
-        mistralHistory[event.senderID].shift();
-      }
-
+      const response = await generateResponse(event.senderID, query);
       return message.reply(`＊/ ${response}`);
     } catch (error) {
       console.error("خطأ في API توجي:", error);
@@ -140,15 +135,24 @@ module.exports = {
     }
   },
 
+  onMessage: async ({ event, message }) => {
+    // يرد لو الرسالة تحتوي كلمة "توجي" بدون أمر
+    if (!event.body) return;
+    const text = event.body.toLowerCase();
+    if (text.includes("توجي")) {
+      try {
+        const response = await generateResponse(event.senderID, event.body);
+        return message.reply(`＊/ ${response}`);
+      } catch (error) {
+        console.error("خطأ في API توجي:", error);
+      }
+    }
+  },
+
   onReply: async ({ message, event, Reply, args }) => {
     if (event.senderID !== Reply.author) return;
 
-    // دعم الردود كما في onStart (مسح التاريخ أو تغيير البرومبت)
-    if (args[0]?.toLowerCase() === "تعيين") {
-      mistralHistory[event.senderID] = [];
-      return message.reply("✅ | تم مسح سجل المحادثة.");
-    }
-
+    // دعم تغيير البرومبت (للمطور فقط)
     if (args[0]?.toLowerCase() === "برومبت") {
       if (event.senderID !== DEVELOPER_ID)
         return message.reply("❌ | فقط المطور يمكنه تعديل البرومبت.");
@@ -167,35 +171,19 @@ module.exports = {
       }
     }
 
+    // دعم تعيين (مسح المحادثة)
+    if (args[0]?.toLowerCase() === "تعيين") {
+      mistralHistory[event.senderID] = [];
+      return message.reply("✅ | تم مسح سجل المحادثة.");
+    }
+
     if (!args.length) return message.reply("⚠️ | اكتب سؤالك أو طلبك بعد الأمر.");
 
     const query = args.join(" ");
     if (query.length > 1250) return message.reply("❌ | النص طويل جدًا.");
 
     try {
-      let history = mistralHistory[event.senderID]
-        .map((entry) => `${entry.role}: ${entry.content}`)
-        .join("\n");
-      let finalQuery = history
-        ? `${currentPrompt}\n\nالسياق:\n${history}\n\nمستخدم: ${query}`
-        : `${currentPrompt}\n\n${query}`;
-
-      const apiUrl = `https://cat-x-xr1v.onrender.com/catx?q=${encodeURIComponent(finalQuery)}`;
-      const res = await axios.get(apiUrl);
-
-      if (!res.data || !res.data.response) {
-        return message.reply("❌ | لم يصل رد من توجي.");
-      }
-
-      const { response } = res.data;
-
-      mistralHistory[event.senderID].push({ role: "مستخدم", content: query });
-      mistralHistory[event.senderID].push({ role: "توجي", content: response });
-
-      if (mistralHistory[event.senderID].length > maxStorageMessage) {
-        mistralHistory[event.senderID].shift();
-      }
-
+      const response = await generateResponse(event.senderID, query);
       return message.reply(`＊/ ${response}`);
     } catch (error) {
       console.error("خطأ في API توجي:", error);
