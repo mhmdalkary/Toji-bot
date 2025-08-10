@@ -59,7 +59,7 @@ module.exports = {
     longDescription: {
       ar: "يقوم بإقتراح عليك أغاني من شارات سبيستون القديمة وعليك الرد بإسم المسلسل من اجل الفوز",
     },
-    category: "لعبة",
+    category: "العاب",
     guide: {
       ar: "{p}{n}",
     },
