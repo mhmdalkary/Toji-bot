@@ -16,7 +16,7 @@ module.exports = {
 			vi: "Tải video/slide (image), audio từ link tiktok",
 			ar: "كل ما يتعلق بتحميلات التيك توك 😐❤️"
 		},
-		category: "أدوات",
+		category: "خدمات",
 		guide: {
 			vi: "   {pn} [video|-v|v] <url>: dùng để tải video/slide (image) từ link tiktok."
 				+ "\n   {pn} [audio|-a|a] <url>: dùng để tải audio từ link tiktok",
