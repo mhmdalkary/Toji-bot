@@ -16,7 +16,7 @@ module.exports = {
     role: 0,
     shortDescription: "العب لعبة رمي لوحة النرد",
     longDescription: "Dice Dash هي لعبة مستوحاة من ثعبان و سلم. تنافس مع صديق للوصول إلى المربع رقم 100. احذر من الثعابين واستفد من السلالم!",
-    category: "لعبة",
+    category: "العاب",
     guide: {
       en: "{p}ثعبان_و_سلم @منشن"
     }
