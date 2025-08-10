@@ -7,7 +7,7 @@ module.exports = {
     role: 0,
     shortDescription: "إختبار الذاكرة",
     longDescription: "قم بإختبار ذاكرتك",
-    category: "لعبة",
+    category: "العاب",
     guide: {
       ar: "{p}الذاكرة"
     }
