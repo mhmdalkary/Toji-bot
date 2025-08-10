@@ -18,7 +18,7 @@ module.exports = {
     role: 0,
     shortDescription: "تحويل النص إلى صوت",
     longDescription: "تحويل النص إلى صوت باستخدام شخصيات مختلفة",
-    category: "الترفيه",
+    category: "الخدمات",
     guide: {
       en: "{pn} [رقم الشخصية] [النص]"
     }
