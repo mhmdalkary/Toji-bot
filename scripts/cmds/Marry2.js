@@ -29,7 +29,8 @@ module.exports = {
       const outputPath = await bal(one, two);
       api.sendMessage(
         {
-          body: "「 أحبكي عزيزتي 🥰❤️ 」",
+          body: "「 ‏عَيناكِ جيشٌ لن أردَّ جُنودَه
+وأنا السعيدُ بِِرايتي البيضاَءِ 🥰❤️ 」",
           attachment: fs.createReadStream(outputPath)
         },
         event.threadID,
