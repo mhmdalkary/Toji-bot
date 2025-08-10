@@ -10,9 +10,9 @@ module.exports = {
                 role: 2,
                 description: {
                         vi: "Đổi avatar bot",
-                        en: "تغيير بروفايل البوت"
+                        ar: "تغيير بروفايل البوت"
                 },
-                category: "إدارةالبوت",
+                category: "إدارة البوت",
                 guide: {
                         vi: "   {pn} [<image url> | <phản hồi tin nhắn có ảnh>] [<caption> | để trống] [<expirationAfter (seconds)> | để trống]"
                                 + "\nPhản hồi 1 tin nhắn có chứa ảnh với nội dung: {pn}"
@@ -36,7 +36,7 @@ module.exports = {
                 ar: {
                         cannotGetImage: "❌ | حدث خطأ أثناء الاستعلام عن عنوان رابط الصورة",
                         invalidImageFormat: "❌ | صورة غير صالحة",
-                        changedAvatar: "✅ | تم تغيير صورة بروفايل البوت بنحاح"
+                        changedAvatar: "✔️ |: تم تغيير صورة بروفايل البوت بنحاح :|"
                 }
         },
 
