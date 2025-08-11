@@ -1,4 +1,4 @@
-n ame: Run Toji-Bot-V2
+#name: Run Toji-Bot-V2
 
 on:
   push:
