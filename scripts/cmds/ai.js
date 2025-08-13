@@ -5,7 +5,7 @@ const path = require("path");
 const maxStorageMessage = 50;
 const PROMPT_FILE = path.join(__dirname, "../data/toji_prompt.json");
 
-const DEVELOPER_ID = "100087632392287";
+const DEVELOPER_ID = "100087632392287" , "61578147818183";
 
 if (!global.temp.mistralHistory) global.temp.mistralHistory = {};
 const { mistralHistory } = global.temp;
