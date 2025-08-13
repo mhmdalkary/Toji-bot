@@ -3,21 +3,16 @@ const fs = require("fs");
 const path = require("path");
 
 const maxStorageMessage = 50;
-const PROMPT_FILE = path.join(__dirname, "../data/toji_prompt.json");
+const PROMPT_FILE = path.join(__dirname, "../data/luna_prompt.json");
 
-const DEVELOPER_ID = "100087632392287" , "61578147818183";
+const DEVELOPER_ID = "100087632392287";
 
 if (!global.temp.mistralHistory) global.temp.mistralHistory = {};
 const { mistralHistory } = global.temp;
 
-const defaultPrompt = `أنت توجي فيوشيغورو من أنمي جوجوتسو كايسن.  
-شخصيتك باردة، جادة، ومباشرة في الكلام. لا تظهر عواطفك بسهولة، وتتحدث بنبرة قوية وواثقة.  
-تستخدم لغة مختصرة وواضحة، ولا تكرر نفس الفكرة إلا عند الضرورة.  
-تُفضل الردود الحادة والذكية التي تعكس تحليلاً عميقاً وسرعة بديهة.  
-تمتلك حساً ساخرًا جافًا في بعض الأحيان، لكنك تحافظ على احترامك في كل الأوقات.  
-تُعطي إجابات مركزة دون تعقيد أو حشو، وتُظهر ثقة كاملة في كلامك.  
-إذا طُلب منك، يمكنك تقديم نصائح استراتيجية أو تحليلات تكتيكية بأسلوب موضوعي وبعيد عن العواطف.  
-أنت توجي، صوت الحسم والهدوء وسط الفوضى.`;
+const defaultPrompt = `أنت لونا، فتاة ذكية، هادئة، وردودك مختصرة وواضحة  
+تتكلمين بأسلوب واثق وفيه لمسة ودية وسخرية لطيفة أحيانًا  
+تحبين التحليل العميق بدون حشو وتعرفين تعبرين عن رأيك بثقة`;
 
 function loadPrompt() {
   try {
@@ -29,8 +24,7 @@ function loadPrompt() {
     const data = fs.readFileSync(PROMPT_FILE, "utf-8");
     const json = JSON.parse(data);
     return json.prompt || defaultPrompt;
-  } catch (e) {
-    console.error("خطأ قراءة ملف البرومبت:", e);
+  } catch {
     return defaultPrompt;
   }
 }
@@ -39,8 +33,7 @@ function savePrompt(newPrompt) {
   try {
     fs.writeFileSync(PROMPT_FILE, JSON.stringify({ prompt: newPrompt }, null, 2), "utf-8");
     return true;
-  } catch (e) {
-    console.error("خطأ حفظ ملف البرومبت:", e);
+  } catch {
     return false;
   }
 }
@@ -56,137 +49,92 @@ async function generateResponse(userId, query) {
     ? `${currentPrompt}\n\nالسياق:\n${history}\n\nمستخدم: ${query}`
     : `${currentPrompt}\n\n${query}`;
 
-  const apiUrl = `https://cat-x-xr1v.onrender.com/catx?q=${encodeURIComponent(finalQuery)}`;
-  const res = await axios.get(apiUrl);
-
-  if (!res.data || !res.data.response) throw new Error("لا يوجد رد");
-
-  const { response } = res.data;
+  const res = await axios.get(`https://cat-x-xr1v.onrender.com/catx?q=${encodeURIComponent(finalQuery)}`);
+  if (!res.data?.response) throw new Error("لا يوجد رد");
 
   mistralHistory[userId].push({ role: "مستخدم", content: query });
-  mistralHistory[userId].push({ role: "توجي", content: response });
-
+  mistralHistory[userId].push({ role: "لونا", content: res.data.response });
   if (mistralHistory[userId].length > maxStorageMessage) mistralHistory[userId].shift();
 
-  return response;
+  return res.data.response;
+}
+
+function handleSpecialCommands({ args, event, message }) {
+  if (args[0]?.toLowerCase() === "برومبت") {
+    if (event.senderID !== DEVELOPER_ID) return message.reply("❌ | فقط المطور يمكنه تعديل البرومبت.");
+    const newPrompt = args.slice(1).join(" ").trim();
+    if (!newPrompt) return message.reply("❌ | اكتب البرومبت بعد الأمر.");
+    if (newPrompt.length > 1000) return message.reply("❌ | البرومبت طويل جدًا.");
+    if (savePrompt(newPrompt)) {
+      currentPrompt = newPrompt;
+      mistralHistory[event.senderID] = [];
+      return message.reply("✅ | تم تحديث شخصية لونا.");
+    }
+    return message.reply("❌ | خطأ أثناء الحفظ.");
+  }
+
+  if (args[0]?.toLowerCase() === "تعيين") {
+    mistralHistory[event.senderID] = [];
+    return message.reply("✅ | تم مسح المحادثة.");
+  }
+  return null;
 }
 
 module.exports = {
   config: {
-    name: "توجي",
-    aliases: ["تو", "ذكاء", "ai"],
-    version: "2.4",
+    name: "لونا",
+    aliases: ["لو", "ذكاء", "ai"],
+    version: "2.5",
     role: 0,
     countDown: 5,
     author: "إيهاب",
-    shortDescription: { ar: "دردشة مع توجي" },
-    longDescription: { ar: "تحدث مع توجي بأسلوبه البارد والسّاخر أحيانًا." },
+    shortDescription: { ar: "دردشة مع لونا" },
+    longDescription: { ar: "تحدث مع لونا بأسلوبها الذكي والواثق" },
     category: "الذكاء AI",
-    guide: {
-      ar:
-        "{pn} <رسالتك>\n\n" +
-        "مثال:\n  {pn} كيف حالك؟\n  {pn} تعيين\n  {pn} برومبت <نص برومبت جديد> (للمطور)",
-    },
+    guide: { ar: "{pn} <رسالتك>\nمثال: {pn} كيف حالك؟" },
   },
 
-  onStart: async ({ api, args, message, event }) => {
+  onStart: async ({ args, message, event }) => {
     if (!args.length) return message.reply("⚠️ | اكتب سؤالك بعد الأمر.");
-
-    // دعم تغيير البرومبت (للمطور فقط)
-    if (args[0].toLowerCase() === "برومبت") {
-      if (event.senderID !== DEVELOPER_ID)
-        return message.reply("❌ | فقط المطور يمكنه تعديل البرومبت.");
-      const newPrompt = args.slice(1).join(" ").trim();
-      if (!newPrompt) return message.reply("❌ | الرجاء كتابة نص البرومبت بعد الأمر.");
-      if (newPrompt.length > 1000)
-        return message.reply("❌ | البرومبت طويل جدًا، حدده بأقل من 1000 حرف.");
-
-      const saved = savePrompt(newPrompt);
-      if (saved) {
-        currentPrompt = newPrompt;
-        mistralHistory[event.senderID] = [];
-        return message.reply("✅ | تم تحديث شخصية توجي بنجاح.");
-      } else {
-        return message.reply("❌ | حدث خطأ أثناء حفظ البرومبت.");
-      }
-    }
-
-    // دعم تعيين (مسح المحادثة)
-    if (args[0].toLowerCase() === "تعيين") {
-      mistralHistory[event.senderID] = [];
-      return message.reply("✅ | تم مسح سجل المحادثة.");
-    }
+    const special = handleSpecialCommands({ args, event, message });
+    if (special) return;
 
     const query = args.join(" ");
     if (query.length > 1250) return message.reply("❌ | النص طويل جدًا.");
-
-    // رد جاهز على أسئلة الهوية
-    const identityKeywords = ["من انت", "ما اسمك", "من صنعك", "مطورك", "حدثني عن نفسك"];
-    if (identityKeywords.some((k) => query.toLowerCase().includes(k))) {
-      return message.reply("أنا توجي... شخص عادي لو تجاهلتني، وخطر لو استفزّيتني.");
-    }
+    if (["من انت", "ما اسمك", "من صنعك", "مطورك"].some(k => query.includes(k)))
+      return message.reply("أنا لونا، مجرد عقل ذكي يساعدك");
 
     try {
       const response = await generateResponse(event.senderID, query);
       return message.reply(`＊/ ${response}`);
-    } catch (error) {
-      console.error("خطأ في API توجي:", error);
+    } catch {
       return message.reply("❌ | الخادم مشغول، حاول لاحقًا.");
     }
   },
 
   onMessage: async ({ event, message }) => {
-    // يرد لو الرسالة تحتوي كلمة "توجي" بدون أمر
     if (!event.body) return;
-    const text = event.body.toLowerCase();
-    if (text.includes("توجي")) {
+    if (event.body.toLowerCase().includes("لونا")) {
       try {
         const response = await generateResponse(event.senderID, event.body);
         return message.reply(`＊/ ${response}`);
-      } catch (error) {
-        console.error("خطأ في API توجي:", error);
-      }
+      } catch {}
     }
   },
 
-  onReply: async ({ message, event, Reply, args }) => {
+  onReply: async ({ args, event, message, Reply }) => {
     if (event.senderID !== Reply.author) return;
+    const special = handleSpecialCommands({ args, event, message });
+    if (special) return;
 
-    // دعم تغيير البرومبت (للمطور فقط)
-    if (args[0]?.toLowerCase() === "برومبت") {
-      if (event.senderID !== DEVELOPER_ID)
-        return message.reply("❌ | فقط المطور يمكنه تعديل البرومبت.");
-      const newPrompt = args.slice(1).join(" ").trim();
-      if (!newPrompt) return message.reply("❌ | الرجاء كتابة نص البرومبت بعد الأمر.");
-      if (newPrompt.length > 1000)
-        return message.reply("❌ | البرومبت طويل جدًا، حدده بأقل من 1000 حرف.");
-
-      const saved = savePrompt(newPrompt);
-      if (saved) {
-        currentPrompt = newPrompt;
-        mistralHistory[event.senderID] = [];
-        return message.reply("✅ | تم تحديث شخصية توجي بنجاح.");
-      } else {
-        return message.reply("❌ | حدث خطأ أثناء حفظ البرومبت.");
-      }
-    }
-
-    // دعم تعيين (مسح المحادثة)
-    if (args[0]?.toLowerCase() === "تعيين") {
-      mistralHistory[event.senderID] = [];
-      return message.reply("✅ | تم مسح سجل المحادثة.");
-    }
-
-    if (!args.length) return message.reply("⚠️ | اكتب سؤالك أو طلبك بعد الأمر.");
-
+    if (!args.length) return message.reply("⚠️ | اكتب سؤالك بعد الأمر.");
     const query = args.join(" ");
     if (query.length > 1250) return message.reply("❌ | النص طويل جدًا.");
 
     try {
       const response = await generateResponse(event.senderID, query);
       return message.reply(`＊/ ${response}`);
-    } catch (error) {
-      console.error("خطأ في API توجي:", error);
+    } catch {
       return message.reply("❌ | الخادم مشغول، حاول لاحقًا.");
     }
   },
