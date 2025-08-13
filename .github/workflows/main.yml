@@ -1,43 +1,43 @@
-# name: Run Toji-Bot-V2
+name: Run Toji-Bot-V2
 
-# on:
-#   push:
-#     branches:
-#       - main
-#   pull_request:
-#     branches:
-#       - main
-#   workflow_dispatch:   # تشغيل يدوي
-#   schedule:
-#     - cron: '0 */6 * * *'  # كل 6 ساعات
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+  workflow_dispatch:
+  schedule:
+    - cron: '0 */6 * * *'
 
-# jobs:
-#   run-bot:
-#     runs-on: ubuntu-latest
-#     timeout-minutes: 360  # إيقاف بعد 6 ساعات كحد أقصى
+jobs:
+  run-bot:
+    runs-on: ubuntu-latest
+    timeout-minutes: 360
 
-#     steps:
-#       - name: Cancel previous runs
-#         uses: styfle/cancel-workflow-action@0.9.1
-#         with:
-#           access_token: ${{ secrets.GITHUB_TOKEN }}
+    steps:
+      - name: Cancel previous runs
+        uses: styfle/cancel-workflow-action@0.9.1
+        with:
+          access_token: ${{ secrets.GITHUB_TOKEN }}
 
-#       - name: Checkout code
-#         uses: actions/checkout@v4
+      - name: Checkout code
+        uses: actions/checkout@v4
 
-#       - name: Restore bot data cache
-#         uses: actions/cache@v3
-#         with:
-#           path: database
-#           key: bot-data
+      - name: Restore bot data cache
+        uses: actions/cache@v3
+        with:
+          path: database
+          key: bot-data
 
-#       - name: Set up Node.js
-#         uses: actions/setup-node@v4
-#         with:
-#           node-version: '20'
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
 
-#       - name: Install dependencies
-#         run: npm install
+      - name: Install dependencies
+        run: npm install
 
-#       - name: Run the bot
-#         run: node index.js
+      - name: Run the bot
+        run: node index.js
