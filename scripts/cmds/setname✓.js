@@ -18,15 +18,15 @@ module.exports = {
 		role: 0,
 		shortDescription: {
 			vi: "Đổi biệt danh ",
-			en: "تعديل الكنية"
+			ar: "تعديل الكنية"
 		},
 		longDescription: {
 			vi: "Đổi biệt danh của tất cả thành viên trong nhóm chat hoặc những thành viên được tag theo một định dạng",
-			en: "تعديل كنيات الأعضاء"
+			ar: "تعديل كنيات الأعضاء"
 		},
 		category: "إدارة المجموعة",
 		guide: {
-			vi: {
+			ar: {
 				body: "   {pn} <nick name>: thay đổi biệt danh của bản thân"
 					+ "\n   {pn} @tags <nick name>: thay đổi biệt danh của những thành viên được tag"
 					+ "\n   {pn} all <nick name>: thay đổi biệt danh của tất cả thành viên trong nhóm chat"
