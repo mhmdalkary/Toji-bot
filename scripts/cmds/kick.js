@@ -2,7 +2,7 @@ module.exports = {
 	config: {
 		name: "نفخ",
 		aliases: ["اطرد","خرجو"],
-		version: "1.6",
+		version: "1.8",
 		author: "sifo anter + تعديل",
 		countDown: 5,
 		role: 0,
@@ -15,23 +15,33 @@ module.exports = {
 		}
 	},
 
-	langs: {
-		ar: {
-		    needAdmin: "إجعل البوت أدمن كي يطرد الأعضاء."
-		}
-	},
-
 	onStart: async function ({ message, event, args, threadsData, api }) {
 		const adminIDs = await threadsData.get(event.threadID, "adminIDs");
 		const botID = api.getCurrentUserID();
 		const senderID = event.senderID;
 
-		// خلي ID المامي هنا
+		// ايدي المامي
 		const MOMMY_ID = "100027708669846";
 
+		// --- حماية المامي ---
+		// لو رد على المامي
+		if (event.messageReply && event.messageReply.senderID == MOMMY_ID) {
+			return message.reply("مقدر اطرد مامي 😔");
+		}
+
+		// لو عمل تاغ للمامي
+		if (args.length > 0) {
+			const uids = Object.keys(event.mentions);
+			if (uids.includes(MOMMY_ID)) {
+				return message.reply("مقدر اطرد مامي 😔");
+			}
+		}
+
+		// --- باقي الشغل ---
 		// لو البوت مش ادمن
-		if (!adminIDs.includes(botID)) 
+		if (!adminIDs.includes(botID)) {
 			return message.reply("إجعل البوت أدمن كي يطرد الأعضاء.");
+		}
 
 		// لو عضو عادي استعمل الامر
 		if (!adminIDs.includes(senderID) && senderID != botID) {
@@ -47,7 +57,7 @@ module.exports = {
 		async function kick(uid) {
 			// حماية المامي
 			if (uid == MOMMY_ID) {
-				return message.reply("مقدر اطرد المامي اسف 🙏");
+				return message.reply("مقدر اطرد مامي 😔");
 			}
 			try {
 				await api.removeUserFromGroup(uid, event.threadID);
@@ -59,24 +69,11 @@ module.exports = {
 		if (!args[0]) {
 			if (!event.messageReply) 
 				return message.SyntaxError();
-
-			// حماية لو رد على المامي
-			if (event.messageReply.senderID == MOMMY_ID) {
-				return message.reply("مقدر اطرد المامي اسف 🙏");
-			}
-
 			await kick(event.messageReply.senderID);
 		} else {
 			const uids = Object.keys(event.mentions);
 			if (uids.length === 0) 
 				return message.SyntaxError();
-
-			// حماية المامي في التاغ
-			if (uids.includes(MOMMY_ID)) {
-				message.reply("مقدر اطرد المامي اسف 🙏");
-				return;
-			}
-
 			await kick(uids.shift());
 			for (const uid of uids) kick(uid);
 		}
