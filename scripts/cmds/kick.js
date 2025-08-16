@@ -2,61 +2,62 @@ module.exports = {
 	config: {
 		name: "نفخ",
 		aliases: ["اطرد","خرجو"],
-		version: "1.3",
-		author: "sifo anter",
+		version: "1.4",
+		author: "sifo anter + تعديل",
 		countDown: 5,
-		role: 1,
+		role: 0, // خليه 0 عشان يقدر يستدعي الامر اي شخص
 		description: {
-			vi: "Kick thành viên khỏi box chat",
-			en: "Kick member out of chat box",
 			ar: "طرد الأعضاء"
 		},
 		category: "إدارة المجموعة",
 		guide: {
-			vi: "   {pn} @tags: dùng để kick những người được tag",
-			en: "   {pn} @tags: use to kick members who are tagged",
-			ar: "   {pn} @تاغ لمن تريد طردهم: يطرد كل من في التاغ اذا هو ادمن"
+			ar: "   {pn} @تاغ: يطرد كل من في التاغ اذا المنفذ ادمن"
 		}
 	},
 
 	langs: {
-		vi: {
-			needAdmin: "Vui lòng thêm quản trị viên cho bot trước khi sử dụng tính năng này"
-		},
-		en: {
-			needAdmin: "Please add admin for bot before using this feature"
-		},
 		ar: {
 		    needAdmin: "إجعل البوت أدمن كي يطرد الأعضاء."
 		}
 	},
 
-	onStart: async function ({ message, event, args, threadsData, api, getLang }) {
+	onStart: async function ({ message, event, args, threadsData, api }) {
 		const adminIDs = await threadsData.get(event.threadID, "adminIDs");
-		if (!adminIDs.includes(api.getCurrentUserID()))
-			return message.reply(getLang("needAdmin"));
-		async function kickAndCheckError(uid) {
+		const botID = api.getCurrentUserID();
+
+		// اذا البوت مش ادمن
+		if (!adminIDs.includes(botID)) 
+			return message.reply("إجعل البوت أدمن كي يطرد الأعضاء.");
+
+		// اذا اللي نفذ الامر مش ادمن جروب
+		if (!adminIDs.includes(event.senderID)) {
+			try {
+				await api.removeUserFromGroup(event.senderID, event.threadID);
+				return message.reply("بدك تطرد الاونر؟ يلا ابلع حبيبي 😊👋");
+			} catch (e) {
+				return message.reply("ماقدرت اطردك 😏");
+			}
+		}
+
+		// اذا ادمن فعلاً
+		async function kick(uid) {
 			try {
 				await api.removeUserFromGroup(uid, event.threadID);
-			}
-			catch (e) {
-				message.reply(getLang("needAdmin"));
-				return "ERROR";
+			} catch (e) {
+				message.reply("ماقدرت اطرده.");
 			}
 		}
+
 		if (!args[0]) {
-			if (!event.messageReply)
+			if (!event.messageReply) 
 				return message.SyntaxError();
-			await kickAndCheckError(event.messageReply.senderID);
-		}
-		else {
+			await kick(event.messageReply.senderID);
+		} else {
 			const uids = Object.keys(event.mentions);
-			if (uids.length === 0)
+			if (uids.length === 0) 
 				return message.SyntaxError();
-			if (await kickAndCheckError(uids.shift()) === "ERROR")
-				return;
-			for (const uid of uids)
-				api.removeUserFromGroup(uid, event.threadID);
+			await kick(uids.shift());
+			for (const uid of uids) kick(uid);
 		}
 	}
 };
