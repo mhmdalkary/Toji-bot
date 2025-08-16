@@ -5,7 +5,7 @@ module.exports = {
 		version: "1.4",
 		author: "sifo anter + تعديل",
 		countDown: 5,
-		role: 0, // خليه 0 عشان يقدر يستدعي الامر اي شخص
+		role: 1, // خليه 0 عشان يقدر يستدعي الامر اي شخص
 		description: {
 			ar: "طرد الأعضاء"
 		},
