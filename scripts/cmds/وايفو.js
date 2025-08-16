@@ -6,12 +6,12 @@ const path = require("path");
 module.exports = {
   config: {
     name: "زوجني",
-    version: "1.5",
-    author: "NTKhang | تعديل محمد",
+    version: "1.4",
+    author: "NTKhang",
     countDown: 10,
     role: 0,
-    shortDescription: "زواج عشوائي بمهر",
-    longDescription: "يركب صورتك وصورة شخص من الجنس الآخر على صورة زواج مع خصم المهر من رصيدك",
+    shortDescription: "زواج عشوائي",
+    longDescription: "يركب صورتك وصورة شخص من الجنس الآخر على صورة زواج",
     category: "ميمز وتعديل الصور",
     guide: { ar: "{pn}" }
   },
@@ -20,18 +20,10 @@ module.exports = {
     if (!event.isGroup)
       return api.sendMessage("❌ هذا الأمر يعمل فقط في المجموعات.", event.threadID);
 
-    const MEHR_AMOUNT = 500; // مبلغ المهر المطلوب
     const senderID = event.senderID;
     const senderData = await usersData.get(senderID);
-
-    // تحقق من الرصيد
-    if ((senderData.balance || 0) < MEHR_AMOUNT)
-      return api.sendMessage(`❌ ما عندك مهر كافي، مطلوب: ${MEHR_AMOUNT} 💰`, event.threadID);
-
-    // خصم المهر
-    await usersData.decrease(senderID, MEHR_AMOUNT);
-
     const gender = senderData.gender;
+
     if (![1, 2].includes(gender))
       return api.sendMessage("🏳️‍🌈 | آسف، هذا الأمر لا يدعم المثليين 😂", event.threadID);
 
@@ -106,10 +98,12 @@ module.exports = {
     const filePath = path.join(__dirname, "cache", `zawaj-${event.threadID}.png`);
     fs.writeFileSync(filePath, canvas.toBuffer());
 
+    
     const message = {
-      body: `💒 | تم الزواج بنجاح!\n❤️‍🔥 نسبة التوافق: ${lovePercent}%\n${girlName} ❤️ ${boyName}.\n💰 تم خصم المهر: ${MEHR_AMOUNT}`,
+      body: `💒 | تم الزواج بنجاح!\n❤️‍🔥 نسبة التوافق: ${lovePercent}%\n ${girlName} ❤️  ${boyName}.`,
       attachment: fs.createReadStream(filePath)
     };
+
 
     const sendWithRetry = (retries = 2) => {
       api.sendMessage(message, event.threadID, (err) => {
