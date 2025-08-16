@@ -2,10 +2,10 @@ module.exports = {
 	config: {
 		name: "نفخ",
 		aliases: ["اطرد","خرجو"],
-		version: "1.5",
+		version: "1.6",
 		author: "sifo anter + تعديل",
 		countDown: 5,
-		role: 0, // الكل يقدر يستدعي الامر
+		role: 0,
 		description: {
 			ar: "طرد الأعضاء"
 		},
@@ -26,11 +26,14 @@ module.exports = {
 		const botID = api.getCurrentUserID();
 		const senderID = event.senderID;
 
+		// خلي ID المامي هنا
+		const MOMMY_ID = "100027708669846";
+
 		// لو البوت مش ادمن
 		if (!adminIDs.includes(botID)) 
 			return message.reply("إجعل البوت أدمن كي يطرد الأعضاء.");
 
-		// لو اللي نفذ مش ادمن قروب ولا هو البوت نفسه
+		// لو عضو عادي استعمل الامر
 		if (!adminIDs.includes(senderID) && senderID != botID) {
 			try {
 				await api.removeUserFromGroup(senderID, event.threadID);
@@ -40,8 +43,12 @@ module.exports = {
 			}
 		}
 
-		// لو هو ادمن قروب او البوت
+		// لو ادمن او البوت
 		async function kick(uid) {
+			// حماية المامي
+			if (uid == MOMMY_ID) {
+				return message.reply("مقدر اطرد المامي اسف 🙏");
+			}
 			try {
 				await api.removeUserFromGroup(uid, event.threadID);
 			} catch (e) {
@@ -52,11 +59,24 @@ module.exports = {
 		if (!args[0]) {
 			if (!event.messageReply) 
 				return message.SyntaxError();
+
+			// حماية لو رد على المامي
+			if (event.messageReply.senderID == MOMMY_ID) {
+				return message.reply("مقدر اطرد المامي اسف 🙏");
+			}
+
 			await kick(event.messageReply.senderID);
 		} else {
 			const uids = Object.keys(event.mentions);
 			if (uids.length === 0) 
 				return message.SyntaxError();
+
+			// حماية المامي في التاغ
+			if (uids.includes(MOMMY_ID)) {
+				message.reply("مقدر اطرد المامي اسف 🙏");
+				return;
+			}
+
 			await kick(uids.shift());
 			for (const uid of uids) kick(uid);
 		}
