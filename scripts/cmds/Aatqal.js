@@ -7,14 +7,14 @@ module.exports = {
   config: {
     name: "اعتقال",
     aliases: ["arrest"],
-    version: "1.1",
+    version: "1.3",
     author: "milan-says | تعديل محمد",
     countDown: 5,
     role: 0,
     shortDescription: "قم بإعقال من خرق القوانين",
-    longDescription: "إعتقال أحد ما انطلاقا من وضعك للتاغ أو الرد عليه",
+    longDescription: "إعتقال أحد ما انطلاقا من وضعك للتاغ أو الرد عليه أو عشوائي من الجروب مع سبب ومدة العقوبة ونوعها",
     category: "ميمز وتعديل الصور",
-    guide: "{pn} [@تاغ] | الرد على رسالة"
+    guide: "{pn} [@تاغ] | الرد على رسالة | عشوائي"
   },
 
   onStart: async function({ api, event }) {
@@ -29,15 +29,37 @@ module.exports = {
     else if (event.type === "message_reply") {
       two = event.messageReply.senderID;
     }
+    // عشوائي من الجروب
     else {
-      return api.sendMessage("أرجوك قم بعمل منشن أو رد على رسالة الشخص الذي تريد إعتقاله", event.threadID, event.messageID);
+      const threadInfo = await api.getThreadInfo(event.threadID);
+      const members = threadInfo.participantIDs.filter(id => id != one);
+      if (members.length === 0) return api.sendMessage("ماكو أحد أقدر أعتقله 😅", event.threadID, event.messageID);
+      two = members[Math.floor(Math.random() * members.length)];
     }
+
+    // قائمة أسباب عشوائية
+    const reasons = [
+      "خرق القوانين",
+      "تشويه سمعة الجروب",
+      "مضايقة الأعضاء",
+      "نشر روابط ضارة",
+      "التأخر عن المواعيد",
+      "الإساءة اللفظية",
+      "خرق الخصوصية",
+      "استغلال الثقة"
+    ];
+    const punishments = ["سجن", "غرامة", "تحذير"];
+    const durations = ["1 ساعة", "3 ساعات", "6 ساعات", "12 ساعة", "1 يوم", "2 يوم", "3 يوم", "أسبوع"];
+
+    const randomReason = reasons[Math.floor(Math.random() * reasons.length)];
+    const randomPunishment = punishments[Math.floor(Math.random() * punishments.length)];
+    const randomDuration = durations[Math.floor(Math.random() * durations.length)];
 
     try {
       const outputPath = await bal(one, two);
       api.sendMessage(
         {
-          body: "أنت رهن الإعتقال 👮🔗",
+          body: `أنت رهن الإعتقال 👮🔗\nالسبب: ${randomReason}\nالعقوبة: ${randomPunishment}\nالمدة: ${randomDuration}`,
           attachment: fs.createReadStream(outputPath)
         },
         event.threadID,
