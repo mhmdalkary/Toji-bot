@@ -7,66 +7,76 @@ module.exports = {
   config: {
     name: "زوجني2",
     aliases: ["زواج", "waifu"],
-    version: "1.0",
-    author: "AceGun",
+    version: "1.1",
+    author: "AceGun | تعديل محمد",
     countDown: 5,
     role: 0,
     shortDescription: "قم بالحصول على زوجة",
     longDescription: "",
     category: "ميمز وتعديل الصور",
-    guide: "{pn}"
+    guide: "{pn} @تاغ | رد | عشوائي"
   },
 
-  onStart: async function({ api, event }) {
+  onStart: async function({ api, event, Threads }) {
     const mention = Object.keys(event.mentions);
-    if (mention.length === 0)
-      return api.sendMessage("أرجوك قم بعمل منشن للشخص الذي تريد الزواج به 🙃", event.threadID);
+    let one = event.senderID, two;
 
-    const one = mention.length === 1 ? event.senderID : mention[1];
-    const two = mention.length === 1 ? mention[0] : mention[0];
+    // بحالة التاغ
+    if (mention.length > 0) {
+      two = mention[0];
+    }
+    // بحالة الرد
+    else if (event.type === "message_reply") {
+      two = event.messageReply.senderID;
+    }
+    // عشوائي
+    else {
+      const threadInfo = await api.getThreadInfo(event.threadID);
+      const members = threadInfo.participantIDs.filter(id => id != one);
+      if (members.length === 0) {
+        return api.sendMessage("ماكو أحد أقدر أزوجك بيه 😅", event.threadID, event.messageID);
+      }
+      two = members[Math.floor(Math.random() * members.length)];
+    }
 
     try {
       const outputPath = await bal(one, two);
+      const match = Math.floor(Math.random() * 101); // نسبة تطابق من 0 الى 100
+
       api.sendMessage(
         {
-          body: "「 ‏عَيناكِ جيشٌ لن أردَّ جُنودَه
-وأنا السعيدُ بِِرايتي البيضاَءِ 🥰❤️ 」",
+          body: `💞 نسبة التوافق بينكم هي: ${match}%\n「 ‏عَيناكِ جيشٌ لن أردَّ جُنودَه وأنا السعيدُ بِِرايتي البيضاَءِ 🥰❤️ 」`,
           attachment: fs.createReadStream(outputPath)
         },
         event.threadID,
-        () => fs.unlink(outputPath, () => {})
+        () => fs.unlink(outputPath, () => {}),
+        event.messageID
       );
     } catch (err) {
       console.error(err);
-      api.sendMessage("حدث خطأ أثناء تجهيز الصورة.", event.threadID);
+      api.sendMessage("حدث خطأ أثناء تجهيز الصورة.", event.threadID, event.messageID);
     }
   }
 };
 
 async function bal(one, two) {
-  // رابط الصورة الأساسية الخلفية
   const templateURL = "https://i.postimg.cc/26f9zkTc/marry.png";
   const token = "6628568379%7Cc1e620fa708a1d5696fb991c1bde5662";
 
-  // روابط صور الفيسبوك
   const avoneURL = `https://graph.facebook.com/${one}/picture?width=512&height=512&access_token=${token}`;
   const avtwoURL = `https://graph.facebook.com/${two}/picture?width=512&height=512&access_token=${token}`;
 
-  // تحميل الصور
   const [bg, avoneImg, avtwoImg] = await Promise.all([
     loadImage(templateURL),
     loadImage(await fetchImageBuffer(avoneURL)),
     loadImage(await fetchImageBuffer(avtwoURL))
   ]);
 
-  // إنشاء كانفاس
   const canvas = createCanvas(bg.width, bg.height);
   const ctx = canvas.getContext("2d");
 
-  // رسم الخلفية
   ctx.drawImage(bg, 0, 0);
 
-  // دالة لرسم صورة دائرية
   function drawCircleImage(img, x, y, size) {
     ctx.save();
     ctx.beginPath();
@@ -77,18 +87,15 @@ async function bal(one, two) {
     ctx.restore();
   }
 
-  // رسم صور الأفاتار دائريًا مع الحجم والإحداثيات حسب تصميمك
   drawCircleImage(avoneImg, 189, 15, 60);
   drawCircleImage(avtwoImg, 122, 25, 60);
 
-  // حفظ الصورة محليًا
   const outputPath = path.join(__dirname, "marry.png");
   await fs.writeFile(outputPath, canvas.toBuffer("image/png"));
 
   return outputPath;
 }
 
-// دالة لتحويل رابط الصورة إلى بافر
 async function fetchImageBuffer(url) {
   const response = await axios.get(url, { responseType: "arraybuffer" });
   return response.data;
