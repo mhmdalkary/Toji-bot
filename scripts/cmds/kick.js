@@ -2,16 +2,16 @@ module.exports = {
 	config: {
 		name: "نفخ",
 		aliases: ["اطرد","خرجو"],
-		version: "1.4",
+		version: "1.5",
 		author: "sifo anter + تعديل",
 		countDown: 5,
-		role: 1, // خليه 0 عشان يقدر يستدعي الامر اي شخص
+		role: 0, // الكل يقدر يستدعي الامر
 		description: {
 			ar: "طرد الأعضاء"
 		},
 		category: "إدارة المجموعة",
 		guide: {
-			ar: "   {pn} @تاغ: يطرد كل من في التاغ اذا المنفذ ادمن"
+			ar: "{pn} @تاغ: يطرد كل من في التاغ اذا المنفذ ادمن"
 		}
 	},
 
@@ -24,22 +24,23 @@ module.exports = {
 	onStart: async function ({ message, event, args, threadsData, api }) {
 		const adminIDs = await threadsData.get(event.threadID, "adminIDs");
 		const botID = api.getCurrentUserID();
+		const senderID = event.senderID;
 
-		// اذا البوت مش ادمن
+		// لو البوت مش ادمن
 		if (!adminIDs.includes(botID)) 
 			return message.reply("إجعل البوت أدمن كي يطرد الأعضاء.");
 
-		// اذا اللي نفذ الامر مش ادمن جروب
-		if (!adminIDs.includes(event.senderID)) {
+		// لو اللي نفذ مش ادمن قروب ولا هو البوت نفسه
+		if (!adminIDs.includes(senderID) && senderID != botID) {
 			try {
-				await api.removeUserFromGroup(event.senderID, event.threadID);
+				await api.removeUserFromGroup(senderID, event.threadID);
 				return message.reply("بدك تطرد الاونر؟ يلا ابلع حبيبي 😊👋");
 			} catch (e) {
 				return message.reply("ماقدرت اطردك 😏");
 			}
 		}
 
-		// اذا ادمن فعلاً
+		// لو هو ادمن قروب او البوت
 		async function kick(uid) {
 			try {
 				await api.removeUserFromGroup(uid, event.threadID);
