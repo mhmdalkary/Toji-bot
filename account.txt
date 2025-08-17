@@ -1,119 +1,43 @@
-[
-    {
-        "key": "dbln",
-        "value": "%7B%2261566115796986%22%3A%220LJbNGjq%22%7D",
-        "domain": "facebook.com",
-        "path": "/login/device-based/",
-        "hostOnly": false,
-        "creation": "2025-08-17T19:37:25.888Z",
-        "lastAccessed": "2025-08-17T19:37:25.888Z"
-    },
-    {
-        "key": "sb",
-        "value": "O2CMaHMretSaQsjHSWgo6PfJ",
-        "domain": "facebook.com",
-        "path": "/",
-        "hostOnly": false,
-        "creation": "2025-08-17T19:37:25.888Z",
-        "lastAccessed": "2025-08-17T19:37:25.888Z"
-    },
-    {
-        "key": "ps_l",
-        "value": "1",
-        "domain": "facebook.com",
-        "path": "/",
-        "hostOnly": false,
-        "creation": "2025-08-17T19:37:25.888Z",
-        "lastAccessed": "2025-08-17T19:37:25.888Z"
-    },
-    {
-        "key": "ps_n",
-        "value": "1",
-        "domain": "facebook.com",
-        "path": "/",
-        "hostOnly": false,
-        "creation": "2025-08-17T19:37:25.888Z",
-        "lastAccessed": "2025-08-17T19:37:25.888Z"
-    },
-    {
-        "key": "vpd",
-        "value": "v1%3B637x333x3.2363994121551514",
-        "domain": "facebook.com",
-        "path": "/",
-        "hostOnly": false,
-        "creation": "2025-08-17T19:37:25.888Z",
-        "lastAccessed": "2025-08-17T19:37:25.888Z"
-    },
-    {
-        "key": "pas",
-        "value": "100087632392287%3AIxG9mKdbQe%2C61566115796986%3AG0YLY8VU6M%2C100090138577417%3AXQgQyGG4Az",
-        "domain": "facebook.com",
-        "path": "/",
-        "hostOnly": false,
-        "creation": "2025-08-17T19:37:25.888Z",
-        "lastAccessed": "2025-08-17T19:37:25.888Z"
-    },
-    {
-        "key": "dpr",
-        "value": "3.558248996734619",
-        "domain": "facebook.com",
-        "path": "/",
-        "hostOnly": false,
-        "creation": "2025-08-17T19:37:25.888Z",
-        "lastAccessed": "2025-08-17T19:37:25.888Z"
-    },
-    {
-        "key": "wl_cbv",
-        "value": "v2%3Bclient_version%3A2884%3Btimestamp%3A1754144570",
-        "domain": "facebook.com",
-        "path": "/",
-        "hostOnly": false,
-        "creation": "2025-08-17T19:37:25.888Z",
-        "lastAccessed": "2025-08-17T19:37:25.888Z"
-    },
-    {
-        "key": "wd",
-        "value": "774x1478",
-        "domain": "facebook.com",
-        "path": "/",
-        "hostOnly": false,
-        "creation": "2025-08-17T19:37:25.888Z",
-        "lastAccessed": "2025-08-17T19:37:25.888Z"
-    },
-    {
-        "key": "c_user",
-        "value": "61566115796986",
-        "domain": "facebook.com",
-        "path": "/",
-        "hostOnly": false,
-        "creation": "2025-08-17T19:37:25.888Z",
-        "lastAccessed": "2025-08-17T19:37:25.888Z"
-    },
-    {
-        "key": "datr",
-        "value": "bi-iaO-LTZSgmJjjksVhan-q",
-        "domain": "facebook.com",
-        "path": "/",
-        "hostOnly": false,
-        "creation": "2025-08-17T19:37:25.888Z",
-        "lastAccessed": "2025-08-17T19:37:25.888Z"
-    },
-    {
-        "key": "fr",
-        "value": "1IvujsYn94kSALwWh.AWfu8Ss_laOITcR4aTJhKdntznVhcvTl4CbDVDV4kIULF0-xSbc.BooLxl..AAA.0.0.Booi9u.AWeDtq_KLFDobmsG3WVPETuJUT0",
-        "domain": "facebook.com",
-        "path": "/",
-        "hostOnly": false,
-        "creation": "2025-08-17T19:37:25.888Z",
-        "lastAccessed": "2025-08-17T19:37:25.888Z"
-    },
-    {
-        "key": "xs",
-        "value": "22%3AzBTQxxGD3ZjaZQ%3A2%3A1755459438%3A-1%3A-1",
-        "domain": "facebook.com",
-        "path": "/",
-        "hostOnly": false,
-        "creation": "2025-08-17T19:37:25.888Z",
-        "lastAccessed": "2025-08-17T19:37:25.888Z"
-    }
-]
+name: Run Toji-Bot-V2
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+  workflow_dispatch:
+  schedule:
+    - cron: '0 */6 * * *'
+
+jobs:
+  run-bot:
+    runs-on: ubuntu-latest
+    timeout-minutes: 360
+
+    steps:
+      - name: Cancel previous runs
+        uses: styfle/cancel-workflow-action@0.9.1
+        with:
+          access_token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Restore bot data cache
+        uses: actions/cache@v3
+        with:
+          path: database
+          key: bot-data
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Install dependencies
+        run: npm install
+
+      - name: Run the bot
+        run: node index.js
